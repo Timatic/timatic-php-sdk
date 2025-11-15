@@ -8,6 +8,8 @@ use Crescat\SaloonSdkGenerator\CodeGenerator;
 use Crescat\SaloonSdkGenerator\Data\Generator\Config;
 use Crescat\SaloonSdkGenerator\Factory;
 use Timatic\SDK\Generator\JsonApiDtoGenerator;
+use Timatic\SDK\Generator\JsonApiRequestGenerator;
+use Timatic\SDK\Generator\JsonApiPestTestGenerator;
 
 // Download OpenAPI spec
 echo "📥 Downloading OpenAPI specification...\n";
@@ -33,22 +35,27 @@ echo "✅ Specification parsed\n\n";
 
 // Create config
 $config = new Config(
-    connectorName: 'Timatic',
+    connectorName: 'TimaticConnector',
     namespace: 'Timatic\\SDK',
     resourceNamespaceSuffix: 'Resource',
     requestNamespaceSuffix: 'Requests',
     dtoNamespaceSuffix: 'Dto',
 );
 
-// Create code generator with our custom JSON:API DTO generator
+// Create code generator with our custom JSON:API generators
 echo "🏗️  Generating SDK with JSON:API models...\n";
 $generator = new CodeGenerator(
     config: $config,
-    dtoGenerator: new JsonApiDtoGenerator($config)
+    dtoGenerator: new JsonApiDtoGenerator($config),
+    requestGenerator: new JsonApiRequestGenerator($config)
 );
 
 // Generate the code
 $result = $generator->run($specification);
+
+// Tests are not generated in this version (requires SDK generator v1.4+)
+// You can manually add Pest tests for JSON:API validation
+$tests = null;
 
 // Output directory
 $outputDir = __DIR__ . '/../src';
@@ -97,8 +104,27 @@ foreach ($result->dtoClasses as $dtoClass) {
     echo "  ✓ " . basename($path) . "\n";
 }
 
+// Write test files
+if ($tests && is_array($tests)) {
+    echo "\n🧪 Tests:\n";
+    foreach ($tests as $file) {
+        if ($file instanceof \Crescat\SaloonSdkGenerator\Data\TaggedOutputFile) {
+            $testPath = __DIR__ . '/../' . $file->path;
+
+            // Create directory if it doesn't exist
+            $dir = dirname($testPath);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            file_put_contents($testPath, $file->file);
+            echo "  ✓ " . basename($testPath) . "\n";
+        }
+    }
+}
+
 echo "\n✅ SDK generation complete!\n";
 echo "\n💡 Next steps:\n";
 echo "   1. Run 'composer dump-autoload'\n";
 echo "   2. Review generated models in src/Dto/\n";
-echo "   3. Test the SDK\n";
+echo "   3. Run tests with './vendor/bin/pest'\n";

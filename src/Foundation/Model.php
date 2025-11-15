@@ -64,4 +64,19 @@ abstract class Model implements ModelInterface
             (new ReflectionClass($this))->getShortName()
         )->camel()->plural()->toString();
     }
+
+    /**
+     * Convert Model to JSON:API format
+     *
+     * @return array<string, mixed>
+     */
+    public function toJsonApi(): array
+    {
+        return [
+            'data' => [
+                'type' => $this->type(),
+                'attributes' => $this->attributes(),
+            ],
+        ];
+    }
 }

@@ -10,11 +10,13 @@ composer require timatic/php-sdk
 
 ## Usage
 
+### Standalone PHP
+
 ```php
-use Timatic\SDK\Timatic;
+use Timatic\SDK\TimaticConnector;
 
 // Initialize the SDK
-$timatic = new Timatic();
+$timatic = new TimaticConnector();
 
 // Example: Get users
 $response = $timatic->user()->getUsers();
@@ -24,11 +26,97 @@ $users = $response->json();
 $response = $timatic->customer()->getCustomer(id: 1);
 $customer = $response->json();
 
-// Example: Create a new budget
-$response = $timatic->budget()->postBudgets([
-    'name' => 'Q1 2024 Budget',
-    // ... other budget data
+// Example: Create a new budget with a Model
+use Timatic\SDK\Dto\Budget;
+
+$budget = new Budget([
+    'title' => 'Q1 2024 Budget',
+    'totalPrice' => '50000',
 ]);
+
+$response = $timatic->send(new \Timatic\SDK\Requests\Budget\PostBudgets($budget));
+```
+
+### Laravel
+
+The package automatically registers itself via Laravel auto-discovery.
+
+#### Configuration
+
+Publish the config file:
+
+```bash
+php artisan vendor:publish --tag=timatic-config
+```
+
+Add your API credentials to `.env`:
+
+```env
+TIMATIC_BASE_URL=https://api.app.timatic.test
+TIMATIC_API_TOKEN=your-api-token-here
+```
+
+#### Using Dependency Injection (Recommended)
+
+The SDK connector is automatically registered in Laravel's service container, making it easy to inject into your controllers, commands, and other classes:
+
+```php
+use Timatic\SDK\TimaticConnector;
+use Timatic\SDK\Requests\BudgetType\GetBudgetTypeCollection;
+
+class BudgetController extends Controller
+{
+    public function __construct(
+        protected TimaticConnector $timatic
+    ) {}
+
+    public function index()
+    {
+        // Using resource methods
+        $budgets = $this->timatic->budget()->getBudgets()->dto();
+
+        // Using direct send() with dtoOrFail() for automatic DTO conversion
+        $budgetTypes = $this->timatic
+            ->send(new GetBudgetTypeCollection())
+            ->dtoOrFail();
+
+        return view('budgets.index', compact('budgets', 'budgetTypes'));
+    }
+
+    public function store(Request $request)
+    {
+        $budget = new \Timatic\SDK\Dto\Budget([
+            'title' => $request->input('title'),
+            'totalPrice' => $request->input('total_price'),
+        ]);
+
+        $created = $this->timatic
+            ->send(new \Timatic\SDK\Requests\Budget\PostBudgets($budget))
+            ->dtoOrFail();
+
+        return redirect()->route('budgets.show', $created->id);
+    }
+}
+```
+
+**In Console Commands:**
+
+```php
+use Timatic\SDK\TimaticConnector;
+
+class SyncBudgetsCommand extends Command
+{
+    public function handle(TimaticConnector $timatic): int
+    {
+        $budgets = $timatic->budget()->getBudgets()->dto();
+
+        foreach ($budgets as $budget) {
+            // Process budgets
+        }
+
+        return Command::SUCCESS;
+    }
+}
 ```
 
 ## Available Resources

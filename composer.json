@@ -23,8 +23,27 @@
     "require-dev": {
         "laravel/boost": "^1.8",
         "phpunit/phpunit": "^10.0|^11.0",
+        "pestphp/pest": "^2.0|^3.0",
         "crescat-io/saloon-sdk-generator": "^1.0"
     },
+    "scripts": {
+        "test": "pest"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Timatic\\SDK\\Providers\\TimaticServiceProvider"
+            ],
+            "aliases": {
+                "Timatic": "Timatic\\SDK\\Facades\\Timatic"
+            }
+        }
+    },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }

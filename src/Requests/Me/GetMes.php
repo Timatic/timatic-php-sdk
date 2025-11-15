@@ -5,6 +5,7 @@ namespace Timatic\SDK\Requests\Me;
 use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Timatic\SDK\Foundation\Model;
 
 /**
  * getMes

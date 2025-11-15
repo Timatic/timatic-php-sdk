@@ -2,10 +2,10 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Timatic\SDK\Timatic;
+use Timatic\SDK\TimaticConnector;
 
 // Initialize the Timatic SDK
-$timatic = new Timatic();
+$timatic = new TimaticConnector();
 
 // Example 1: Get all users
 echo "Fetching users...\n";

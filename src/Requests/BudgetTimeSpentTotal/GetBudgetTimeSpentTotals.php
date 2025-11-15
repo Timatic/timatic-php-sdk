@@ -5,6 +5,7 @@ namespace Timatic\SDK\Requests\BudgetTimeSpentTotal;
 use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Timatic\SDK\Foundation\Model;
 
 /**
  * getBudgetTimeSpentTotals

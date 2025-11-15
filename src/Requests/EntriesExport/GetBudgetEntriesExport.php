@@ -5,6 +5,7 @@ namespace Timatic\SDK\Requests\EntriesExport;
 use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Timatic\SDK\Foundation\Model;
 
 /**
  * getBudgetEntriesExport

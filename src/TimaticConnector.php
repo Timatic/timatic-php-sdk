@@ -31,7 +31,7 @@ use Timatic\SDK\Resource\UserCustomerHoursAggregate;
 /**
  * timatic-api
  */
-class Timatic extends Connector
+class TimaticConnector extends Connector
 {
 	public function __construct()
 	{

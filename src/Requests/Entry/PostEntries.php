@@ -7,6 +7,7 @@ use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Traits\Body\HasJsonBody;
+use Timatic\SDK\Foundation\Model;
 
 /**
  * postEntries
@@ -24,7 +25,16 @@ class PostEntries extends Request implements HasBody
 	}
 
 
-	public function __construct()
+	public function __construct(
+		protected Model|array $data,
+	) {
+	}
+
+
+	protected function defaultBody(): array
 	{
+		return $this->data instanceof Model
+		    ? $this->data->toJsonApi()
+		    : ['data' => $this->data];
 	}
 }
