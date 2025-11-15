@@ -1,0 +1,30 @@
+{
+    "name": "timatic/php-sdk",
+    "description": "PHP SDK for Timatic API built with Saloon",
+    "type": "library",
+    "license": "Elastic-2.0",
+    "autoload": {
+        "psr-4": {
+            "Timatic\\SDK\\": "src/",
+            "Timatic\\SDK\\Generator\\": "generator/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Timatic\\SDK\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "saloonphp/saloon": "^3.0",
+        "nesbot/carbon": "^2.0|^3.0",
+        "illuminate/support": "^10.0|^11.0"
+    },
+    "require-dev": {
+        "laravel/boost": "^1.8",
+        "phpunit/phpunit": "^10.0|^11.0",
+        "crescat-io/saloon-sdk-generator": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
