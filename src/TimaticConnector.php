@@ -27,6 +27,7 @@ use Timatic\SDK\Resource\Team;
 use Timatic\SDK\Resource\TimeSpentTotal;
 use Timatic\SDK\Resource\User;
 use Timatic\SDK\Resource\UserCustomerHoursAggregate;
+use Timatic\SDK\Responses\TimaticResponse;
 
 /**
  * timatic-api
@@ -50,6 +51,11 @@ class TimaticConnector extends Connector
         }
 
         return $headers;
+    }
+
+    public function resolveResponseClass(): string
+    {
+        return TimaticResponse::class;
     }
 
     public function approve(): Approve
