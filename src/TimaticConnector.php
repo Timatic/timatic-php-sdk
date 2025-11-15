@@ -3,6 +3,9 @@
 namespace Timatic\SDK;
 
 use Saloon\Http\Connector;
+use Saloon\Http\Request;
+use Saloon\PaginationPlugin\Contracts\HasPagination;
+use Timatic\SDK\Pagination\JsonApiPaginator;
 use Timatic\SDK\Resource\Approve;
 use Timatic\SDK\Resource\Budget;
 use Timatic\SDK\Resource\BudgetTimeSpentTotal;
@@ -32,7 +35,7 @@ use Timatic\SDK\Responses\TimaticResponse;
 /**
  * timatic-api
  */
-class TimaticConnector extends Connector
+class TimaticConnector extends Connector implements HasPagination
 {
     public function resolveBaseUrl(): string
     {
@@ -56,6 +59,11 @@ class TimaticConnector extends Connector
     public function resolveResponseClass(): string
     {
         return TimaticResponse::class;
+    }
+
+    public function paginate(Request $request): JsonApiPaginator
+    {
+        return new JsonApiPaginator($this, $request);
     }
 
     public function approve(): Approve

@@ -4,19 +4,11 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator;
 
-use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
-use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use DateTime;
-use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpFile;
-use Saloon\Contracts\Body\HasBody;
-use Saloon\Enums\Method as SaloonHttpMethod;
-use Saloon\Http\Request;
-use Saloon\Traits\Body\HasJsonBody;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Foundation\Model;
 
 class JsonApiRequestGenerator extends RequestGenerator
@@ -38,6 +30,12 @@ class JsonApiRequestGenerator extends RequestGenerator
             $this->addModelDataParameter($classType, $namespace);
         }
 
+        // For GET collection requests, add Paginatable interface
+        if ($this->isCollectionRequest($endpoint)) {
+            $namespace->addUse(Paginatable::class);
+            $classType->addImplement(Paginatable::class);
+        }
+
         return $phpFile;
     }
 
@@ -46,6 +44,18 @@ class JsonApiRequestGenerator extends RequestGenerator
         return $endpoint->method->isPost()
             || $endpoint->method->isPatch()
             || $endpoint->method->isPut();
+    }
+
+    protected function isCollectionRequest(Endpoint $endpoint): bool
+    {
+        // Collection requests are GET requests without an ID parameter in the path
+        if (! $endpoint->method->isGet()) {
+            return false;
+        }
+
+        // Check if the path contains a parameter (like {id}, {budget}, etc.)
+        // Collection endpoints typically don't have path parameters
+        return empty($endpoint->pathParameters);
     }
 
     protected function addModelDataParameter(ClassType $classType, $namespace): void
