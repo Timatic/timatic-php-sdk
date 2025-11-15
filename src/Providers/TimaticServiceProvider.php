@@ -21,30 +21,7 @@ class TimaticServiceProvider extends ServiceProvider
         );
 
         // Register TimaticConnector as singleton
-        $this->app->singleton(TimaticConnector::class, function ($app) {
-            $config = $app['config']->get('timatic', []);
-
-            $timatic = new TimaticConnector();
-
-            // Configure base URL if provided
-            if (isset($config['base_url'])) {
-                $timatic->baseUrl($config['base_url']);
-            }
-
-            // Add default headers if provided
-            if (isset($config['headers']) && is_array($config['headers'])) {
-                foreach ($config['headers'] as $key => $value) {
-                    $timatic->headers()->add($key, $value);
-                }
-            }
-
-            // Add authentication if provided
-            if (isset($config['api_token'])) {
-                $timatic->headers()->add('Authorization', 'Bearer ' . $config['api_token']);
-            }
-
-            return $timatic;
-        });
+        $this->app->singleton(TimaticConnector::class);
 
         // Register alias
         $this->app->alias(TimaticConnector::class, 'timatic');

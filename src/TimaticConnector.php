@@ -33,157 +33,142 @@ use Timatic\SDK\Resource\UserCustomerHoursAggregate;
  */
 class TimaticConnector extends Connector
 {
-	public function __construct()
-	{
-	}
+    public function resolveBaseUrl(): string
+    {
+        return config('timatic.base_url');
+    }
 
+    protected function defaultHeaders(): array
+    {
+        $headers = [
+            'Accept' => 'application/vnd.api+json',
+            'Content-Type' => 'application/vnd.api+json',
+        ];
 
-	public function resolveBaseUrl(): string
-	{
-		return "https://api.app.timatic.test";
-	}
+        if ($token = config('timatic.api_token')) {
+            $headers['Authorization'] = "Bearer {$token}";
+        }
 
+        return $headers;
+    }
 
-	public function approve(): Approve
-	{
-		return new Approve($this);
-	}
+    public function approve(): Approve
+    {
+        return new Approve($this);
+    }
 
+    public function budget(): Budget
+    {
+        return new Budget($this);
+    }
 
-	public function budget(): Budget
-	{
-		return new Budget($this);
-	}
+    public function budgetTimeSpentTotal(): BudgetTimeSpentTotal
+    {
+        return new BudgetTimeSpentTotal($this);
+    }
 
+    public function budgetType(): BudgetType
+    {
+        return new BudgetType($this);
+    }
 
-	public function budgetTimeSpentTotal(): BudgetTimeSpentTotal
-	{
-		return new BudgetTimeSpentTotal($this);
-	}
+    public function change(): Change
+    {
+        return new Change($this);
+    }
 
+    public function correction(): Correction
+    {
+        return new Correction($this);
+    }
 
-	public function budgetType(): BudgetType
-	{
-		return new BudgetType($this);
-	}
+    public function customer(): Customer
+    {
+        return new Customer($this);
+    }
 
+    public function dailyProgress(): DailyProgress
+    {
+        return new DailyProgress($this);
+    }
 
-	public function change(): Change
-	{
-		return new Change($this);
-	}
+    public function entriesExport(): EntriesExport
+    {
+        return new EntriesExport($this);
+    }
 
+    public function entry(): Entry
+    {
+        return new Entry($this);
+    }
 
-	public function correction(): Correction
-	{
-		return new Correction($this);
-	}
+    public function entrySuggestion(): EntrySuggestion
+    {
+        return new EntrySuggestion($this);
+    }
 
+    public function event(): Event
+    {
+        return new Event($this);
+    }
 
-	public function customer(): Customer
-	{
-		return new Customer($this);
-	}
+    public function exportMail(): ExportMail
+    {
+        return new ExportMail($this);
+    }
 
+    public function incident(): Incident
+    {
+        return new Incident($this);
+    }
 
-	public function dailyProgress(): DailyProgress
-	{
-		return new DailyProgress($this);
-	}
+    public function markAsExported(): MarkAsExported
+    {
+        return new MarkAsExported($this);
+    }
 
+    public function markAsInvoiced(): MarkAsInvoiced
+    {
+        return new MarkAsInvoiced($this);
+    }
 
-	public function entriesExport(): EntriesExport
-	{
-		return new EntriesExport($this);
-	}
+    public function me(): Me
+    {
+        return new Me($this);
+    }
 
+    public function number(): Number
+    {
+        return new Number($this);
+    }
 
-	public function entry(): Entry
-	{
-		return new Entry($this);
-	}
+    public function overtime(): Overtime
+    {
+        return new Overtime($this);
+    }
 
+    public function period(): Period
+    {
+        return new Period($this);
+    }
 
-	public function entrySuggestion(): EntrySuggestion
-	{
-		return new EntrySuggestion($this);
-	}
+    public function team(): Team
+    {
+        return new Team($this);
+    }
 
+    public function timeSpentTotal(): TimeSpentTotal
+    {
+        return new TimeSpentTotal($this);
+    }
 
-	public function event(): Event
-	{
-		return new Event($this);
-	}
+    public function user(): User
+    {
+        return new User($this);
+    }
 
-
-	public function exportMail(): ExportMail
-	{
-		return new ExportMail($this);
-	}
-
-
-	public function incident(): Incident
-	{
-		return new Incident($this);
-	}
-
-
-	public function markAsExported(): MarkAsExported
-	{
-		return new MarkAsExported($this);
-	}
-
-
-	public function markAsInvoiced(): MarkAsInvoiced
-	{
-		return new MarkAsInvoiced($this);
-	}
-
-
-	public function me(): Me
-	{
-		return new Me($this);
-	}
-
-
-	public function number(): Number
-	{
-		return new Number($this);
-	}
-
-
-	public function overtime(): Overtime
-	{
-		return new Overtime($this);
-	}
-
-
-	public function period(): Period
-	{
-		return new Period($this);
-	}
-
-
-	public function team(): Team
-	{
-		return new Team($this);
-	}
-
-
-	public function timeSpentTotal(): TimeSpentTotal
-	{
-		return new TimeSpentTotal($this);
-	}
-
-
-	public function user(): User
-	{
-		return new User($this);
-	}
-
-
-	public function userCustomerHoursAggregate(): UserCustomerHoursAggregate
-	{
-		return new UserCustomerHoursAggregate($this);
-	}
+    public function userCustomerHoursAggregate(): UserCustomerHoursAggregate
+    {
+        return new UserCustomerHoursAggregate($this);
+    }
 }

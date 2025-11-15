@@ -31,13 +31,14 @@ return [
     | Default Headers
     |--------------------------------------------------------------------------
     |
-    | Any additional headers you want to send with every request.
+    | The SDK automatically includes the following headers:
+    | - Accept: application/vnd.api+json
+    | - Content-Type: application/vnd.api+json
+    | - Authorization: Bearer {api_token} (if api_token is set)
+    |
+    | This configuration is reserved for future use if you need to add
+    | additional custom headers beyond the defaults.
     |
     */
-
-    'headers' => [
-        'Accept' => 'application/vnd.api+json',
-        'Content-Type' => 'application/vnd.api+json',
-    ],
 
 ];

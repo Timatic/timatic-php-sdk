@@ -1,6 +1,11 @@
 # Timatic PHP SDK
 
-A PHP SDK for the Timatic API, built with [Saloon](https://docs.saloon.dev/) and automatically generated from OpenAPI specifications.
+A Laravel package for the Timatic API, built with [Saloon](https://docs.saloon.dev/) and automatically generated from OpenAPI specifications.
+
+## Requirements
+
+- PHP 8.1 or higher
+- Laravel 10.x or higher
 
 ## Installation
 
@@ -8,40 +13,9 @@ A PHP SDK for the Timatic API, built with [Saloon](https://docs.saloon.dev/) and
 composer require timatic/php-sdk
 ```
 
-## Usage
-
-### Standalone PHP
-
-```php
-use Timatic\SDK\TimaticConnector;
-
-// Initialize the SDK
-$timatic = new TimaticConnector();
-
-// Example: Get users
-$response = $timatic->user()->getUsers();
-$users = $response->json();
-
-// Example: Get a specific customer
-$response = $timatic->customer()->getCustomer(id: 1);
-$customer = $response->json();
-
-// Example: Create a new budget with a Model
-use Timatic\SDK\Dto\Budget;
-
-$budget = new Budget([
-    'title' => 'Q1 2024 Budget',
-    'totalPrice' => '50000',
-]);
-
-$response = $timatic->send(new \Timatic\SDK\Requests\Budget\PostBudgets($budget));
-```
-
-### Laravel
+## Configuration
 
 The package automatically registers itself via Laravel auto-discovery.
-
-#### Configuration
 
 Publish the config file:
 
@@ -56,7 +30,9 @@ TIMATIC_BASE_URL=https://api.app.timatic.test
 TIMATIC_API_TOKEN=your-api-token-here
 ```
 
-#### Using Dependency Injection (Recommended)
+## Usage
+
+### Using Dependency Injection
 
 The SDK connector is automatically registered in Laravel's service container, making it easy to inject into your controllers, commands, and other classes:
 
