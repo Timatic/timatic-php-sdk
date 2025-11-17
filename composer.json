@@ -18,7 +18,7 @@
         "php": "^8.1",
         "saloonphp/saloon": "^3.0",
         "nesbot/carbon": "^2.0|^3.0",
-        "illuminate/support": "^10.0",
+        "laravel/framework": "^10.0|^11.0|^12.0",
         "saloonphp/pagination-plugin": "^2.0"
     },
     "require-dev": {
@@ -26,10 +26,13 @@
         "phpunit/phpunit": "^10.0|^11.0",
         "pestphp/pest": "^2.0|^3.0",
         "laravel/pint": "^1.0",
-        "larastan/larastan": "^2.0"
+        "larastan/larastan": "^3.0",
+        "orchestra/testbench": "^10.0|^11.0|^12.0"
     },
     "scripts": {
-        "test": "pest"
+        "test": "pest",
+        "format": "pint",
+        "analyse": "phpstan analyse --memory-limit=2G"
     },
     "extra": {
         "laravel": {

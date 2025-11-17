@@ -1,3 +1,5 @@
+Make sure the package is compatible with Laravel 10, 11 and 12
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
