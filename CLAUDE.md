@@ -253,3 +253,81 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 - Always use Tailwind CSS v3 - verify you're using only classes supported by this version.
 </laravel-boost-guidelines>
+
+=== timatic-sdk rules ===
+
+## Timatic PHP SDK - Auto-Generated Files
+
+This SDK is automatically generated from the OpenAPI specification. **DO NOT manually edit auto-generated files**.
+
+### ❌ NEVER EDIT THESE DIRECTORIES:
+- **`src/Dto/`** - All Model/DTO classes (auto-generated with flattened JSON:API attributes)
+- **`src/Requests/`** - All Request classes (auto-generated from OpenAPI endpoints)
+- **`src/Resource/`** - All Resource classes (auto-generated to group related requests)
+
+### ⚠️ SPECIAL CASE - Connector File:
+- **`src/TimaticConnector.php`** - Partially auto-generated. The resource methods are auto-generated, but custom configuration methods MUST be preserved:
+  - `resolveBaseUrl()`
+  - `defaultHeaders()`
+  - `resolveResponseClass()`
+  - `paginate()`
+
+  **After SDK regeneration, you MUST restore this file:**
+  ```bash
+  git checkout src/TimaticConnector.php
+  ```
+
+### ✅ SAFE TO EDIT:
+- **`src/Foundation/`** - Base classes (Model, HasAttributes, etc.)
+- **`src/Attributes/`** - PHP attributes (Property, DateTime)
+- **`src/Responses/`** - Custom response classes (TimaticResponse)
+- **`src/Pagination/`** - Pagination classes (JsonApiPaginator)
+- **`src/Providers/`** - Laravel service providers
+- **`src/Facades/`** - Laravel facades
+- **`config/timatic.php`** - Configuration file
+- **`tests/`** - Test files
+- **`generator/`** - Generator classes
+
+## SDK Regeneration Commands
+
+To update auto-generated files from the latest OpenAPI spec:
+
+```bash
+# 1. Run the generator
+php generator/generate.php
+
+# 2. IMMEDIATELY restore TimaticConnector (contains custom methods)
+git checkout src/TimaticConnector.php
+
+# 3. Update autoloader
+composer dump-autoload
+
+# 4. Run tests to verify
+./vendor/bin/pest
+
+# 5. Format code
+./vendor/bin/pint
+```
+
+## Modifying Auto-Generated Code
+
+If you need to change how files are generated, update the generators:
+
+- **`generator/JsonApiDtoGenerator.php`** - Customizes Model/DTO generation
+  - Flattens JSON:API attributes into typed properties
+  - Adds `#[Property]` and `#[DateTime]` attributes
+
+- **`generator/JsonApiRequestGenerator.php`** - Customizes Request generation
+  - Adds Model support for POST/PUT/PATCH
+  - Adds `Paginatable` interface to GET collection requests
+  - Generates `defaultBody()` method for JSON:API serialization
+
+- **`generator/generate.php`** - Main generation script
+
+After modifying generators, regenerate and test:
+```bash
+php generator/generate.php
+git checkout src/TimaticConnector.php
+composer dump-autoload
+./vendor/bin/pest
+```
