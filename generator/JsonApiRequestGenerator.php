@@ -27,6 +27,12 @@ class JsonApiRequestGenerator extends RequestGenerator
         $namespace = array_values($phpFile->getNamespaces())[0];
         $classType = array_values($namespace->getClasses())[0];
 
+        // Add "Request" suffix to class name
+        $originalName = $classType->getName();
+        if (! str_ends_with($originalName, 'Request')) {
+            $classType->setName($originalName.'Request');
+        }
+
         // Add Model import
         $namespace->addUse(Model::class);
 
@@ -68,17 +74,15 @@ class JsonApiRequestGenerator extends RequestGenerator
         // Get constructor
         $constructor = $classType->getMethod('__construct');
 
-        // Add data parameter with fully qualified type
+        // Add data parameter with Model-only type (no array support)
         $constructor->addPromotedParameter('data')
-            ->setType('\\Timatic\\SDK\\Foundation\\Model|array')
+            ->setType('\\Timatic\\SDK\\Foundation\\Model')
             ->setProtected();
 
         // Add defaultBody method
         $defaultBody = $classType->addMethod('defaultBody')
             ->setProtected()
             ->setReturnType('array')
-            ->addBody('return $this->data instanceof Model')
-            ->addBody('    ? $this->data->toJsonApi()')
-            ->addBody('    : [\'data\' => $this->data];');
+            ->addBody('return $this->data->toJsonApi();');
     }
 }

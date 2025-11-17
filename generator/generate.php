@@ -31,6 +31,33 @@ if (! $openApiJson) {
 file_put_contents(__DIR__.'/../openapi.json', $openApiJson);
 echo "✅ OpenAPI specification downloaded\n\n";
 
+// Clean up previously generated folders
+echo "🧹 Cleaning up previously generated files...\n";
+$foldersToClean = [
+    __DIR__.'/../src/Requests',
+    __DIR__.'/../src/Resource',
+    __DIR__.'/../src/Dto',
+];
+
+foreach ($foldersToClean as $folder) {
+    if (is_dir($folder)) {
+        // Recursively delete directory
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+
+        rmdir($folder);
+        echo '  ✓ Removed '.basename($folder)."\n";
+    }
+}
+echo "✅ Cleanup completed\n\n";
+
 // Parse the specification
 echo "🔨 Parsing OpenAPI specification...\n";
 $specification = Factory::parse('openapi', __DIR__.'/../openapi.json');
