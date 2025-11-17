@@ -2,9 +2,11 @@
   "permissions": {
     "allow": [],
     "deny": [
+      "Edit(file_path:src/TimaticConnector.php)",
       "Edit(file_path:src/Dto/**)",
       "Edit(file_path:src/Requests/**)",
       "Edit(file_path:src/Resource/**)",
+      "Write(file_path:src/TimaticConnector.php)",
       "Write(file_path:src/Dto/**)",
       "Write(file_path:src/Requests/**)",
       "Write(file_path:src/Resource/**)"

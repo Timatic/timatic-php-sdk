@@ -8,6 +8,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Crescat\SaloonSdkGenerator\CodeGenerator;
 use Crescat\SaloonSdkGenerator\Data\Generator\Config;
 use Crescat\SaloonSdkGenerator\Factory;
+use Timatic\SDK\Generator\JsonApiConnectorGenerator;
 use Timatic\SDK\Generator\JsonApiDtoGenerator;
 use Timatic\SDK\Generator\JsonApiRequestGenerator;
 use Timatic\SDK\Generator\JsonApiResourceGenerator;
@@ -74,6 +75,7 @@ $config = new Config(
 echo "🏗️  Generating SDK with JSON:API models...\n";
 $generator = new CodeGenerator(
     config: $config,
+    connectorGenerator: new JsonApiConnectorGenerator($config),
     dtoGenerator: new JsonApiDtoGenerator($config),
     requestGenerator: new JsonApiRequestGenerator($config),
     resourceGenerator: new JsonApiResourceGenerator($config)

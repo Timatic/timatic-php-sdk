@@ -37,11 +37,6 @@ use Timatic\SDK\Responses\TimaticResponse;
  */
 class TimaticConnector extends Connector implements HasPagination
 {
-    public function resolveBaseUrl(): string
-    {
-        return config('timatic.base_url');
-    }
-
     protected function defaultHeaders(): array
     {
         $headers = [
@@ -64,6 +59,11 @@ class TimaticConnector extends Connector implements HasPagination
     public function paginate(Request $request): JsonApiPaginator
     {
         return new JsonApiPaginator($this, $request);
+    }
+
+    public function resolveBaseUrl(): string
+    {
+        return config('timatic.base_url');
     }
 
     public function approve(): Approve
