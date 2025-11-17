@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-// Use global composer autoload for SDK generator
-require_once $_SERVER['HOME'].'/.composer/vendor/autoload.php';
-// Also load local vendor for our custom generators
+// Use local vendor autoload
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Crescat\SaloonSdkGenerator\CodeGenerator;
