@@ -4,7 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
-use Timatic\SDK\Requests\Overtime\GetOvertimes;
+use Timatic\SDK\Requests\Overtime\GetOvertimesRequest;
 
 class Overtime extends BaseResource
 {
@@ -36,6 +36,6 @@ class Overtime extends BaseResource
         ?string $filterapprovedAtcontains = null,
         ?string $filterisExported = null,
     ): Response {
-        return $this->connector->send(new GetOvertimes($filterstartedAt, $filterstartedAteq, $filterstartedAtnq, $filterstartedAtgt, $filterstartedAtlt, $filterstartedAtgte, $filterstartedAtlte, $filterstartedAtcontains, $filterendedAt, $filterendedAteq, $filterendedAtnq, $filterendedAtgt, $filterendedAtlt, $filterendedAtgte, $filterendedAtlte, $filterendedAtcontains, $filterisApproved, $filterapprovedAt, $filterapprovedAteq, $filterapprovedAtnq, $filterapprovedAtgt, $filterapprovedAtlt, $filterapprovedAtgte, $filterapprovedAtlte, $filterapprovedAtcontains, $filterisExported));
+        return $this->connector->send(new GetOvertimesRequest($filterstartedAt, $filterstartedAteq, $filterstartedAtnq, $filterstartedAtgt, $filterstartedAtlt, $filterstartedAtgte, $filterstartedAtlte, $filterstartedAtcontains, $filterendedAt, $filterendedAteq, $filterendedAtnq, $filterendedAtgt, $filterendedAtlt, $filterendedAtgte, $filterendedAtlte, $filterendedAtcontains, $filterisApproved, $filterapprovedAt, $filterapprovedAteq, $filterapprovedAtnq, $filterapprovedAtgt, $filterapprovedAtlt, $filterapprovedAtgte, $filterapprovedAtlte, $filterapprovedAtcontains, $filterisExported));
     }
 }

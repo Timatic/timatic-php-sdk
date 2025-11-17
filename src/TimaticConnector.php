@@ -61,6 +61,8 @@ class TimaticConnector extends Connector implements HasPagination
         return new JsonApiPaginator($this, $request);
     }
 
+    public function __construct() {}
+
     public function resolveBaseUrl(): string
     {
         return config('timatic.base_url');

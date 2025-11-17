@@ -23,11 +23,11 @@ class PostTeamsRequest extends Request implements HasBody
     }
 
     public function __construct(
-        protected Model $data,
+        protected Model|array|null $data,
     ) {}
 
     protected function defaultBody(): array
     {
-        return $this->data->toJsonApi();
+        return $this->data ? $this->data->toJsonApi() : [];
     }
 }

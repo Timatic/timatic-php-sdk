@@ -1,0 +1,20 @@
+{
+    "statusCode": 401,
+    "headers": {
+        "Server": "nginx\/1.25.4",
+        "Content-Type": "application\/json",
+        "Transfer-Encoding": "chunked",
+        "Connection": "keep-alive",
+        "X-Powered-By": "PHP\/8.4.14",
+        "Cache-Control": "no-cache, private",
+        "Date": "Mon, 17 Nov 2025 21:21:17 GMT",
+        "Access-Control-Allow-Origin": "https:\/\/app.timatic.test",
+        "Access-Control-Allow-Credentials": "true",
+        "Set-Cookie": [
+            "XSRF-TOKEN=eyJpdiI6InVEek1Qc0dheGpVS2svR3BpelZBNHc9PSIsInZhbHVlIjoiazVuRkVhaU9GS3JRNkJrbk5rQi9VTi83bTh1OVJUNlFSVEpsYnJ1cWFVbGgyblZvRUcrdkRsTTBlS1pWZ2pma2tmYXVWdmRzY1BvcDFodXRIY2FGaTJHMlZGMzZyb21EN0FxS3lVcDVSTTUvMHVXNWlWTThEU2lVZXd0UElKcm4iLCJtYWMiOiI5YTAwNTU3MmEzZjg0NWU0NTIxNmY0MGE0MzEzNDBhNGJlOGFjMDkyMTI5YmU4YTQ2ZmMxMDE4ODY3NDQzMTI5IiwidGFnIjoiIn0%3D; expires=Tue, 18 Nov 2025 09:21:17 GMT; Max-Age=43200; path=\/; domain=.timatic.test; secure; samesite=none",
+            "timatic_api_session=eyJpdiI6IlBwSE94YlBHK1RrZWJBaWtIZWdzNGc9PSIsInZhbHVlIjoiR1llbGhUdXkyQVFDc04vOCtMUzZ0MC9PcXVwWWp2REtYb0p3V0JIRW9ZazNBYktNNWw3MDRzeTZwelJKOTVoZ2EyVGVrV3dQaHlnU2JoNjRsK2JxUTA1NmxrelFpRGdXb0hZOXVadFVHRjFkY1ZMZkxobTFVTUN4MHRTL09BMm8iLCJtYWMiOiIzNmMzMTQ0OWU0N2FlNjU0Zjc4MGI0ZDZkNjkxNjg3MjAwNDliMzczMWExNDBiYzY4OWQxZWUxMGMxOWVkOTQxIiwidGFnIjoiIn0%3D; expires=Tue, 18 Nov 2025 09:21:17 GMT; Max-Age=43200; path=\/; domain=.timatic.test; secure; httponly; samesite=none"
+        ]
+    },
+    "data": "{\"message\":\"Unauthenticated.\"}",
+    "context": []
+}

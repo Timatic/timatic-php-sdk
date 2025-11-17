@@ -10,6 +10,7 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Config;
 use Crescat\SaloonSdkGenerator\Factory;
 use Timatic\SDK\Generator\JsonApiConnectorGenerator;
 use Timatic\SDK\Generator\JsonApiDtoGenerator;
+use Timatic\SDK\Generator\JsonApiPestTestGenerator;
 use Timatic\SDK\Generator\JsonApiRequestGenerator;
 use Timatic\SDK\Generator\JsonApiResourceGenerator;
 
@@ -55,6 +56,17 @@ foreach ($foldersToClean as $folder) {
         echo '  ✓ Removed '.basename($folder)."\n";
     }
 }
+
+// Clean up generated test files (but keep Pest.php and TestCase.php)
+$testsFolder = __DIR__.'/../tests';
+if (is_dir($testsFolder)) {
+    $testFiles = glob($testsFolder.'/*Test.php');
+    foreach ($testFiles as $testFile) {
+        unlink($testFile);
+    }
+    echo '  ✓ Removed generated test files'."\n";
+}
+
 echo "✅ Cleanup completed\n\n";
 
 // Parse the specification
@@ -78,15 +90,15 @@ $generator = new CodeGenerator(
     connectorGenerator: new JsonApiConnectorGenerator($config),
     dtoGenerator: new JsonApiDtoGenerator($config),
     requestGenerator: new JsonApiRequestGenerator($config),
-    resourceGenerator: new JsonApiResourceGenerator($config)
+    resourceGenerator: new JsonApiResourceGenerator($config),
+    postProcessors: [new JsonApiPestTestGenerator]
 );
 
 // Generate the code
 $result = $generator->run($specification);
 
-// Tests are not generated in this version (requires SDK generator v1.4+)
-// You can manually add Pest tests for JSON:API validation
-$tests = null;
+// Extract tests from result
+$tests = $result->additionalFiles ?? null;
 
 // Output directory
 $outputDir = __DIR__.'/../src';
@@ -118,12 +130,42 @@ if ($result->connectorClass) {
 // Post-process and write resources
 echo "\n📦 Resources:\n";
 foreach ($result->resourceClasses as $resourceClass) {
-    // Fix POST/PUT/PATCH methods to add $data parameter
     $namespace = array_values($resourceClass->getNamespaces())[0];
     $classType = array_values($namespace->getClasses())[0];
 
+    // Fix imports - add "Request" suffix to all Request class imports
+    foreach ($namespace->getUses() as $alias => $fqn) {
+        // Check if this is a Request class import
+        if (str_contains($fqn, '\\Requests\\')) {
+            $className = basename(str_replace('\\', '/', $fqn));
+            // Add "Request" suffix if not already present
+            if (! str_ends_with($className, 'Request')) {
+                $newFqn = substr($fqn, 0, -strlen($className)).$className.'Request';
+                $namespace->removeUse($fqn);
+                $namespace->addUse($newFqn, $className.'Request');
+            }
+        }
+    }
+
+    // Fix POST/PUT/PATCH methods to add $data parameter and update class references
     foreach ($classType->getMethods() as $method) {
         $methodName = $method->getName();
+        $body = $method->getBody();
+
+        // Add "Request" suffix to class instantiations in method body
+        $body = preg_replace_callback(
+            '/\(new\s+(\w+)\(/',
+            function ($matches) {
+                $className = $matches[1];
+                // Add "Request" suffix if not already present
+                if (! str_ends_with($className, 'Request')) {
+                    return '(new '.$className.'Request(';
+                }
+
+                return $matches[0];
+            },
+            $body
+        );
 
         // Check if it's a mutation method (post/patch only, PUT is not supported)
         if (preg_match('/^(post|patch)/i', $methodName)) {
@@ -133,27 +175,25 @@ foreach ($result->resourceClasses as $resourceClass) {
                 ->setDefaultValue(null);
 
             // Update method body to pass $data to request constructor
-            $body = $method->getBody();
-
             // Pattern 2 first: new Request($param) -> new Request($param, $data)
             // Must be checked before Pattern 1 to avoid double replacement
-            if (preg_match('/\(new\s+\w+\([^)]+\)\)/', $body)) {
+            if (preg_match('/\(new\s+\w+Request\([^)]+\)\)/', $body)) {
                 $body = preg_replace(
-                    '/\(new\s+(\w+)\(([^)]+)\)\)/',
+                    '/\(new\s+(\w+Request)\(([^)]+)\)\)/',
                     '(new $1($2, $data))',
                     $body
                 );
             } else {
                 // Pattern 1: new Request() -> new Request($data)
                 $body = preg_replace(
-                    '/\(new\s+(\w+)\(\)\)/',
+                    '/\(new\s+(\w+Request)\(\)\)/',
                     '(new $1($data))',
                     $body
                 );
             }
-
-            $method->setBody($body);
         }
+
+        $method->setBody($body);
     }
 
     $path = writeFile($resourceClass, $outputDir, $config->namespace);

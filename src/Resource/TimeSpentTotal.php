@@ -4,7 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
-use Timatic\SDK\Requests\TimeSpentTotal\GetTimeSpentTotals;
+use Timatic\SDK\Requests\TimeSpentTotal\GetTimeSpentTotalsRequest;
 
 class TimeSpentTotal extends BaseResource
 {
@@ -16,6 +16,6 @@ class TimeSpentTotal extends BaseResource
         ?string $filteruserId = null,
         ?string $filteruserIdeq = null,
     ): Response {
-        return $this->connector->send(new GetTimeSpentTotals($filterstartedAtgte, $filterstartedAtlte, $filterteamId, $filterteamIdeq, $filteruserId, $filteruserIdeq));
+        return $this->connector->send(new GetTimeSpentTotalsRequest($filterstartedAtgte, $filterstartedAtlte, $filterteamId, $filterteamIdeq, $filteruserId, $filteruserIdeq));
     }
 }

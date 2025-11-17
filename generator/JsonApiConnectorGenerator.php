@@ -35,8 +35,8 @@ class JsonApiConnectorGenerator extends ConnectorGenerator
         $namespace->addUse(JsonApiPaginator::class);
         $namespace->addUse(TimaticResponse::class);
 
-        // Remove empty constructor if present
-        $this->removeEmptyConstructorIfPresent($classType);
+        // Keep the empty constructor for test compatibility
+        // (PestTestGenerator needs it)
 
         // Override resolveBaseUrl to use Laravel config
         $resolveBaseUrl = $classType->getMethod('resolveBaseUrl');

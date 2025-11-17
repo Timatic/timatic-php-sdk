@@ -1,0 +1,86 @@
+<?php
+
+// Generated 2025-11-17 21:22:04
+
+use Saloon\Http\Faking\MockResponse;
+use Saloon\Laravel\Facades\Saloon;
+use Timatic\SDK\Requests\User\DeleteUserRequest;
+use Timatic\SDK\Requests\User\GetUserRequest;
+use Timatic\SDK\Requests\User\GetUsersRequest;
+use Timatic\SDK\Requests\User\PatchUserRequest;
+use Timatic\SDK\Requests\User\PostUsersRequest;
+
+beforeEach(function () {
+    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+});
+
+it('calls the getUsers method in the User resource', function () {
+    Saloon::fake([
+        GetUsersRequest::class => MockResponse::fixture('user.getUsers'),
+    ]);
+
+    $response = $this->timaticConnector->user()->getUsers(
+        filterexternalId: 'test string',
+        filterexternalIdeq: 'test string'
+    );
+
+    Saloon::assertSent(GetUsersRequest::class);
+
+    expect($response->status())->toBe(200);
+});
+
+it('calls the postUsers method in the User resource', function () {
+    Saloon::fake([
+        PostUsersRequest::class => MockResponse::fixture('user.postUsers'),
+    ]);
+
+    $response = $this->timaticConnector->user()->postUsers(
+
+    );
+
+    Saloon::assertSent(PostUsersRequest::class);
+
+    expect($response->status())->toBe(200);
+});
+
+it('calls the getUser method in the User resource', function () {
+    Saloon::fake([
+        GetUserRequest::class => MockResponse::fixture('user.getUser'),
+    ]);
+
+    $response = $this->timaticConnector->user()->getUser(
+        user: 'test string'
+    );
+
+    Saloon::assertSent(GetUserRequest::class);
+
+    expect($response->status())->toBe(200);
+});
+
+it('calls the deleteUser method in the User resource', function () {
+    Saloon::fake([
+        DeleteUserRequest::class => MockResponse::fixture('user.deleteUser'),
+    ]);
+
+    $response = $this->timaticConnector->user()->deleteUser(
+        user: 'test string'
+    );
+
+    Saloon::assertSent(DeleteUserRequest::class);
+
+    expect($response->status())->toBe(200);
+});
+
+it('calls the patchUser method in the User resource', function () {
+    Saloon::fake([
+        PatchUserRequest::class => MockResponse::fixture('user.patchUser'),
+    ]);
+
+    $response = $this->timaticConnector->user()->patchUser(
+        user: 'test string'
+    );
+
+    Saloon::assertSent(PatchUserRequest::class);
+
+    expect($response->status())->toBe(200);
+});

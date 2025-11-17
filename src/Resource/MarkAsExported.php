@@ -4,7 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
-use Timatic\SDK\Requests\MarkAsExported\PostOvertimeMarkAsExported;
+use Timatic\SDK\Requests\MarkAsExported\PostOvertimeMarkAsExportedRequest;
 
 class MarkAsExported extends BaseResource
 {
@@ -12,6 +12,6 @@ class MarkAsExported extends BaseResource
         string $overtime,
         \Timatic\SDK\Foundation\Model|array|null $data = null,
     ): Response {
-        return $this->connector->send(new PostOvertimeMarkAsExported($overtime, $data));
+        return $this->connector->send(new PostOvertimeMarkAsExportedRequest($overtime, $data));
     }
 }

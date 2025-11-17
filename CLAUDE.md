@@ -272,11 +272,12 @@ This SDK **does not support PUT requests**. Only the following HTTP methods are 
 
 PUT is intentionally excluded as PATCH provides better semantics for partial updates in JSON:API applications. The generator will throw an exception if it encounters PUT endpoints.
 
-### ❌ NEVER EDIT THESE DIRECTORIES:
+### ❌ NEVER EDIT THESE FILES/DIRECTORIES:
 - **`src/Dto/`** - All Model/DTO classes (auto-generated with flattened JSON:API attributes)
 - **`src/Requests/`** - All Request classes (auto-generated from OpenAPI endpoints)
 - **`src/Resource/`** - All Resource classes (auto-generated to group related requests)
 - **`src/TimaticConnector.php`** - The main Connector class (auto-generated with custom JSON:API configuration)
+- **`tests/*Test.php`** - All test files (auto-generated from OpenAPI endpoints, Pest.php and TestCase.php are preserved)
 
 ### ✅ SAFE TO EDIT:
 - **`src/Foundation/`** - Base classes (Model, HasAttributes, etc.)
@@ -286,10 +287,14 @@ PUT is intentionally excluded as PATCH provides better semantics for partial upd
 - **`src/Providers/`** - Laravel service providers
 - **`src/Facades/`** - Laravel facades
 - **`config/timatic.php`** - Configuration file
-- **`tests/`** - Test files
-- **`generator/`** - Generator classes
+- **`tests/Pest.php`** - Pest configuration (preserved during regeneration)
+- **`tests/TestCase.php`** - Test base class with Orchestra Testbench setup (preserved during regeneration)
+- **`generator/`** - Generator classes that customize SDK generation
+- **`generator/Stubs/`** - Custom Pest test stub templates for JSON:API
 
 ## SDK Regeneration Commands
+
+**IMPORTANT:** Always use `composer regenerate` to regenerate the SDK. Never run `php generator/generate.php` directly.
 
 To update auto-generated files from the latest OpenAPI spec:
 
@@ -302,9 +307,11 @@ composer test
 ```
 
 **What `composer regenerate` does:**
-1. Runs `php generator/generate.php` to download OpenAPI spec and generate files
-2. Updates autoloader with `composer dump-autoload`
-3. Formats all code with Laravel Pint
+1. Downloads OpenAPI spec from the API
+2. Generates all source files (Connector, DTOs, Requests, Resources)
+3. Generates Pest test files for all endpoints
+4. Updates autoloader with `composer dump-autoload`
+5. Formats all code with Laravel Pint
 
 ## Modifying Auto-Generated Code
 
@@ -348,8 +355,6 @@ If you need to change how files are generated, update the appropriate generator:
 
 After modifying generators, regenerate and test:
 ```bash
-php generator/generate.php
-composer dump-autoload
-./vendor/bin/pest
-./vendor/bin/pint
+composer regenerate
+composer test
 ```
