@@ -27,7 +27,7 @@ trait HasAttributes
                 $propertyName = $property->getName();
 
                 // Skip if property is not initialized
-                if (!$property->isInitialized($this)) {
+                if (! $property->isInitialized($this)) {
                     continue;
                 }
 

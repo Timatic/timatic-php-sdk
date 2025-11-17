@@ -8,20 +8,20 @@ use Timatic\SDK\Foundation\Model;
 
 class BudgetTimeSpentTotal extends Model
 {
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $start;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $start;
 
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $end;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $end;
 
-	#[Property]
-	public ?int $remainingMinutes;
+    #[Property]
+    public ?int $remainingMinutes;
 
-	#[Property]
-	public ?string $periodUnit;
+    #[Property]
+    public ?string $periodUnit;
 
-	#[Property]
-	public ?int $periodValue;
+    #[Property]
+    public ?int $periodValue;
 }

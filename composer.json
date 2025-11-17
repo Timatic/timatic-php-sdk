@@ -32,7 +32,12 @@
     "scripts": {
         "test": "pest",
         "format": "pint",
-        "analyse": "phpstan analyse --memory-limit=2G"
+        "analyse": "phpstan analyse --memory-limit=2G",
+        "regenerate": [
+            "php generator/generate.php",
+            "@composer dump-autoload",
+            "@format"
+        ]
     },
     "extra": {
         "laravel": {

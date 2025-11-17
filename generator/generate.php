@@ -165,9 +165,3 @@ if ($tests && is_array($tests)) {
         }
     }
 }
-
-echo "\n✅ SDK generation complete!\n";
-echo "\n💡 Next steps:\n";
-echo "   1. Run 'composer dump-autoload'\n";
-echo "   2. Review generated models in src/Dto/\n";
-echo "   3. Run tests with './vendor/bin/pest'\n";

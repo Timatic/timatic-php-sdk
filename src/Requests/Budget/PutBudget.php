@@ -2,7 +2,6 @@
 
 namespace Timatic\SDK\Requests\Budget;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Timatic\SDK\Foundation\Model;
@@ -12,29 +11,22 @@ use Timatic\SDK\Foundation\Model;
  */
 class PutBudget extends Request
 {
-	protected Method $method = Method::PUT;
+    protected Method $method = Method::PUT;
 
+    public function resolveEndpoint(): string
+    {
+        return "/budgets/{$this->budget}";
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/budgets/{$this->budget}";
-	}
+    public function __construct(
+        protected string $budget,
+        protected Model|array $data,
+    ) {}
 
-
-	/**
-	 * @param string $budget
-	 */
-	public function __construct(
-		protected string $budget,
-		protected Model|array $data,
-	) {
-	}
-
-
-	protected function defaultBody(): array
-	{
-		return $this->data instanceof Model
-		    ? $this->data->toJsonApi()
-		    : ['data' => $this->data];
-	}
+    protected function defaultBody(): array
+    {
+        return $this->data instanceof Model
+            ? $this->data->toJsonApi()
+            : ['data' => $this->data];
+    }
 }

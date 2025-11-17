@@ -8,8 +8,8 @@ use Timatic\SDK\Requests\ExportMail\GetBudgetsExportMails;
 
 class ExportMail extends BaseResource
 {
-	public function getBudgetsExportMails(): Response
-	{
-		return $this->connector->send(new GetBudgetsExportMails());
-	}
+    public function getBudgetsExportMails(): Response
+    {
+        return $this->connector->send(new GetBudgetsExportMails);
+    }
 }

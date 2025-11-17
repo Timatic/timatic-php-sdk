@@ -2,7 +2,6 @@
 
 namespace Timatic\SDK\Requests\User;
 
-use DateTime;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -14,31 +13,24 @@ use Timatic\SDK\Foundation\Model;
  */
 class PatchUser extends Request implements HasBody
 {
-	use HasJsonBody;
+    use HasJsonBody;
 
-	protected Method $method = Method::PATCH;
+    protected Method $method = Method::PATCH;
 
+    public function resolveEndpoint(): string
+    {
+        return "/users/{$this->user}";
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/users/{$this->user}";
-	}
+    public function __construct(
+        protected string $user,
+        protected Model|array $data,
+    ) {}
 
-
-	/**
-	 * @param string $user
-	 */
-	public function __construct(
-		protected string $user,
-		protected Model|array $data,
-	) {
-	}
-
-
-	protected function defaultBody(): array
-	{
-		return $this->data instanceof Model
-		    ? $this->data->toJsonApi()
-		    : ['data' => $this->data];
-	}
+    protected function defaultBody(): array
+    {
+        return $this->data instanceof Model
+            ? $this->data->toJsonApi()
+            : ['data' => $this->data];
+    }
 }

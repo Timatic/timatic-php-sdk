@@ -8,8 +8,8 @@ use Timatic\SDK\Requests\Me\GetMes;
 
 class Me extends BaseResource
 {
-	public function getMes(): Response
-	{
-		return $this->connector->send(new GetMes());
-	}
+    public function getMes(): Response
+    {
+        return $this->connector->send(new GetMes);
+    }
 }

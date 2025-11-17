@@ -8,13 +8,13 @@ use Timatic\SDK\Foundation\Model;
 
 class DailyProgress extends Model
 {
-	#[Property]
-	public ?string $userId;
+    #[Property]
+    public ?string $userId;
 
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $date;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $date;
 
-	#[Property]
-	public ?string $progress;
+    #[Property]
+    public ?string $progress;
 }

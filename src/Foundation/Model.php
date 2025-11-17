@@ -15,7 +15,7 @@ abstract class Model implements ModelInterface
     #[Property(isReadOnly: true)]
     public string $id;
 
-    protected null|string $type = null;
+    protected ?string $type = null;
 
     /**
      * @param  array<string, mixed>  $attributes

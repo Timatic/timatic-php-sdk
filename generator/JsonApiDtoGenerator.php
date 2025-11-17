@@ -12,7 +12,6 @@ use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Crescat\SaloonSdkGenerator\Helpers\Utils;
 use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpFile;
 use Timatic\SDK\Attributes\DateTime;
 use Timatic\SDK\Attributes\Property;
@@ -38,7 +37,7 @@ class JsonApiDtoGenerator extends Generator
         $modelName = NameHelper::dtoClassName($className ?: $this->config->fallbackResourceName);
 
         $classType = new ClassType($modelName);
-        $classFile = new PhpFile();
+        $classFile = new PhpFile;
         $namespace = $classFile
             ->addNamespace("{$this->config->namespace}\\{$this->config->dtoNamespaceSuffix}");
 
@@ -112,7 +111,7 @@ class JsonApiDtoGenerator extends Generator
             $namespace->addUse(DateTime::class);
 
             // Change type to Carbon if datetime
-            if (!str_contains($type, 'Carbon')) {
+            if (! str_contains($type, 'Carbon')) {
                 $property->setType('null|\\Carbon\\Carbon');
             }
         }

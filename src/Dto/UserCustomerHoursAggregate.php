@@ -7,18 +7,18 @@ use Timatic\SDK\Foundation\Model;
 
 class UserCustomerHoursAggregate extends Model
 {
-	#[Property]
-	public ?string $customerId;
+    #[Property]
+    public ?string $customerId;
 
-	#[Property]
-	public ?string $userId;
+    #[Property]
+    public ?string $userId;
 
-	#[Property]
-	public ?int $internalMinutes;
+    #[Property]
+    public ?int $internalMinutes;
 
-	#[Property]
-	public ?int $budgetMinutes;
+    #[Property]
+    public ?int $budgetMinutes;
 
-	#[Property]
-	public ?int $paidPerHourMinutes;
+    #[Property]
+    public ?int $paidPerHourMinutes;
 }

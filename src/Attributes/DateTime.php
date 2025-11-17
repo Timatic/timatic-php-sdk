@@ -11,6 +11,5 @@ class DateTime
 {
     public function __construct(
         public string $format = 'Y-m-d\TH:i:sP'
-    ) {
-    }
+    ) {}
 }

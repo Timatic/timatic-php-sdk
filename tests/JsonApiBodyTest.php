@@ -31,18 +31,18 @@ it('sends valid JSON:API body when creating a budget with Model', function () {
         $body = $request->body()->all();
 
         // Check for JSON:API 'data' wrapper
-        if (!isset($body['data'])) {
+        if (! isset($body['data'])) {
             return false;
         }
 
         $data = $body['data'];
 
         // Validate required JSON:API fields
-        if (!isset($data['type'])) {
+        if (! isset($data['type'])) {
             return false;
         }
 
-        if (!isset($data['attributes'])) {
+        if (! isset($data['attributes'])) {
             return false;
         }
 

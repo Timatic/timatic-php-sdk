@@ -8,11 +8,11 @@ use Timatic\SDK\Foundation\Model;
 
 class Correction extends Model
 {
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $createdAt;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $createdAt;
 
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $updatedAt;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $updatedAt;
 }

@@ -2,7 +2,6 @@
 
 namespace Timatic\SDK\Requests\Budget;
 
-use DateTime;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -14,27 +13,23 @@ use Timatic\SDK\Foundation\Model;
  */
 class PostBudgets extends Request implements HasBody
 {
-	use HasJsonBody;
+    use HasJsonBody;
 
-	protected Method $method = Method::POST;
+    protected Method $method = Method::POST;
 
+    public function resolveEndpoint(): string
+    {
+        return '/budgets';
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/budgets";
-	}
+    public function __construct(
+        protected Model|array $data,
+    ) {}
 
-
-	public function __construct(
-		protected Model|array $data,
-	) {
-	}
-
-
-	protected function defaultBody(): array
-	{
-		return $this->data instanceof Model
-		    ? $this->data->toJsonApi()
-		    : ['data' => $this->data];
-	}
+    protected function defaultBody(): array
+    {
+        return $this->data instanceof Model
+            ? $this->data->toJsonApi()
+            : ['data' => $this->data];
+    }
 }

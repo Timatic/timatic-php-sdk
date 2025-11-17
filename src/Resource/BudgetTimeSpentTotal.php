@@ -8,12 +8,8 @@ use Timatic\SDK\Requests\BudgetTimeSpentTotal\GetBudgetTimeSpentTotals;
 
 class BudgetTimeSpentTotal extends BaseResource
 {
-	/**
-	 * @param string $filterbudgetId
-	 * @param string $filterbudgetIdeq
-	 */
-	public function getBudgetTimeSpentTotals(?string $filterbudgetId = null, ?string $filterbudgetIdeq = null): Response
-	{
-		return $this->connector->send(new GetBudgetTimeSpentTotals($filterbudgetId, $filterbudgetIdeq));
-	}
+    public function getBudgetTimeSpentTotals(?string $filterbudgetId = null, ?string $filterbudgetIdeq = null): Response
+    {
+        return $this->connector->send(new GetBudgetTimeSpentTotals($filterbudgetId, $filterbudgetIdeq));
+    }
 }

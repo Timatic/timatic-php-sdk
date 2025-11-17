@@ -11,6 +11,5 @@ class Property
 {
     public function __construct(
         public bool $isReadOnly = false
-    ) {
-    }
+    ) {}
 }

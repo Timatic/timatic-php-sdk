@@ -2,30 +2,22 @@
 
 namespace Timatic\SDK\Requests\EntrySuggestion;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
 
 /**
  * deleteEntrySuggestion
  */
 class DeleteEntrySuggestion extends Request
 {
-	protected Method $method = Method::DELETE;
+    protected Method $method = Method::DELETE;
 
+    public function resolveEndpoint(): string
+    {
+        return "/entry-suggestions/{$this->entrySuggestion}";
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/entry-suggestions/{$this->entrySuggestion}";
-	}
-
-
-	/**
-	 * @param string $entrySuggestion
-	 */
-	public function __construct(
-		protected string $entrySuggestion,
-	) {
-	}
+    public function __construct(
+        protected string $entrySuggestion,
+    ) {}
 }

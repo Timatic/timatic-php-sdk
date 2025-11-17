@@ -2,30 +2,22 @@
 
 namespace Timatic\SDK\Requests\Entry;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
 
 /**
  * deleteEntry
  */
 class DeleteEntry extends Request
 {
-	protected Method $method = Method::DELETE;
+    protected Method $method = Method::DELETE;
 
+    public function resolveEndpoint(): string
+    {
+        return "/entries/{$this->entry}";
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/entries/{$this->entry}";
-	}
-
-
-	/**
-	 * @param string $entry
-	 */
-	public function __construct(
-		protected string $entry,
-	) {
-	}
+    public function __construct(
+        protected string $entry,
+    ) {}
 }

@@ -8,8 +8,8 @@ use Timatic\SDK\Requests\DailyProgress\GetDailyProgresses;
 
 class DailyProgress extends BaseResource
 {
-	public function getDailyProgresses(): Response
-	{
-		return $this->connector->send(new GetDailyProgresses());
-	}
+    public function getDailyProgresses(): Response
+    {
+        return $this->connector->send(new GetDailyProgresses);
+    }
 }

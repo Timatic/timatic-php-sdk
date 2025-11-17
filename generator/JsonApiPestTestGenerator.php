@@ -59,9 +59,9 @@ class JsonApiPestTestGenerator extends PestTestGenerator
         }
 
         // Add Saloon testing imports
-        $imports[] = "use Saloon\\Http\\Faking\\MockClient;";
-        $imports[] = "use Saloon\\Http\\Faking\\MockResponse;";
-        $imports[] = "use Saloon\\Http\\Request;";
+        $imports[] = 'use Saloon\\Http\\Faking\\MockClient;';
+        $imports[] = 'use Saloon\\Http\\Faking\\MockResponse;';
+        $imports[] = 'use Saloon\\Http\\Request;';
 
         $fileStub = str_replace('{{ requestImports }}', implode("\n", $imports), $fileStub);
 

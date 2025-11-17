@@ -2,7 +2,6 @@
 
 namespace Timatic\SDK\Requests\MarkAsExported;
 
-use DateTime;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
@@ -14,31 +13,24 @@ use Timatic\SDK\Foundation\Model;
  */
 class PostOvertimeMarkAsExported extends Request implements HasBody
 {
-	use HasJsonBody;
+    use HasJsonBody;
 
-	protected Method $method = Method::POST;
+    protected Method $method = Method::POST;
 
+    public function resolveEndpoint(): string
+    {
+        return "/overtimes/{$this->overtime}/mark-as-exported";
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/overtimes/{$this->overtime}/mark-as-exported";
-	}
+    public function __construct(
+        protected string $overtime,
+        protected Model|array $data,
+    ) {}
 
-
-	/**
-	 * @param string $overtime
-	 */
-	public function __construct(
-		protected string $overtime,
-		protected Model|array $data,
-	) {
-	}
-
-
-	protected function defaultBody(): array
-	{
-		return $this->data instanceof Model
-		    ? $this->data->toJsonApi()
-		    : ['data' => $this->data];
-	}
+    protected function defaultBody(): array
+    {
+        return $this->data instanceof Model
+            ? $this->data->toJsonApi()
+            : ['data' => $this->data];
+    }
 }

@@ -8,23 +8,14 @@ use Timatic\SDK\Requests\TimeSpentTotal\GetTimeSpentTotals;
 
 class TimeSpentTotal extends BaseResource
 {
-	/**
-	 * @param string $filterstartedAtgte
-	 * @param string $filterstartedAtlte
-	 * @param string $filterteamId
-	 * @param string $filterteamIdeq
-	 * @param string $filteruserId
-	 * @param string $filteruserIdeq
-	 */
-	public function getTimeSpentTotals(
-		?string $filterstartedAtgte = null,
-		?string $filterstartedAtlte = null,
-		?string $filterteamId = null,
-		?string $filterteamIdeq = null,
-		?string $filteruserId = null,
-		?string $filteruserIdeq = null,
-	): Response
-	{
-		return $this->connector->send(new GetTimeSpentTotals($filterstartedAtgte, $filterstartedAtlte, $filterteamId, $filterteamIdeq, $filteruserId, $filteruserIdeq));
-	}
+    public function getTimeSpentTotals(
+        ?string $filterstartedAtgte = null,
+        ?string $filterstartedAtlte = null,
+        ?string $filterteamId = null,
+        ?string $filterteamIdeq = null,
+        ?string $filteruserId = null,
+        ?string $filteruserIdeq = null,
+    ): Response {
+        return $this->connector->send(new GetTimeSpentTotals($filterstartedAtgte, $filterstartedAtlte, $filterteamId, $filterteamIdeq, $filteruserId, $filteruserIdeq));
+    }
 }

@@ -8,23 +8,23 @@ use Timatic\SDK\Foundation\Model;
 
 class Customer extends Model
 {
-	#[Property]
-	public ?string $externalId;
+    #[Property]
+    public ?string $externalId;
 
-	#[Property]
-	public ?string $name;
+    #[Property]
+    public ?string $name;
 
-	#[Property]
-	public ?string $hourlyRate;
+    #[Property]
+    public ?string $hourlyRate;
 
-	#[Property]
-	public ?string $accountManagerUserId;
+    #[Property]
+    public ?string $accountManagerUserId;
 
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $createdAt;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $createdAt;
 
-	#[Property]
-	#[DateTime]
-	public null|\Carbon\Carbon $updatedAt;
+    #[Property]
+    #[DateTime]
+    public ?\Carbon\Carbon $updatedAt;
 }

@@ -9,17 +9,13 @@ use Timatic\SDK\Requests\Incident\GetIncidents;
 
 class Incident extends BaseResource
 {
-	/**
-	 * @param string $incident
-	 */
-	public function getIncident(string $incident): Response
-	{
-		return $this->connector->send(new GetIncident($incident));
-	}
+    public function getIncident(string $incident): Response
+    {
+        return $this->connector->send(new GetIncident($incident));
+    }
 
-
-	public function getIncidents(): Response
-	{
-		return $this->connector->send(new GetIncidents());
-	}
+    public function getIncidents(): Response
+    {
+        return $this->connector->send(new GetIncidents);
+    }
 }

@@ -2,30 +2,22 @@
 
 namespace Timatic\SDK\Requests\Budget;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
 
 /**
  * getBudget
  */
 class GetBudget extends Request
 {
-	protected Method $method = Method::GET;
+    protected Method $method = Method::GET;
 
+    public function resolveEndpoint(): string
+    {
+        return "/budgets/{$this->budget}";
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/budgets/{$this->budget}";
-	}
-
-
-	/**
-	 * @param string $budget
-	 */
-	public function __construct(
-		protected string $budget,
-	) {
-	}
+    public function __construct(
+        protected string $budget,
+    ) {}
 }

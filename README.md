@@ -95,6 +95,72 @@ class SyncBudgetsCommand extends Command
 }
 ```
 
+### Pagination
+
+The SDK supports automatic pagination for all collection endpoints using Saloon's pagination plugin:
+
+```php
+use Timatic\SDK\TimaticConnector;
+use Timatic\SDK\Requests\Budget\GetBudgets;
+
+class BudgetController extends Controller
+{
+    public function index(TimaticConnector $timatic)
+    {
+        // Create a paginator
+        $paginator = $timatic->paginate(new GetBudgets());
+
+        // Optionally set items per page (default is API's default)
+        $paginator->setPerPageLimit(50);
+
+        // Iterate through all pages automatically
+        foreach ($paginator->items() as $budget) {
+            // Process each budget across all pages
+            // The paginator handles pagination automatically
+        }
+
+        // Or collect all items at once
+        $allBudgets = $paginator->collect();
+    }
+}
+```
+
+The paginator:
+- Automatically handles JSON:API pagination (`page[number]` and `page[size]`)
+- Detects the last page via `links.next`
+- Works with all GET collection requests (GetBudgets, GetCustomers, GetUsers, etc.)
+
+### Custom Response Methods
+
+All responses are instances of `TimaticResponse` which extends Saloon's Response with JSON:API convenience methods:
+
+```php
+$response = $timatic->budget()->getBudgets();
+
+// Get the first item from a collection
+$firstBudget = $response->firstItem();
+
+// Check for errors
+if ($response->hasErrors()) {
+    $errors = $response->errors();
+    // Handle errors...
+}
+
+// Access JSON:API meta information
+$meta = $response->meta();
+$total = $meta['total'] ?? 0;
+
+// Access pagination links
+$links = $response->links();
+$nextPage = $links['next'] ?? null;
+
+// Access included resources
+$included = $response->included();
+foreach ($included as $resource) {
+    // Process related resources
+}
+```
+
 ## Available Resources
 
 The SDK provides access to the following resources:
@@ -141,13 +207,14 @@ $budget->startedAt; // Carbon instance for datetime fields
 This SDK is automatically generated from the Timatic API OpenAPI specification using a custom JSON:API generator. To regenerate the SDK with the latest API changes:
 
 ```bash
-./regenerate-sdk.sh
+composer regenerate
 ```
 
 This will:
 1. Download the latest OpenAPI specification from the API
 2. Generate Models with flattened JSON:API attributes
 3. Update the autoloader
+4. Format the code with Laravel Pint
 
 ### How It Works
 
