@@ -161,6 +161,17 @@ foreach ($included as $resource) {
 }
 ```
 
+## HTTP Methods
+
+This SDK follows REST best practices and **does not support PUT requests**. Instead:
+
+- **POST** - Create new resources
+- **PATCH** - Partially update existing resources
+- **GET** - Retrieve resources
+- **DELETE** - Remove resources
+
+PUT is intentionally excluded because resources are never completely replaced by Timatic.
+
 ## Available Resources
 
 The SDK provides access to the following resources:

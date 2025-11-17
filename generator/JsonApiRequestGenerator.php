@@ -15,6 +15,11 @@ class JsonApiRequestGenerator extends RequestGenerator
 {
     protected function generateRequestClass(Endpoint $endpoint): PhpFile
     {
+        // Skip PUT requests - we only support POST (create) and PATCH (update)
+        if ($endpoint->method->isPut()) {
+            throw new \RuntimeException('PUT requests are not supported in Timatic. Use POST for create and PATCH for update.');
+        }
+
         // Use parent generation for most of the class
         $phpFile = parent::generateRequestClass($endpoint);
 
@@ -41,9 +46,9 @@ class JsonApiRequestGenerator extends RequestGenerator
 
     protected function isMutationRequest(Endpoint $endpoint): bool
     {
+        // Only POST and PATCH are supported mutation methods
         return $endpoint->method->isPost()
-            || $endpoint->method->isPatch()
-            || $endpoint->method->isPut();
+            || $endpoint->method->isPatch();
     }
 
     protected function isCollectionRequest(Endpoint $endpoint): bool

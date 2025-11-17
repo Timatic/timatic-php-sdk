@@ -262,6 +262,16 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 This SDK is automatically generated from the OpenAPI specification. **DO NOT manually edit auto-generated files**.
 
+### HTTP Methods Policy
+
+This SDK **does not support PUT requests**. Only the following HTTP methods are supported:
+- **POST** - Create new resources
+- **PATCH** - Partially update existing resources
+- **GET** - Retrieve resources
+- **DELETE** - Remove resources
+
+PUT is intentionally excluded as PATCH provides better semantics for partial updates in JSON:API applications. The generator will throw an exception if it encounters PUT endpoints.
+
 ### ❌ NEVER EDIT THESE DIRECTORIES:
 - **`src/Dto/`** - All Model/DTO classes (auto-generated with flattened JSON:API attributes)
 - **`src/Requests/`** - All Request classes (auto-generated from OpenAPI endpoints)

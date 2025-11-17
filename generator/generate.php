@@ -98,8 +98,8 @@ foreach ($result->resourceClasses as $resourceClass) {
     foreach ($classType->getMethods() as $method) {
         $methodName = $method->getName();
 
-        // Check if it's a mutation method (post/put/patch)
-        if (preg_match('/^(post|put|patch)/i', $methodName)) {
+        // Check if it's a mutation method (post/patch only, PUT is not supported)
+        if (preg_match('/^(post|patch)/i', $methodName)) {
             // Add data parameter
             $method->addParameter('data')
                 ->setType('\\Timatic\\SDK\\Foundation\\Model|array|null')
