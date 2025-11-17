@@ -13,13 +13,20 @@ use Timatic\SDK\Foundation\Model;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
+    public function generate($specification): array
+    {
+        // Filter out PUT endpoints before generating
+        $filteredSpec = clone $specification;
+        $filteredSpec->endpoints = array_filter(
+            $specification->endpoints,
+            fn ($endpoint) => ! $endpoint->method->isPut()
+        );
+
+        return parent::generate($filteredSpec);
+    }
+
     protected function generateRequestClass(Endpoint $endpoint): PhpFile
     {
-        // Skip PUT requests - we only support POST (create) and PATCH (update)
-        if ($endpoint->method->isPut()) {
-            throw new \RuntimeException('PUT requests are not supported in Timatic. Use POST for create and PATCH for update.');
-        }
-
         // Use parent generation for most of the class
         $phpFile = parent::generateRequestClass($endpoint);
 

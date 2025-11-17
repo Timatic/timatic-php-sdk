@@ -10,6 +10,18 @@ use Nette\PhpGenerator\Method;
 
 class JsonApiResourceGenerator extends ResourceGenerator
 {
+    public function generate($specification): array
+    {
+        // Filter out PUT endpoints before generating
+        $filteredSpec = clone $specification;
+        $filteredSpec->endpoints = array_filter(
+            $specification->endpoints,
+            fn ($endpoint) => ! $endpoint->method->isPut()
+        );
+
+        return parent::generate($filteredSpec);
+    }
+
     protected function generateResourceMethod(Endpoint $endpoint, Method $method): void
     {
         parent::generateResourceMethod($endpoint, $method);
@@ -53,8 +65,8 @@ class JsonApiResourceGenerator extends ResourceGenerator
 
     protected function isMutationRequest(Endpoint $endpoint): bool
     {
+        // Only POST and PATCH are supported (PUT is filtered out)
         return $endpoint->method->isPost()
-            || $endpoint->method->isPatch()
-            || $endpoint->method->isPut();
+            || $endpoint->method->isPatch();
     }
 }

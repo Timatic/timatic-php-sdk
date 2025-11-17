@@ -9,7 +9,6 @@ use Timatic\SDK\Requests\Team\GetTeam;
 use Timatic\SDK\Requests\Team\GetTeams;
 use Timatic\SDK\Requests\Team\PatchTeam;
 use Timatic\SDK\Requests\Team\PostTeams;
-use Timatic\SDK\Requests\Team\PutTeam;
 
 class Team extends BaseResource
 {
@@ -26,11 +25,6 @@ class Team extends BaseResource
     public function getTeam(string $team): Response
     {
         return $this->connector->send(new GetTeam($team));
-    }
-
-    public function putTeam(string $team, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
-    {
-        return $this->connector->send(new PutTeam($team, $data));
     }
 
     public function deleteTeam(string $team): Response

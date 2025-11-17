@@ -9,7 +9,6 @@ use Timatic\SDK\Requests\User\GetUser;
 use Timatic\SDK\Requests\User\GetUsers;
 use Timatic\SDK\Requests\User\PatchUser;
 use Timatic\SDK\Requests\User\PostUsers;
-use Timatic\SDK\Requests\User\PutUser;
 
 class User extends BaseResource
 {
@@ -26,11 +25,6 @@ class User extends BaseResource
     public function getUser(string $user): Response
     {
         return $this->connector->send(new GetUser($user));
-    }
-
-    public function putUser(string $user, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
-    {
-        return $this->connector->send(new PutUser($user, $data));
     }
 
     public function deleteUser(string $user): Response

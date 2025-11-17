@@ -9,7 +9,6 @@ use Timatic\SDK\Requests\Budget\GetBudget;
 use Timatic\SDK\Requests\Budget\GetBudgets;
 use Timatic\SDK\Requests\Budget\PatchBudget;
 use Timatic\SDK\Requests\Budget\PostBudgets;
-use Timatic\SDK\Requests\Budget\PutBudget;
 
 class Budget extends BaseResource
 {
@@ -46,11 +45,6 @@ class Budget extends BaseResource
     public function getBudget(string $budget): Response
     {
         return $this->connector->send(new GetBudget($budget));
-    }
-
-    public function putBudget(string $budget, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
-    {
-        return $this->connector->send(new PutBudget($budget, $data));
     }
 
     public function deleteBudget(string $budget): Response

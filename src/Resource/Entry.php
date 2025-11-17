@@ -9,7 +9,6 @@ use Timatic\SDK\Requests\Entry\GetEntries;
 use Timatic\SDK\Requests\Entry\GetEntry;
 use Timatic\SDK\Requests\Entry\PatchEntry;
 use Timatic\SDK\Requests\Entry\PostEntries;
-use Timatic\SDK\Requests\Entry\PutEntry;
 
 class Entry extends BaseResource
 {
@@ -94,11 +93,6 @@ class Entry extends BaseResource
     public function getEntry(string $entry): Response
     {
         return $this->connector->send(new GetEntry($entry));
-    }
-
-    public function putEntry(string $entry, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
-    {
-        return $this->connector->send(new PutEntry($entry, $data));
     }
 
     public function deleteEntry(string $entry): Response

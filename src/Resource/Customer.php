@@ -9,7 +9,6 @@ use Timatic\SDK\Requests\Customer\GetCustomer;
 use Timatic\SDK\Requests\Customer\GetCustomers;
 use Timatic\SDK\Requests\Customer\PatchCustomer;
 use Timatic\SDK\Requests\Customer\PostCustomers;
-use Timatic\SDK\Requests\Customer\PutCustomer;
 
 class Customer extends BaseResource
 {
@@ -26,11 +25,6 @@ class Customer extends BaseResource
     public function getCustomer(string $customer): Response
     {
         return $this->connector->send(new GetCustomer($customer));
-    }
-
-    public function putCustomer(string $customer, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
-    {
-        return $this->connector->send(new PutCustomer($customer, $data));
     }
 
     public function deleteCustomer(string $customer): Response
