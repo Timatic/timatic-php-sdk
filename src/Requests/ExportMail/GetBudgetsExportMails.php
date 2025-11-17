@@ -2,26 +2,21 @@
 
 namespace Timatic\SDK\Requests\ExportMail;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
 /**
  * getBudgetsExportMails
  */
-class GetBudgetsExportMails extends Request
+class GetBudgetsExportMails extends Request implements Paginatable
 {
-	protected Method $method = Method::GET;
+    protected Method $method = Method::GET;
 
+    public function resolveEndpoint(): string
+    {
+        return '/budgets/export-mail';
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/budgets/export-mail";
-	}
-
-
-	public function __construct()
-	{
-	}
+    public function __construct() {}
 }

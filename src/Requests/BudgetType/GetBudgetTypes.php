@@ -2,26 +2,21 @@
 
 namespace Timatic\SDK\Requests\BudgetType;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
 /**
  * getBudgetTypes
  */
-class GetBudgetTypes extends Request
+class GetBudgetTypes extends Request implements Paginatable
 {
-	protected Method $method = Method::GET;
+    protected Method $method = Method::GET;
 
+    public function resolveEndpoint(): string
+    {
+        return '/budget-types';
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/budget-types";
-	}
-
-
-	public function __construct()
-	{
-	}
+    public function __construct() {}
 }

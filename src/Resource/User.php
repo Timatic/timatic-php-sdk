@@ -13,54 +13,33 @@ use Timatic\SDK\Requests\User\PutUser;
 
 class User extends BaseResource
 {
-	/**
-	 * @param string $filterexternalId
-	 * @param string $filterexternalIdeq
-	 */
-	public function getUsers(?string $filterexternalId = null, ?string $filterexternalIdeq = null): Response
-	{
-		return $this->connector->send(new GetUsers($filterexternalId, $filterexternalIdeq));
-	}
+    public function getUsers(?string $filterexternalId = null, ?string $filterexternalIdeq = null): Response
+    {
+        return $this->connector->send(new GetUsers($filterexternalId, $filterexternalIdeq));
+    }
 
+    public function postUsers(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PostUsers($data));
+    }
 
-	public function postUsers(): Response
-	{
-		return $this->connector->send(new PostUsers());
-	}
+    public function getUser(string $user): Response
+    {
+        return $this->connector->send(new GetUser($user));
+    }
 
+    public function putUser(string $user, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PutUser($user, $data));
+    }
 
-	/**
-	 * @param string $user
-	 */
-	public function getUser(string $user): Response
-	{
-		return $this->connector->send(new GetUser($user));
-	}
+    public function deleteUser(string $user): Response
+    {
+        return $this->connector->send(new DeleteUser($user));
+    }
 
-
-	/**
-	 * @param string $user
-	 */
-	public function putUser(string $user): Response
-	{
-		return $this->connector->send(new PutUser($user));
-	}
-
-
-	/**
-	 * @param string $user
-	 */
-	public function deleteUser(string $user): Response
-	{
-		return $this->connector->send(new DeleteUser($user));
-	}
-
-
-	/**
-	 * @param string $user
-	 */
-	public function patchUser(string $user): Response
-	{
-		return $this->connector->send(new PatchUser($user));
-	}
+    public function patchUser(string $user, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PatchUser($user, $data));
+    }
 }

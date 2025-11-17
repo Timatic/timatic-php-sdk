@@ -2,26 +2,21 @@
 
 namespace Timatic\SDK\Requests\Incident;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
 /**
  * getIncidents
  */
-class GetIncidents extends Request
+class GetIncidents extends Request implements Paginatable
 {
-	protected Method $method = Method::GET;
+    protected Method $method = Method::GET;
 
+    public function resolveEndpoint(): string
+    {
+        return '/incidents';
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/incidents";
-	}
-
-
-	public function __construct()
-	{
-	}
+    public function __construct() {}
 }

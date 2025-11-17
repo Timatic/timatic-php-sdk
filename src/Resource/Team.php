@@ -13,50 +13,33 @@ use Timatic\SDK\Requests\Team\PutTeam;
 
 class Team extends BaseResource
 {
-	public function getTeams(): Response
-	{
-		return $this->connector->send(new GetTeams());
-	}
+    public function getTeams(): Response
+    {
+        return $this->connector->send(new GetTeams);
+    }
 
+    public function postTeams(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PostTeams($data));
+    }
 
-	public function postTeams(): Response
-	{
-		return $this->connector->send(new PostTeams());
-	}
+    public function getTeam(string $team): Response
+    {
+        return $this->connector->send(new GetTeam($team));
+    }
 
+    public function putTeam(string $team, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PutTeam($team, $data));
+    }
 
-	/**
-	 * @param string $team
-	 */
-	public function getTeam(string $team): Response
-	{
-		return $this->connector->send(new GetTeam($team));
-	}
+    public function deleteTeam(string $team): Response
+    {
+        return $this->connector->send(new DeleteTeam($team));
+    }
 
-
-	/**
-	 * @param string $team
-	 */
-	public function putTeam(string $team): Response
-	{
-		return $this->connector->send(new PutTeam($team));
-	}
-
-
-	/**
-	 * @param string $team
-	 */
-	public function deleteTeam(string $team): Response
-	{
-		return $this->connector->send(new DeleteTeam($team));
-	}
-
-
-	/**
-	 * @param string $team
-	 */
-	public function patchTeam(string $team): Response
-	{
-		return $this->connector->send(new PatchTeam($team));
-	}
+    public function patchTeam(string $team, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PatchTeam($team, $data));
+    }
 }

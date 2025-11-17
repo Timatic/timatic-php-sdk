@@ -8,11 +8,10 @@ use Timatic\SDK\Requests\Approve\PostOvertimeApprove;
 
 class Approve extends BaseResource
 {
-	/**
-	 * @param string $overtime
-	 */
-	public function postOvertimeApprove(string $overtime): Response
-	{
-		return $this->connector->send(new PostOvertimeApprove($overtime));
-	}
+    public function postOvertimeApprove(
+        string $overtime,
+        \Timatic\SDK\Foundation\Model|array|null $data = null,
+    ): Response {
+        return $this->connector->send(new PostOvertimeApprove($overtime, $data));
+    }
 }

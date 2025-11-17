@@ -10,26 +10,18 @@ use Timatic\SDK\Requests\Correction\PutCorrection;
 
 class Correction extends BaseResource
 {
-	public function postCorrections(): Response
-	{
-		return $this->connector->send(new PostCorrections());
-	}
+    public function postCorrections(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PostCorrections($data));
+    }
 
+    public function putCorrection(string $correction, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PutCorrection($correction, $data));
+    }
 
-	/**
-	 * @param string $correction
-	 */
-	public function putCorrection(string $correction): Response
-	{
-		return $this->connector->send(new PutCorrection($correction));
-	}
-
-
-	/**
-	 * @param string $correction
-	 */
-	public function patchCorrection(string $correction): Response
-	{
-		return $this->connector->send(new PatchCorrection($correction));
-	}
+    public function patchCorrection(string $correction, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PatchCorrection($correction, $data));
+    }
 }

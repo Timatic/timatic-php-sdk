@@ -2,38 +2,29 @@
 
 namespace Timatic\SDK\Requests\User;
 
-use DateTime;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Timatic\SDK\Foundation\Model;
+use Saloon\PaginationPlugin\Contracts\Paginatable;
 
 /**
  * getUsers
  */
-class GetUsers extends Request
+class GetUsers extends Request implements Paginatable
 {
-	protected Method $method = Method::GET;
+    protected Method $method = Method::GET;
 
+    public function resolveEndpoint(): string
+    {
+        return '/users';
+    }
 
-	public function resolveEndpoint(): string
-	{
-		return "/users";
-	}
+    public function __construct(
+        protected ?string $filterexternalId = null,
+        protected ?string $filterexternalIdeq = null,
+    ) {}
 
-
-	/**
-	 * @param null|string $filterexternalId
-	 * @param null|string $filterexternalIdeq
-	 */
-	public function __construct(
-		protected ?string $filterexternalId = null,
-		protected ?string $filterexternalIdeq = null,
-	) {
-	}
-
-
-	public function defaultQuery(): array
-	{
-		return array_filter(['filter[externalId]' => $this->filterexternalId, 'filter[externalId][eq]' => $this->filterexternalIdeq]);
-	}
+    public function defaultQuery(): array
+    {
+        return array_filter(['filter[externalId]' => $this->filterexternalId, 'filter[externalId][eq]' => $this->filterexternalIdeq]);
+    }
 }

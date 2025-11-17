@@ -13,54 +13,33 @@ use Timatic\SDK\Requests\Customer\PutCustomer;
 
 class Customer extends BaseResource
 {
-	/**
-	 * @param string $filterexternalId
-	 * @param string $filterexternalIdeq
-	 */
-	public function getCustomers(?string $filterexternalId = null, ?string $filterexternalIdeq = null): Response
-	{
-		return $this->connector->send(new GetCustomers($filterexternalId, $filterexternalIdeq));
-	}
+    public function getCustomers(?string $filterexternalId = null, ?string $filterexternalIdeq = null): Response
+    {
+        return $this->connector->send(new GetCustomers($filterexternalId, $filterexternalIdeq));
+    }
 
+    public function postCustomers(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PostCustomers($data));
+    }
 
-	public function postCustomers(): Response
-	{
-		return $this->connector->send(new PostCustomers());
-	}
+    public function getCustomer(string $customer): Response
+    {
+        return $this->connector->send(new GetCustomer($customer));
+    }
 
+    public function putCustomer(string $customer, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PutCustomer($customer, $data));
+    }
 
-	/**
-	 * @param string $customer
-	 */
-	public function getCustomer(string $customer): Response
-	{
-		return $this->connector->send(new GetCustomer($customer));
-	}
+    public function deleteCustomer(string $customer): Response
+    {
+        return $this->connector->send(new DeleteCustomer($customer));
+    }
 
-
-	/**
-	 * @param string $customer
-	 */
-	public function putCustomer(string $customer): Response
-	{
-		return $this->connector->send(new PutCustomer($customer));
-	}
-
-
-	/**
-	 * @param string $customer
-	 */
-	public function deleteCustomer(string $customer): Response
-	{
-		return $this->connector->send(new DeleteCustomer($customer));
-	}
-
-
-	/**
-	 * @param string $customer
-	 */
-	public function patchCustomer(string $customer): Response
-	{
-		return $this->connector->send(new PatchCustomer($customer));
-	}
+    public function patchCustomer(string $customer, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PatchCustomer($customer, $data));
+    }
 }

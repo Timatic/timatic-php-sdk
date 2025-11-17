@@ -8,8 +8,8 @@ use Timatic\SDK\Requests\Event\PostEvents;
 
 class Event extends BaseResource
 {
-	public function postEvents(): Response
-	{
-		return $this->connector->send(new PostEvents());
-	}
+    public function postEvents(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    {
+        return $this->connector->send(new PostEvents($data));
+    }
 }
