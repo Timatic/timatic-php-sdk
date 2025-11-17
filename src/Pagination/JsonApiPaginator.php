@@ -17,7 +17,8 @@ class JsonApiPaginator extends Paginator
 
     protected function getPageItems(Response $response, Request $request): array
     {
-        return $response->dto()->toArray();
+        // Return the 'data' array from JSON:API response
+        return $response->json('data', []);
     }
 
     protected function applyPagination(Request $request): Request

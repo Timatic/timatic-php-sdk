@@ -102,7 +102,7 @@ it('stops pagination when links.next is null', function () {
     expect($allBudgets)->toHaveCount(1);
 
     // Should only have made 1 request
-    expect($mockClient->getRecordedRequests())->toHaveCount(1);
+    $mockClient->assertSentCount(1);
 });
 
 it('request implements Paginatable interface', function () {
