@@ -1,5 +1,9 @@
 # Timatic PHP SDK
 
+[![Tests](https://github.com/Timatic/timatic-php-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/Timatic/timatic-php-sdk/actions/workflows/tests.yml)
+[![Code Style](https://github.com/Timatic/timatic-php-sdk/actions/workflows/code-style.yml/badge.svg)](https://github.com/Timatic/timatic-php-sdk/actions/workflows/code-style.yml)
+[![Static Analysis](https://github.com/Timatic/timatic-php-sdk/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/Timatic/timatic-php-sdk/actions/workflows/static-analysis.yml)
+
 A Laravel package for the Timatic API, built with [Saloon](https://docs.saloon.dev/) and automatically generated from OpenAPI specifications.
 
 ## Requirements
