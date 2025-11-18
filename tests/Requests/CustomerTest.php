@@ -1,6 +1,6 @@
 <?php
 
-// Generated 2025-11-17 21:22:04
+// Generated 2025-11-18 09:03:31
 
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;

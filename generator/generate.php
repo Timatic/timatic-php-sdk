@@ -37,6 +37,7 @@ $foldersToClean = [
     __DIR__.'/../src/Requests',
     __DIR__.'/../src/Resource',
     __DIR__.'/../src/Dto',
+    __DIR__.'/../tests/Requests',
 ];
 
 foreach ($foldersToClean as $folder) {
@@ -55,16 +56,6 @@ foreach ($foldersToClean as $folder) {
         rmdir($folder);
         echo '  ✓ Removed '.basename($folder)."\n";
     }
-}
-
-// Clean up generated test files (but keep Pest.php and TestCase.php)
-$testsFolder = __DIR__.'/../tests';
-if (is_dir($testsFolder)) {
-    $testFiles = glob($testsFolder.'/*Test.php');
-    foreach ($testFiles as $testFile) {
-        unlink($testFile);
-    }
-    echo '  ✓ Removed generated test files'."\n";
 }
 
 echo "✅ Cleanup completed\n\n";
