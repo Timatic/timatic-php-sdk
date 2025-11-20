@@ -1,6 +1,5 @@
 <?php
 
-{{ prelude }}
 {{ dtoImports }}
 {{ requestImports }}
 use Saloon\Http\Faking\MockResponse;
