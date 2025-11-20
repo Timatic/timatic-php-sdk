@@ -27,8 +27,14 @@
         "laravel/pint": "^1.0",
         "larastan/larastan": "^3.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "crescat-io/saloon-sdk-generator": "^1.4"
+        "crescat-io/saloon-sdk-generator": "dev-master"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../saloon-sdk-generator"
+        }
+    ],
     "scripts": {
         "test": "pest",
         "format": "pint",
