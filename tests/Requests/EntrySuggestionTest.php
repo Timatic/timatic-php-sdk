@@ -13,7 +13,24 @@ beforeEach(function () {
 
 it('calls the getEntrySuggestions method in the EntrySuggestion resource', function () {
     Saloon::fake([
-        GetEntrySuggestionsRequest::class => MockResponse::fixture('entrySuggestion.getEntrySuggestions'),
+        GetEntrySuggestionsRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetEntrySuggestionsRequest)
@@ -37,7 +54,15 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
 
 it('calls the getEntrySuggestion method in the EntrySuggestion resource', function () {
     Saloon::fake([
-        GetEntrySuggestionRequest::class => MockResponse::fixture('entrySuggestion.getEntrySuggestion'),
+        GetEntrySuggestionRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'data' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->entrySuggestion()->getEntrySuggestion(
@@ -51,7 +76,7 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
 
 it('calls the deleteEntrySuggestion method in the EntrySuggestion resource', function () {
     Saloon::fake([
-        DeleteEntrySuggestionRequest::class => MockResponse::fixture('entrySuggestion.deleteEntrySuggestion'),
+        DeleteEntrySuggestionRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->entrySuggestion()->deleteEntrySuggestion(

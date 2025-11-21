@@ -10,7 +10,7 @@ beforeEach(function () {
 
 it('calls the postOvertimeMarkAsExported method in the MarkAsExported resource', function () {
     Saloon::fake([
-        PostOvertimeMarkAsExportedRequest::class => MockResponse::fixture('markAsExported.postOvertimeMarkAsExported'),
+        PostOvertimeMarkAsExportedRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->markAsExported()->postOvertimeMarkAsExported(

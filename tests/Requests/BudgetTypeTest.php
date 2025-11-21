@@ -10,7 +10,24 @@ beforeEach(function () {
 
 it('calls the getBudgetTypes method in the BudgetType resource', function () {
     Saloon::fake([
-        GetBudgetTypesRequest::class => MockResponse::fixture('budgetType.getBudgetTypes'),
+        GetBudgetTypesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetBudgetTypesRequest);

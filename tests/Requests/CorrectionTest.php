@@ -11,7 +11,7 @@ beforeEach(function () {
 
 it('calls the postCorrections method in the Correction resource', function () {
     Saloon::fake([
-        PostCorrectionsRequest::class => MockResponse::fixture('correction.postCorrections'),
+        PostCorrectionsRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->correction()->postCorrections(
@@ -25,7 +25,7 @@ it('calls the postCorrections method in the Correction resource', function () {
 
 it('calls the patchCorrection method in the Correction resource', function () {
     Saloon::fake([
-        PatchCorrectionRequest::class => MockResponse::fixture('correction.patchCorrection'),
+        PatchCorrectionRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->correction()->patchCorrection(

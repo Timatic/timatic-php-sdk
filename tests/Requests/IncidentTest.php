@@ -11,7 +11,15 @@ beforeEach(function () {
 
 it('calls the getIncident method in the Incident resource', function () {
     Saloon::fake([
-        GetIncidentRequest::class => MockResponse::fixture('incident.getIncident'),
+        GetIncidentRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'name' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->incident()->getIncident(
@@ -25,7 +33,24 @@ it('calls the getIncident method in the Incident resource', function () {
 
 it('calls the getIncidents method in the Incident resource', function () {
     Saloon::fake([
-        GetIncidentsRequest::class => MockResponse::fixture('incident.getIncidents'),
+        GetIncidentsRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetIncidentsRequest);

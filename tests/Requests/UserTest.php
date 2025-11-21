@@ -15,7 +15,24 @@ beforeEach(function () {
 
 it('calls the getUsers method in the User resource', function () {
     Saloon::fake([
-        GetUsersRequest::class => MockResponse::fixture('user.getUsers'),
+        GetUsersRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetUsersRequest)
@@ -39,7 +56,7 @@ it('calls the getUsers method in the User resource', function () {
 
 it('calls the postUsers method in the User resource', function () {
     Saloon::fake([
-        PostUsersRequest::class => MockResponse::fixture('user.postUsers'),
+        PostUsersRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->user()->postUsers(
@@ -53,7 +70,15 @@ it('calls the postUsers method in the User resource', function () {
 
 it('calls the getUser method in the User resource', function () {
     Saloon::fake([
-        GetUserRequest::class => MockResponse::fixture('user.getUser'),
+        GetUserRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'name' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->user()->getUser(
@@ -67,7 +92,7 @@ it('calls the getUser method in the User resource', function () {
 
 it('calls the deleteUser method in the User resource', function () {
     Saloon::fake([
-        DeleteUserRequest::class => MockResponse::fixture('user.deleteUser'),
+        DeleteUserRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->user()->deleteUser(
@@ -81,7 +106,7 @@ it('calls the deleteUser method in the User resource', function () {
 
 it('calls the patchUser method in the User resource', function () {
     Saloon::fake([
-        PatchUserRequest::class => MockResponse::fixture('user.patchUser'),
+        PatchUserRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->user()->patchUser(

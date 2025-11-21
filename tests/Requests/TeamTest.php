@@ -14,7 +14,24 @@ beforeEach(function () {
 
 it('calls the getTeams method in the Team resource', function () {
     Saloon::fake([
-        GetTeamsRequest::class => MockResponse::fixture('team.getTeams'),
+        GetTeamsRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetTeamsRequest);
@@ -28,7 +45,7 @@ it('calls the getTeams method in the Team resource', function () {
 
 it('calls the postTeams method in the Team resource', function () {
     Saloon::fake([
-        PostTeamsRequest::class => MockResponse::fixture('team.postTeams'),
+        PostTeamsRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->team()->postTeams(
@@ -42,7 +59,15 @@ it('calls the postTeams method in the Team resource', function () {
 
 it('calls the getTeam method in the Team resource', function () {
     Saloon::fake([
-        GetTeamRequest::class => MockResponse::fixture('team.getTeam'),
+        GetTeamRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'data' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->team()->getTeam(
@@ -56,7 +81,7 @@ it('calls the getTeam method in the Team resource', function () {
 
 it('calls the deleteTeam method in the Team resource', function () {
     Saloon::fake([
-        DeleteTeamRequest::class => MockResponse::fixture('team.deleteTeam'),
+        DeleteTeamRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->team()->deleteTeam(
@@ -70,7 +95,7 @@ it('calls the deleteTeam method in the Team resource', function () {
 
 it('calls the patchTeam method in the Team resource', function () {
     Saloon::fake([
-        PatchTeamRequest::class => MockResponse::fixture('team.patchTeam'),
+        PatchTeamRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->team()->patchTeam(

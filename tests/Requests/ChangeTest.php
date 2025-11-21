@@ -11,7 +11,15 @@ beforeEach(function () {
 
 it('calls the getChange method in the Change resource', function () {
     Saloon::fake([
-        GetChangeRequest::class => MockResponse::fixture('change.getChange'),
+        GetChangeRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'name' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->change()->getChange(
@@ -25,7 +33,24 @@ it('calls the getChange method in the Change resource', function () {
 
 it('calls the getChanges method in the Change resource', function () {
     Saloon::fake([
-        GetChangesRequest::class => MockResponse::fixture('change.getChanges'),
+        GetChangesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetChangesRequest);

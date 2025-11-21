@@ -47,6 +47,8 @@ Focus steeds op een enkele hoofdtaak. Als deze klaar is geef dan de gelegenheid 
 - Regenerate with `composer regenerate` and test with `composer test`
 
 
+## TASK: replace "type: resource" with actual resource in mocked GET data
+
 ## TASK 5: Add params for filters in Resources
 
 **Note:** Each task is independent and can be completed, tested, and committed separately.

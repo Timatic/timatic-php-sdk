@@ -10,7 +10,7 @@ beforeEach(function () {
 
 it('calls the postOvertimeApprove method in the Approve resource', function () {
     Saloon::fake([
-        PostOvertimeApproveRequest::class => MockResponse::fixture('approve.postOvertimeApprove'),
+        PostOvertimeApproveRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->approve()->postOvertimeApprove(

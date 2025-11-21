@@ -10,7 +10,15 @@ beforeEach(function () {
 
 it('calls the getBudgetPeriods method in the Period resource', function () {
     Saloon::fake([
-        GetBudgetPeriodsRequest::class => MockResponse::fixture('period.getBudgetPeriods'),
+        GetBudgetPeriodsRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'name' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->period()->getBudgetPeriods(

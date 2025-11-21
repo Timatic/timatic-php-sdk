@@ -15,7 +15,24 @@ beforeEach(function () {
 
 it('calls the getCustomers method in the Customer resource', function () {
     Saloon::fake([
-        GetCustomersRequest::class => MockResponse::fixture('customer.getCustomers'),
+        GetCustomersRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetCustomersRequest)
@@ -39,7 +56,7 @@ it('calls the getCustomers method in the Customer resource', function () {
 
 it('calls the postCustomers method in the Customer resource', function () {
     Saloon::fake([
-        PostCustomersRequest::class => MockResponse::fixture('customer.postCustomers'),
+        PostCustomersRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->customer()->postCustomers(
@@ -53,7 +70,15 @@ it('calls the postCustomers method in the Customer resource', function () {
 
 it('calls the getCustomer method in the Customer resource', function () {
     Saloon::fake([
-        GetCustomerRequest::class => MockResponse::fixture('customer.getCustomer'),
+        GetCustomerRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'data' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->customer()->getCustomer(
@@ -67,7 +92,7 @@ it('calls the getCustomer method in the Customer resource', function () {
 
 it('calls the deleteCustomer method in the Customer resource', function () {
     Saloon::fake([
-        DeleteCustomerRequest::class => MockResponse::fixture('customer.deleteCustomer'),
+        DeleteCustomerRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->customer()->deleteCustomer(
@@ -81,7 +106,7 @@ it('calls the deleteCustomer method in the Customer resource', function () {
 
 it('calls the patchCustomer method in the Customer resource', function () {
     Saloon::fake([
-        PatchCustomerRequest::class => MockResponse::fixture('customer.patchCustomer'),
+        PatchCustomerRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->customer()->patchCustomer(

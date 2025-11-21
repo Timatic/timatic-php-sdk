@@ -15,7 +15,24 @@ beforeEach(function () {
 
 it('calls the getEntries method in the Entry resource', function () {
     Saloon::fake([
-        GetEntriesRequest::class => MockResponse::fixture('entry.getEntries'),
+        GetEntriesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetEntriesRequest(include: 'test string'))
@@ -43,7 +60,7 @@ it('calls the getEntries method in the Entry resource', function () {
 
 it('calls the postEntries method in the Entry resource', function () {
     Saloon::fake([
-        PostEntriesRequest::class => MockResponse::fixture('entry.postEntries'),
+        PostEntriesRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->entry()->postEntries(
@@ -57,7 +74,15 @@ it('calls the postEntries method in the Entry resource', function () {
 
 it('calls the getEntry method in the Entry resource', function () {
     Saloon::fake([
-        GetEntryRequest::class => MockResponse::fixture('entry.getEntry'),
+        GetEntryRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'data' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->entry()->getEntry(
@@ -71,7 +96,7 @@ it('calls the getEntry method in the Entry resource', function () {
 
 it('calls the deleteEntry method in the Entry resource', function () {
     Saloon::fake([
-        DeleteEntryRequest::class => MockResponse::fixture('entry.deleteEntry'),
+        DeleteEntryRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->entry()->deleteEntry(
@@ -85,7 +110,7 @@ it('calls the deleteEntry method in the Entry resource', function () {
 
 it('calls the patchEntry method in the Entry resource', function () {
     Saloon::fake([
-        PatchEntryRequest::class => MockResponse::fixture('entry.patchEntry'),
+        PatchEntryRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->entry()->patchEntry(

@@ -10,7 +10,24 @@ beforeEach(function () {
 
 it('calls the getDailyProgresses method in the DailyProgress resource', function () {
     Saloon::fake([
-        GetDailyProgressesRequest::class => MockResponse::fixture('dailyProgress.getDailyProgresses'),
+        GetDailyProgressesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetDailyProgressesRequest);

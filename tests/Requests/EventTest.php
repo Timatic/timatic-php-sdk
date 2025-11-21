@@ -10,7 +10,7 @@ beforeEach(function () {
 
 it('calls the postEvents method in the Event resource', function () {
     Saloon::fake([
-        PostEventsRequest::class => MockResponse::fixture('event.postEvents'),
+        PostEventsRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->event()->postEvents(

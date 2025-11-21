@@ -15,7 +15,24 @@ beforeEach(function () {
 
 it('calls the getBudgets method in the Budget resource', function () {
     Saloon::fake([
-        GetBudgetsRequest::class => MockResponse::fixture('budget.getBudgets'),
+        GetBudgetsRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetBudgetsRequest(include: 'test string'))
@@ -43,7 +60,7 @@ it('calls the getBudgets method in the Budget resource', function () {
 
 it('calls the postBudgets method in the Budget resource', function () {
     Saloon::fake([
-        PostBudgetsRequest::class => MockResponse::fixture('budget.postBudgets'),
+        PostBudgetsRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->budget()->postBudgets(
@@ -57,7 +74,15 @@ it('calls the postBudgets method in the Budget resource', function () {
 
 it('calls the getBudget method in the Budget resource', function () {
     Saloon::fake([
-        GetBudgetRequest::class => MockResponse::fixture('budget.getBudget'),
+        GetBudgetRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'data' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->budget()->getBudget(
@@ -71,7 +96,7 @@ it('calls the getBudget method in the Budget resource', function () {
 
 it('calls the deleteBudget method in the Budget resource', function () {
     Saloon::fake([
-        DeleteBudgetRequest::class => MockResponse::fixture('budget.deleteBudget'),
+        DeleteBudgetRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->budget()->deleteBudget(
@@ -85,7 +110,7 @@ it('calls the deleteBudget method in the Budget resource', function () {
 
 it('calls the patchBudget method in the Budget resource', function () {
     Saloon::fake([
-        PatchBudgetRequest::class => MockResponse::fixture('budget.patchBudget'),
+        PatchBudgetRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->budget()->patchBudget(

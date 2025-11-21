@@ -10,7 +10,15 @@ beforeEach(function () {
 
 it('calls the getIncidentsNumber method in the Number resource', function () {
     Saloon::fake([
-        GetIncidentsNumberRequest::class => MockResponse::fixture('number.getIncidentsNumber'),
+        GetIncidentsNumberRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'name' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->number()->getIncidentsNumber(

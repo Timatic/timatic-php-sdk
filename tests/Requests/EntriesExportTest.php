@@ -10,7 +10,15 @@ beforeEach(function () {
 
 it('calls the getBudgetEntriesExport method in the EntriesExport resource', function () {
     Saloon::fake([
-        GetBudgetEntriesExportRequest::class => MockResponse::fixture('entriesExport.getBudgetEntriesExport'),
+        GetBudgetEntriesExportRequest::class => MockResponse::make([
+            'data' => [
+                'type' => 'resources',
+                'id' => 'mock-id-123',
+                'attributes' => [
+                    'name' => 'Mock value',
+                ],
+            ],
+        ], 200),
     ]);
 
     $response = $this->timaticConnector->entriesExport()->getBudgetEntriesExport(

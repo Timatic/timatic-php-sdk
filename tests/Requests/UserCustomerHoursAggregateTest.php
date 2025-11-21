@@ -11,7 +11,24 @@ beforeEach(function () {
 
 it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggregate resource', function () {
     Saloon::fake([
-        GetUserCustomerHoursAggregatesRequest::class => MockResponse::fixture('userCustomerHoursAggregate.getUserCustomerHoursAggregates'),
+        GetUserCustomerHoursAggregatesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetUserCustomerHoursAggregatesRequest)

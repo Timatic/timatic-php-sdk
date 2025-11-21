@@ -11,7 +11,24 @@ beforeEach(function () {
 
 it('calls the getOvertimes method in the Overtime resource', function () {
     Saloon::fake([
-        GetOvertimesRequest::class => MockResponse::fixture('overtime.getOvertimes'),
+        GetOvertimesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetOvertimesRequest)

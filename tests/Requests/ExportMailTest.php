@@ -10,7 +10,24 @@ beforeEach(function () {
 
 it('calls the getBudgetsExportMails method in the ExportMail resource', function () {
     Saloon::fake([
-        GetBudgetsExportMailsRequest::class => MockResponse::fixture('exportMail.getBudgetsExportMails'),
+        GetBudgetsExportMailsRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetBudgetsExportMailsRequest);

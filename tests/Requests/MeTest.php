@@ -10,7 +10,24 @@ beforeEach(function () {
 
 it('calls the getMes method in the Me resource', function () {
     Saloon::fake([
-        GetMesRequest::class => MockResponse::fixture('me.getMes'),
+        GetMesRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'name' => 'Mock value',
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetMesRequest);

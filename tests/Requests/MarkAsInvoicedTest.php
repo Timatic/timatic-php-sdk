@@ -10,7 +10,7 @@ beforeEach(function () {
 
 it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', function () {
     Saloon::fake([
-        PostEntryMarkAsInvoicedRequest::class => MockResponse::fixture('markAsInvoiced.postEntryMarkAsInvoiced'),
+        PostEntryMarkAsInvoicedRequest::class => MockResponse::make([], 200),
     ]);
 
     $response = $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(

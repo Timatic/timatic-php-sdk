@@ -11,7 +11,24 @@ beforeEach(function () {
 
 it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', function () {
     Saloon::fake([
-        GetTimeSpentTotalsRequest::class => MockResponse::fixture('timeSpentTotal.getTimeSpentTotals'),
+        GetTimeSpentTotalsRequest::class => MockResponse::make([
+            'data' => [
+                0 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-1',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+                1 => [
+                    'type' => 'resources',
+                    'id' => 'mock-id-2',
+                    'attributes' => [
+                        'data' => [],
+                    ],
+                ],
+            ],
+        ], 200),
     ]);
 
     $request = (new GetTimeSpentTotalsRequest)
