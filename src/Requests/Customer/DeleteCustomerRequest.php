@@ -14,10 +14,10 @@ class DeleteCustomerRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/customers/{$this->customer}";
+        return "/customers/{$this->customerId}";
     }
 
     public function __construct(
-        protected string $customer,
+        protected string $customerId,
     ) {}
 }

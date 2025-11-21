@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Timatic\SDK\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\PestTestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 
@@ -80,5 +81,20 @@ class JsonApiPestTestGenerator extends PestTestGenerator
     protected function getTestPath(string $resourceName): string
     {
         return "tests/Requests/{$resourceName}Test.php";
+    }
+
+    /**
+     * Hook: Transform path parameter names (e.g., budget -> budgetId)
+     */
+    protected function getTestParameterName(Parameter $parameter, Endpoint $endpoint): string
+    {
+        $name = parent::getTestParameterName($parameter, $endpoint);
+
+        // Check if this is a path parameter
+        if (in_array($parameter, $endpoint->pathParameters, true)) {
+            return $name.'Id';
+        }
+
+        return $name;
     }
 }

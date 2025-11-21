@@ -113,7 +113,7 @@ it('calls the getEntry method in the Entry resource', function () {
     ]);
 
     $response = $this->timaticConnector->entry()->getEntry(
-        entry: 'test string'
+        entryId: 'test string'
     );
 
     Saloon::assertSent(GetEntryRequest::class);
@@ -127,7 +127,7 @@ it('calls the deleteEntry method in the Entry resource', function () {
     ]);
 
     $response = $this->timaticConnector->entry()->deleteEntry(
-        entry: 'test string'
+        entryId: 'test string'
     );
 
     Saloon::assertSent(DeleteEntryRequest::class);
@@ -141,7 +141,7 @@ it('calls the patchEntry method in the Entry resource', function () {
     ]);
 
     $response = $this->timaticConnector->entry()->patchEntry(
-        entry: 'test string'
+        entryId: 'test string'
     );
 
     Saloon::assertSent(PatchEntryRequest::class);

@@ -14,7 +14,7 @@ it('calls the getBudgetEntriesExport method in the EntriesExport resource', func
     ]);
 
     $response = $this->timaticConnector->entriesExport()->getBudgetEntriesExport(
-        budget: 'test string',
+        budgetId: 'test string',
         filteruserId: 'test string',
         filteruserIdeq: 'test string',
         filteruserIdnq: 'test string',

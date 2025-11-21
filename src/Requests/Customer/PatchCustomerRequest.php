@@ -19,12 +19,15 @@ class PatchCustomerRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/customers/{$this->customer}";
+        return "/customers/{$this->customerId}";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $customer,
-        protected Model|array|null $data,
+        protected string $customerId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

@@ -14,10 +14,10 @@ class GetIncidentRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/incidents/{$this->incident}";
+        return "/incidents/{$this->incidentId}";
     }
 
     public function __construct(
-        protected string $incident,
+        protected string $incidentId,
     ) {}
 }

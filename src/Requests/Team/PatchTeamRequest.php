@@ -19,12 +19,15 @@ class PatchTeamRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/teams/{$this->team}";
+        return "/teams/{$this->teamId}";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $team,
-        protected Model|array|null $data,
+        protected string $teamId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

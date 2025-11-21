@@ -19,12 +19,15 @@ class PostEntryMarkAsInvoicedRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/entries/{$this->entry}/mark-as-invoiced";
+        return "/entries/{$this->entryId}/mark-as-invoiced";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $entry,
-        protected Model|array|null $data,
+        protected string $entryId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

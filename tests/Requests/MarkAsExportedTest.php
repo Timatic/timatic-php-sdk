@@ -14,7 +14,7 @@ it('calls the postOvertimeMarkAsExported method in the MarkAsExported resource',
     ]);
 
     $response = $this->timaticConnector->markAsExported()->postOvertimeMarkAsExported(
-        overtime: 'test string'
+        overtimeId: 'test string'
     );
 
     Saloon::assertSent(PostOvertimeMarkAsExportedRequest::class);

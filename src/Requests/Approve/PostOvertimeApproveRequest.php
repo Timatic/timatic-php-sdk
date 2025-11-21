@@ -19,12 +19,15 @@ class PostOvertimeApproveRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/overtimes/{$this->overtime}/approve";
+        return "/overtimes/{$this->overtimeId}/approve";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $overtime,
-        protected Model|array|null $data,
+        protected string $overtimeId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

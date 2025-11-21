@@ -14,10 +14,10 @@ class GetEntrySuggestionRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/entry-suggestions/{$this->entrySuggestion}";
+        return "/entry-suggestions/{$this->entrySuggestionId}";
     }
 
     public function __construct(
-        protected string $entrySuggestion,
+        protected string $entrySuggestionId,
     ) {}
 }

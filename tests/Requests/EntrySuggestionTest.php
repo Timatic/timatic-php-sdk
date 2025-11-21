@@ -37,7 +37,7 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
     ]);
 
     $response = $this->timaticConnector->entrySuggestion()->getEntrySuggestion(
-        entrySuggestion: 'test string'
+        entrySuggestionId: 'test string'
     );
 
     Saloon::assertSent(GetEntrySuggestionRequest::class);
@@ -51,7 +51,7 @@ it('calls the deleteEntrySuggestion method in the EntrySuggestion resource', fun
     ]);
 
     $response = $this->timaticConnector->entrySuggestion()->deleteEntrySuggestion(
-        entrySuggestion: 'test string'
+        entrySuggestionId: 'test string'
     );
 
     Saloon::assertSent(DeleteEntrySuggestionRequest::class);

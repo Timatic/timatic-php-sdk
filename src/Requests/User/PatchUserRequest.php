@@ -19,12 +19,15 @@ class PatchUserRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/users/{$this->user}";
+        return "/users/{$this->userId}";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $user,
-        protected Model|array|null $data,
+        protected string $userId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

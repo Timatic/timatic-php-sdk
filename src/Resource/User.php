@@ -4,6 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
+use Timatic\SDK\Foundation\Model;
 use Timatic\SDK\Requests\User\DeleteUserRequest;
 use Timatic\SDK\Requests\User\GetUserRequest;
 use Timatic\SDK\Requests\User\GetUsersRequest;
@@ -17,23 +18,29 @@ class User extends BaseResource
         return $this->connector->send(new GetUsersRequest($filterexternalId, $filterexternalIdeq));
     }
 
-    public function postUsers(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function postUsers(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostUsersRequest($data));
     }
 
-    public function getUser(string $user): Response
+    public function getUser(string $userId): Response
     {
-        return $this->connector->send(new GetUserRequest($user));
+        return $this->connector->send(new GetUserRequest($userId));
     }
 
-    public function deleteUser(string $user): Response
+    public function deleteUser(string $userId): Response
     {
-        return $this->connector->send(new DeleteUserRequest($user));
+        return $this->connector->send(new DeleteUserRequest($userId));
     }
 
-    public function patchUser(string $user, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function patchUser(string $userId, Model|array|null $data = null): Response
     {
-        return $this->connector->send(new PatchUserRequest($user, $data));
+        return $this->connector->send(new PatchUserRequest($userId, $data));
     }
 }

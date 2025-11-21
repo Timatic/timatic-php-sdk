@@ -15,7 +15,7 @@ it('calls the getChange method in the Change resource', function () {
     ]);
 
     $response = $this->timaticConnector->change()->getChange(
-        change: 'test string'
+        changeId: 'test string'
     );
 
     Saloon::assertSent(GetChangeRequest::class);

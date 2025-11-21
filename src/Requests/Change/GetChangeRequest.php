@@ -14,10 +14,10 @@ class GetChangeRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/changes/{$this->change}";
+        return "/changes/{$this->changeId}";
     }
 
     public function __construct(
-        protected string $change,
+        protected string $changeId,
     ) {}
 }

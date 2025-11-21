@@ -14,10 +14,10 @@ class DeleteBudgetRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/budgets/{$this->budget}";
+        return "/budgets/{$this->budgetId}";
     }
 
     public function __construct(
-        protected string $budget,
+        protected string $budgetId,
     ) {}
 }

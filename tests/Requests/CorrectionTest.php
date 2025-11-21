@@ -29,7 +29,7 @@ it('calls the patchCorrection method in the Correction resource', function () {
     ]);
 
     $response = $this->timaticConnector->correction()->patchCorrection(
-        correction: 'test string'
+        correctionId: 'test string'
     );
 
     Saloon::assertSent(PatchCorrectionRequest::class);

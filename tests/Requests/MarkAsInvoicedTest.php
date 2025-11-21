@@ -14,7 +14,7 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
     ]);
 
     $response = $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(
-        entry: 'test string'
+        entryId: 'test string'
     );
 
     Saloon::assertSent(PostEntryMarkAsInvoicedRequest::class);

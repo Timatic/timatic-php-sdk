@@ -14,7 +14,7 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
     ]);
 
     $response = $this->timaticConnector->approve()->postOvertimeApprove(
-        overtime: 'test string'
+        overtimeId: 'test string'
     );
 
     Saloon::assertSent(PostOvertimeApproveRequest::class);

@@ -5,68 +5,78 @@ declare(strict_types=1);
 namespace Timatic\SDK\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\ResourceGenerator;
-use Nette\PhpGenerator\Method;
+use Timatic\SDK\Foundation\Model;
 
 class JsonApiResourceGenerator extends ResourceGenerator
 {
-    public function generate($specification): array
+    /**
+     * Hook: Filter out PUT requests - not supported in JSON:API
+     */
+    protected function shouldIncludeEndpoint(Endpoint $endpoint): bool
     {
-        // Filter out PUT endpoints before generating
-        $filteredSpec = clone $specification;
-        $filteredSpec->endpoints = array_filter(
-            $specification->endpoints,
-            fn ($endpoint) => ! $endpoint->method->isPut()
+        return ! $endpoint->method->isPut();
+    }
+
+    /**
+     * Hook: Add "Request" suffix to request class names
+     */
+    protected function getRequestClassName(Endpoint $endpoint): string
+    {
+        $className = parent::getRequestClassName($endpoint);
+
+        if (! str_ends_with($className, 'Request')) {
+            $className .= 'Request';
+        }
+
+        return $className;
+    }
+
+    /**
+     * Hook: Strip "Request" suffix from method names
+     */
+    protected function getMethodName(Endpoint $endpoint, string $requestClassName): string
+    {
+        // Strip "Request" suffix if present to get clean method names
+        $methodBaseName = str_ends_with($requestClassName, 'Request')
+            ? substr($requestClassName, 0, -7)
+            : $requestClassName;
+
+        return \Crescat\SaloonSdkGenerator\Helpers\NameHelper::safeVariableName($methodBaseName);
+    }
+
+    /**
+     * Hook: Transform path parameter names (e.g., budget -> budgetId)
+     */
+    protected function getResourceParameterName(Parameter $parameter, bool $isPathParam): string
+    {
+        if ($isPathParam) {
+            return $parameter->name.'Id';
+        }
+
+        return $parameter->name;
+    }
+
+    /**
+     * Hook: Customize resource method for mutation requests
+     */
+    protected function customizeResourceMethod(\Nette\PhpGenerator\Method $method, $namespace, array &$args, Endpoint $endpoint): void
+    {
+        if (! ($endpoint->method->isPost() || $endpoint->method->isPatch())) {
+            return;
+        }
+
+        $namespace->addUse(Model::class);
+
+        $dataParam = new Parameter(
+            type: 'Timatic\\SDK\\Foundation\\Model|array|null',
+            nullable: true,
+            name: 'data',
+            description: 'Request data',
         );
 
-        return parent::generate($filteredSpec);
-    }
-
-    protected function generateResourceMethod(Endpoint $endpoint, Method $method): void
-    {
-        parent::generateResourceMethod($endpoint, $method);
-
-        // For POST/PUT/PATCH requests without body parameters, add data parameter
-        if ($this->isMutationRequest($endpoint) && empty($endpoint->bodyParameters)) {
-            echo "Adding data parameter to {$endpoint->name}\n";
-            $this->addDataParameterToMethod($endpoint, $method);
-        }
-    }
-
-    protected function addDataParameterToMethod(Endpoint $endpoint, Method $method): void
-    {
-        // Add data parameter to method signature
-        $method->addParameter('data')
-            ->setType('\\Timatic\\SDK\\Foundation\\Model|array|null')
-            ->setDefaultValue(null);
-
-        // Update method body to pass data parameter to request constructor
-        $body = $method->getBody();
-
-        // Find the "new RequestName(" pattern and add $data parameter
-        if (! empty($endpoint->pathParameters)) {
-            // Has path params: new Request($param, null) -> new Request($param, $data)
-            $body = preg_replace(
-                '/(new\s+'.preg_quote($endpoint->name, '/').'\([^)]+)\)/',
-                '$1, $data)',
-                $body
-            );
-        } else {
-            // No path params: new Request() -> new Request($data)
-            $body = str_replace(
-                'new '.$endpoint->name.'()',
-                'new '.$endpoint->name.'($data)',
-                $body
-            );
-        }
-
-        $method->setBody($body);
-    }
-
-    protected function isMutationRequest(Endpoint $endpoint): bool
-    {
-        // Only POST and PATCH are supported (PUT is filtered out)
-        return $endpoint->method->isPost()
-            || $endpoint->method->isPatch();
+        $this->addPropertyToMethod($method, $dataParam);
+        $args[] = new \Nette\PhpGenerator\Literal('$data');
     }
 }

@@ -9,9 +9,9 @@ use Timatic\SDK\Requests\Change\GetChangesRequest;
 
 class Change extends BaseResource
 {
-    public function getChange(string $change): Response
+    public function getChange(string $changeId): Response
     {
-        return $this->connector->send(new GetChangeRequest($change));
+        return $this->connector->send(new GetChangeRequest($changeId));
     }
 
     public function getChanges(): Response

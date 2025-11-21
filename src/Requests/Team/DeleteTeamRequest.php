@@ -14,10 +14,10 @@ class DeleteTeamRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/teams/{$this->team}";
+        return "/teams/{$this->teamId}";
     }
 
     public function __construct(
-        protected string $team,
+        protected string $teamId,
     ) {}
 }

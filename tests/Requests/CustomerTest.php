@@ -47,7 +47,7 @@ it('calls the getCustomer method in the Customer resource', function () {
     ]);
 
     $response = $this->timaticConnector->customer()->getCustomer(
-        customer: 'test string'
+        customerId: 'test string'
     );
 
     Saloon::assertSent(GetCustomerRequest::class);
@@ -61,7 +61,7 @@ it('calls the deleteCustomer method in the Customer resource', function () {
     ]);
 
     $response = $this->timaticConnector->customer()->deleteCustomer(
-        customer: 'test string'
+        customerId: 'test string'
     );
 
     Saloon::assertSent(DeleteCustomerRequest::class);
@@ -75,7 +75,7 @@ it('calls the patchCustomer method in the Customer resource', function () {
     ]);
 
     $response = $this->timaticConnector->customer()->patchCustomer(
-        customer: 'test string'
+        customerId: 'test string'
     );
 
     Saloon::assertSent(PatchCustomerRequest::class);

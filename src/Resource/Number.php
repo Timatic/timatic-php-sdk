@@ -8,8 +8,8 @@ use Timatic\SDK\Requests\Number\GetIncidentsNumberRequest;
 
 class Number extends BaseResource
 {
-    public function getIncidentsNumber(string $incident): Response
+    public function getIncidentsNumber(string $incidentId): Response
     {
-        return $this->connector->send(new GetIncidentsNumberRequest($incident));
+        return $this->connector->send(new GetIncidentsNumberRequest($incidentId));
     }
 }

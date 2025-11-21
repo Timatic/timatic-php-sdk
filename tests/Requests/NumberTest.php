@@ -14,7 +14,7 @@ it('calls the getIncidentsNumber method in the Number resource', function () {
     ]);
 
     $response = $this->timaticConnector->number()->getIncidentsNumber(
-        incident: 'test string'
+        incidentId: 'test string'
     );
 
     Saloon::assertSent(GetIncidentsNumberRequest::class);

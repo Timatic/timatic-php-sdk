@@ -4,6 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
+use Timatic\SDK\Foundation\Model;
 use Timatic\SDK\Requests\Entry\DeleteEntryRequest;
 use Timatic\SDK\Requests\Entry\GetEntriesRequest;
 use Timatic\SDK\Requests\Entry\GetEntryRequest;
@@ -85,23 +86,29 @@ class Entry extends BaseResource
         return $this->connector->send(new GetEntriesRequest($filteruserId, $filteruserIdeq, $filteruserIdnq, $filteruserIdgt, $filteruserIdlt, $filteruserIdgte, $filteruserIdlte, $filteruserIdcontains, $filterbudgetId, $filterbudgetIdeq, $filterbudgetIdnq, $filterbudgetIdgt, $filterbudgetIdlt, $filterbudgetIdgte, $filterbudgetIdlte, $filterbudgetIdcontains, $filterstartedAt, $filterstartedAteq, $filterstartedAtnq, $filterstartedAtgt, $filterstartedAtlt, $filterstartedAtgte, $filterstartedAtlte, $filterstartedAtcontains, $filterendedAt, $filterendedAteq, $filterendedAtnq, $filterendedAtgt, $filterendedAtlt, $filterendedAtgte, $filterendedAtlte, $filterendedAtcontains, $filterhasOvertime, $filterhasOvertimeeq, $filterhasOvertimenq, $filterhasOvertimegt, $filterhasOvertimelt, $filterhasOvertimegte, $filterhasOvertimelte, $filterhasOvertimecontains, $filteruserFullName, $filteruserFullNameeq, $filteruserFullNamenq, $filteruserFullNamegt, $filteruserFullNamelt, $filteruserFullNamegte, $filteruserFullNamelte, $filteruserFullNamecontains, $filtercustomerId, $filtercustomerIdeq, $filtercustomerIdnq, $filtercustomerIdgt, $filtercustomerIdlt, $filtercustomerIdgte, $filtercustomerIdlte, $filtercustomerIdcontains, $filterticketNumber, $filterticketNumbereq, $filterticketNumbernq, $filterticketNumbergt, $filterticketNumberlt, $filterticketNumbergte, $filterticketNumberlte, $filterticketNumbercontains, $filtersettlement, $filterisInvoiced, $filterisInvoiceable, $include));
     }
 
-    public function postEntries(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function postEntries(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostEntriesRequest($data));
     }
 
-    public function getEntry(string $entry): Response
+    public function getEntry(string $entryId): Response
     {
-        return $this->connector->send(new GetEntryRequest($entry));
+        return $this->connector->send(new GetEntryRequest($entryId));
     }
 
-    public function deleteEntry(string $entry): Response
+    public function deleteEntry(string $entryId): Response
     {
-        return $this->connector->send(new DeleteEntryRequest($entry));
+        return $this->connector->send(new DeleteEntryRequest($entryId));
     }
 
-    public function patchEntry(string $entry, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function patchEntry(string $entryId, Model|array|null $data = null): Response
     {
-        return $this->connector->send(new PatchEntryRequest($entry, $data));
+        return $this->connector->send(new PatchEntryRequest($entryId, $data));
     }
 }

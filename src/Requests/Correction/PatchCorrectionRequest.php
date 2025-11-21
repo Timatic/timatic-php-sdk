@@ -19,12 +19,15 @@ class PatchCorrectionRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/corrections/{$this->correction}";
+        return "/corrections/{$this->correctionId}";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $correction,
-        protected Model|array|null $data,
+        protected string $correctionId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

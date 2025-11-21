@@ -47,7 +47,7 @@ it('calls the getUser method in the User resource', function () {
     ]);
 
     $response = $this->timaticConnector->user()->getUser(
-        user: 'test string'
+        userId: 'test string'
     );
 
     Saloon::assertSent(GetUserRequest::class);
@@ -61,7 +61,7 @@ it('calls the deleteUser method in the User resource', function () {
     ]);
 
     $response = $this->timaticConnector->user()->deleteUser(
-        user: 'test string'
+        userId: 'test string'
     );
 
     Saloon::assertSent(DeleteUserRequest::class);
@@ -75,7 +75,7 @@ it('calls the patchUser method in the User resource', function () {
     ]);
 
     $response = $this->timaticConnector->user()->patchUser(
-        user: 'test string'
+        userId: 'test string'
     );
 
     Saloon::assertSent(PatchUserRequest::class);

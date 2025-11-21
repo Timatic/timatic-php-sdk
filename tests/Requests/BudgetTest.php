@@ -65,7 +65,7 @@ it('calls the getBudget method in the Budget resource', function () {
     ]);
 
     $response = $this->timaticConnector->budget()->getBudget(
-        budget: 'test string'
+        budgetId: 'test string'
     );
 
     Saloon::assertSent(GetBudgetRequest::class);
@@ -79,7 +79,7 @@ it('calls the deleteBudget method in the Budget resource', function () {
     ]);
 
     $response = $this->timaticConnector->budget()->deleteBudget(
-        budget: 'test string'
+        budgetId: 'test string'
     );
 
     Saloon::assertSent(DeleteBudgetRequest::class);
@@ -93,7 +93,7 @@ it('calls the patchBudget method in the Budget resource', function () {
     ]);
 
     $response = $this->timaticConnector->budget()->patchBudget(
-        budget: 'test string'
+        budgetId: 'test string'
     );
 
     Saloon::assertSent(PatchBudgetRequest::class);

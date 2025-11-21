@@ -14,7 +14,7 @@ it('calls the getBudgetPeriods method in the Period resource', function () {
     ]);
 
     $response = $this->timaticConnector->period()->getBudgetPeriods(
-        budget: 'test string'
+        budgetId: 'test string'
     );
 
     Saloon::assertSent(GetBudgetPeriodsRequest::class);

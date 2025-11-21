@@ -14,10 +14,10 @@ class GetBudgetPeriodsRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/budgets/{$this->budget}/periods";
+        return "/budgets/{$this->budgetId}/periods";
     }
 
     public function __construct(
-        protected string $budget,
+        protected string $budgetId,
     ) {}
 }

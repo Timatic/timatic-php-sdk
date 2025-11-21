@@ -4,6 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
+use Timatic\SDK\Foundation\Model;
 use Timatic\SDK\Requests\Budget\DeleteBudgetRequest;
 use Timatic\SDK\Requests\Budget\GetBudgetRequest;
 use Timatic\SDK\Requests\Budget\GetBudgetsRequest;
@@ -37,23 +38,29 @@ class Budget extends BaseResource
         return $this->connector->send(new GetBudgetsRequest($filtercustomerId, $filtercustomerIdeq, $filtercustomerIdnq, $filtercustomerIdgt, $filtercustomerIdlt, $filtercustomerIdgte, $filtercustomerIdlte, $filtercustomerIdcontains, $filterbudgetTypeId, $filterbudgetTypeIdeq, $filterbudgetTypeIdnq, $filterbudgetTypeIdgt, $filterbudgetTypeIdlt, $filterbudgetTypeIdgte, $filterbudgetTypeIdlte, $filterbudgetTypeIdcontains, $filterisArchived, $filtercustomerExternalId, $filtershowToCustomer, $include));
     }
 
-    public function postBudgets(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function postBudgets(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostBudgetsRequest($data));
     }
 
-    public function getBudget(string $budget): Response
+    public function getBudget(string $budgetId): Response
     {
-        return $this->connector->send(new GetBudgetRequest($budget));
+        return $this->connector->send(new GetBudgetRequest($budgetId));
     }
 
-    public function deleteBudget(string $budget): Response
+    public function deleteBudget(string $budgetId): Response
     {
-        return $this->connector->send(new DeleteBudgetRequest($budget));
+        return $this->connector->send(new DeleteBudgetRequest($budgetId));
     }
 
-    public function patchBudget(string $budget, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function patchBudget(string $budgetId, Model|array|null $data = null): Response
     {
-        return $this->connector->send(new PatchBudgetRequest($budget, $data));
+        return $this->connector->send(new PatchBudgetRequest($budgetId, $data));
     }
 }

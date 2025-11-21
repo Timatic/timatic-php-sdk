@@ -14,10 +14,10 @@ class GetEntryRequest extends Request
 
     public function resolveEndpoint(): string
     {
-        return "/entries/{$this->entry}";
+        return "/entries/{$this->entryId}";
     }
 
     public function __construct(
-        protected string $entry,
+        protected string $entryId,
     ) {}
 }

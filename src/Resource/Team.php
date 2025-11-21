@@ -4,6 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
+use Timatic\SDK\Foundation\Model;
 use Timatic\SDK\Requests\Team\DeleteTeamRequest;
 use Timatic\SDK\Requests\Team\GetTeamRequest;
 use Timatic\SDK\Requests\Team\GetTeamsRequest;
@@ -17,23 +18,29 @@ class Team extends BaseResource
         return $this->connector->send(new GetTeamsRequest);
     }
 
-    public function postTeams(\Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function postTeams(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostTeamsRequest($data));
     }
 
-    public function getTeam(string $team): Response
+    public function getTeam(string $teamId): Response
     {
-        return $this->connector->send(new GetTeamRequest($team));
+        return $this->connector->send(new GetTeamRequest($teamId));
     }
 
-    public function deleteTeam(string $team): Response
+    public function deleteTeam(string $teamId): Response
     {
-        return $this->connector->send(new DeleteTeamRequest($team));
+        return $this->connector->send(new DeleteTeamRequest($teamId));
     }
 
-    public function patchTeam(string $team, \Timatic\SDK\Foundation\Model|array|null $data = null): Response
+    /**
+     * @param  Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
+    public function patchTeam(string $teamId, Model|array|null $data = null): Response
     {
-        return $this->connector->send(new PatchTeamRequest($team, $data));
+        return $this->connector->send(new PatchTeamRequest($teamId, $data));
     }
 }

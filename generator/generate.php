@@ -138,9 +138,8 @@ foreach ($result->resourceClasses as $resourceClass) {
         }
     }
 
-    // Fix POST/PUT/PATCH methods to add $data parameter and update class references
+    // Fix class references: add "Request" suffix to class instantiations in method body
     foreach ($classType->getMethods() as $method) {
-        $methodName = $method->getName();
         $body = $method->getBody();
 
         // Add "Request" suffix to class instantiations in method body
@@ -158,27 +157,23 @@ foreach ($result->resourceClasses as $resourceClass) {
             $body
         );
 
-        // Check if it's a mutation method (post/patch only, PUT is not supported)
-        if (preg_match('/^(post|patch)/i', $methodName)) {
-            // Add data parameter
-            $method->addParameter('data')
-                ->setType('\\Timatic\\SDK\\Foundation\\Model|array|null')
-                ->setDefaultValue(null);
-
-            // Update method body to pass $data to request constructor
-            // Pattern 2 first: new Request($param) -> new Request($param, $data)
-            // Must be checked before Pattern 1 to avoid double replacement
-            if (preg_match('/\(new\s+\w+Request\([^)]+\)\)/', $body)) {
+        // Fix mutation methods that have $data parameter but don't pass it
+        $methodName = $method->getName();
+        if (preg_match('/^(post|patch)/i', $methodName) && $method->hasParameter('data')) {
+            // Check if Request instantiation exists without $data parameter
+            // Matches: new PostBudgetsRequest() or new PostBudgetsRequest (without parens)
+            if (preg_match('/new\s+\w+Request\(\s*\)/', $body)) {
+                // Has empty parens: replace () with ($data)
                 $body = preg_replace(
-                    '/\(new\s+(\w+Request)\(([^)]+)\)\)/',
-                    '(new $1($2, $data))',
+                    '/new\s+(\w+Request)\(\s*\)/',
+                    'new $1($data)',
                     $body
                 );
-            } else {
-                // Pattern 1: new Request() -> new Request($data)
+            } elseif (preg_match('/new\s+\w+Request(?![(\w])/', $body)) {
+                // No parens: add ($data)
                 $body = preg_replace(
-                    '/\(new\s+(\w+Request)\(\)\)/',
-                    '(new $1($data))',
+                    '/new\s+(\w+Request)(?![(\w])/',
+                    'new $1($data)',
                     $body
                 );
             }
@@ -205,7 +200,7 @@ foreach ($result->dtoClasses as $dtoClass) {
     echo '  ✓ '.basename($path)."\n";
 }
 
-// Write test files
+// Write test files (also apply path parameter transformations here as fallback)
 if ($tests && is_array($tests)) {
     echo "\n🧪 Tests:\n";
     foreach ($tests as $file) {
@@ -218,7 +213,22 @@ if ($tests && is_array($tests)) {
                 mkdir($dir, 0755, true);
             }
 
-            file_put_contents($testPath, $file->file);
+            // Apply path parameter transformations (as fallback if generator didn't do it)
+            $testContent = $file->file;
+            $resourceNames = [
+                'budget', 'customer', 'user', 'team', 'entry', 'entrySuggestion',
+                'correction', 'change', 'incident', 'overtime',
+            ];
+
+            foreach ($resourceNames as $resourceName) {
+                $testContent = preg_replace(
+                    "/\b{$resourceName}:\s*(['\"])/",
+                    "{$resourceName}Id: $1",
+                    $testContent
+                );
+            }
+
+            file_put_contents($testPath, $testContent);
             echo '  ✓ '.basename($testPath)."\n";
         }
     }

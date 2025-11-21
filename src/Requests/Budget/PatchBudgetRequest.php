@@ -19,12 +19,15 @@ class PatchBudgetRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/budgets/{$this->budget}";
+        return "/budgets/{$this->budgetId}";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $budget,
-        protected Model|array|null $data,
+        protected string $budgetId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

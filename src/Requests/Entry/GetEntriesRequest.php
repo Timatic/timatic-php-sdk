@@ -25,7 +25,7 @@ class GetEntriesRequest extends Request implements Paginatable
         protected ?string $include = null,
     ) {}
 
-    public function defaultQuery(): array
+    protected function defaultQuery(): array
     {
         return array_filter(['include' => $this->include]);
     }

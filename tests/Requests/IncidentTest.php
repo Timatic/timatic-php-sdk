@@ -15,7 +15,7 @@ it('calls the getIncident method in the Incident resource', function () {
     ]);
 
     $response = $this->timaticConnector->incident()->getIncident(
-        incident: 'test string'
+        incidentId: 'test string'
     );
 
     Saloon::assertSent(GetIncidentRequest::class);

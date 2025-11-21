@@ -8,8 +8,8 @@ use Timatic\SDK\Requests\Period\GetBudgetPeriodsRequest;
 
 class Period extends BaseResource
 {
-    public function getBudgetPeriods(string $budget): Response
+    public function getBudgetPeriods(string $budgetId): Response
     {
-        return $this->connector->send(new GetBudgetPeriodsRequest($budget));
+        return $this->connector->send(new GetBudgetPeriodsRequest($budgetId));
     }
 }

@@ -46,7 +46,7 @@ it('calls the getTeam method in the Team resource', function () {
     ]);
 
     $response = $this->timaticConnector->team()->getTeam(
-        team: 'test string'
+        teamId: 'test string'
     );
 
     Saloon::assertSent(GetTeamRequest::class);
@@ -60,7 +60,7 @@ it('calls the deleteTeam method in the Team resource', function () {
     ]);
 
     $response = $this->timaticConnector->team()->deleteTeam(
-        team: 'test string'
+        teamId: 'test string'
     );
 
     Saloon::assertSent(DeleteTeamRequest::class);
@@ -74,7 +74,7 @@ it('calls the patchTeam method in the Team resource', function () {
     ]);
 
     $response = $this->timaticConnector->team()->patchTeam(
-        team: 'test string'
+        teamId: 'test string'
     );
 
     Saloon::assertSent(PatchTeamRequest::class);

@@ -19,12 +19,15 @@ class PostOvertimeMarkAsExportedRequest extends Request implements HasBody
 
     public function resolveEndpoint(): string
     {
-        return "/overtimes/{$this->overtime}/mark-as-exported";
+        return "/overtimes/{$this->overtimeId}/mark-as-exported";
     }
 
+    /**
+     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     */
     public function __construct(
-        protected string $overtime,
-        protected Model|array|null $data,
+        protected string $overtimeId,
+        protected Model|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array

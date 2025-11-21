@@ -5,70 +5,119 @@ declare(strict_types=1);
 namespace Timatic\SDK\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
+use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
 use Nette\PhpGenerator\ClassType;
-use Nette\PhpGenerator\Method;
-use Nette\PhpGenerator\PhpFile;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
 use Timatic\SDK\Foundation\Model;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
-    public function generate($specification): array
+    /**
+     * Hook: Filter out PUT requests - not supported in JSON:API
+     */
+    protected function shouldIncludeEndpoint(Endpoint $endpoint): bool
     {
-        // Filter out PUT endpoints before generating
-        $filteredSpec = clone $specification;
-        $filteredSpec->endpoints = array_filter(
-            $specification->endpoints,
-            fn ($endpoint) => ! $endpoint->method->isPut()
-        );
-
-        return parent::generate($filteredSpec);
+        return ! $endpoint->method->isPut();
     }
 
-    protected function generateRequestClass(Endpoint $endpoint): PhpFile
+    /**
+     * Hook: Add "Request" suffix to class names
+     */
+    protected function getRequestClassName(Endpoint $endpoint): string
     {
-        // Use parent generation for most of the class
-        $phpFile = parent::generateRequestClass($endpoint);
+        $className = parent::getRequestClassName($endpoint);
 
-        // Get the class and namespace
-        $namespace = array_values($phpFile->getNamespaces())[0];
-        $classType = array_values($namespace->getClasses())[0];
-
-        // Add "Request" suffix to class name
-        $originalName = $classType->getName();
-        if (! str_ends_with($originalName, 'Request')) {
-            $classType->setName($originalName.'Request');
+        if (! str_ends_with($className, 'Request')) {
+            $className .= 'Request';
         }
 
-        // Add Model import
+        return $className;
+    }
+
+    /**
+     * Hook: Transform path parameter names (e.g., budget -> budgetId)
+     */
+    protected function getConstructorParameterName(string $originalName, bool $isPathParam = false): string
+    {
+        if ($isPathParam) {
+            return $originalName.'Id';
+        }
+
+        return $originalName;
+    }
+
+    /**
+     * Hook: Customize request class for collection requests
+     */
+    protected function customizeRequestClass(ClassType $classType, $namespace, Endpoint $endpoint): void
+    {
+        if (! $this->isCollectionRequest($endpoint)) {
+            return;
+        }
+
+        // Add Paginatable interface to all collection requests
+        $namespace->addUse(Paginatable::class);
+        $classType->addImplement(Paginatable::class);
+
+        // Add HasFilters trait if collection has filter parameters in the endpoint
+        if ($this->hasFilterParameters($endpoint)) {
+            $namespace->addUse(HasFilters::class);
+            $classType->addTrait(HasFilters::class);
+        }
+    }
+
+    /**
+     * Hook: Customize constructor for mutation requests
+     */
+    protected function customizeConstructor($classConstructor, ClassType $classType, $namespace, Endpoint $endpoint): void
+    {
+        if (! $this->isMutationRequest($endpoint)) {
+            return;
+        }
+
         $namespace->addUse(Model::class);
 
-        // For POST/PUT/PATCH without body parameters, add Model data parameter
-        if ($this->isMutationRequest($endpoint) && empty($endpoint->bodyParameters)) {
-            $this->addModelDataParameter($classType, $namespace);
-        }
+        $dataParam = new Parameter(
+            type: 'Timatic\\SDK\\Foundation\\Model|array|null',
+            nullable: true,
+            name: 'data',
+            description: 'Request data',
+        );
 
-        // For GET collection requests, add Paginatable interface
-        if ($this->isCollectionRequest($endpoint)) {
-            $namespace->addUse(Paginatable::class);
-            $classType->addImplement(Paginatable::class);
+        MethodGeneratorHelper::addParameterAsPromotedProperty($classConstructor, $dataParam);
 
-            // Check if this request has filter parameters before adding HasFilters trait
-            $hasFilters = $this->hasFilterParameters($classType);
-
-            if ($hasFilters) {
-                $namespace->addUse(HasFilters::class);
-                $classType->addTrait(HasFilters::class);
-            }
-
-            // Remove filter parameters from constructor, keep only include
-            $this->removeFilterParameters($classType);
-        }
-
-        return $phpFile;
+        $classType->addMethod('defaultBody')
+            ->setProtected()
+            ->setReturnType('array')
+            ->addBody('return $this->data ? $this->data->toJsonApi() : [];');
     }
+
+    /**
+     * Hook: Filter out filter* query parameters (handled by HasFilters trait)
+     */
+    protected function shouldIncludeQueryParameter(string $paramName): bool
+    {
+        return ! str_starts_with($paramName, 'filter');
+    }
+
+    /**
+     * Hook: Generate defaultQuery method with custom JSON:API logic
+     */
+    protected function generateDefaultQueryMethod(\Nette\PhpGenerator\ClassType $classType, $namespace, array $queryParams, Endpoint $endpoint): void
+    {
+        // If we have any query parameters (likely just 'include'), use array_filter
+        if (! empty($queryParams)) {
+            $classType->addMethod('defaultQuery')
+                ->setProtected()
+                ->setReturnType('array')
+                ->addBody("return array_filter(['include' => \$this->include]);");
+        }
+    }
+
+    // Helper methods for JSON:API logic
 
     protected function isMutationRequest(Endpoint $endpoint): bool
     {
@@ -79,100 +128,18 @@ class JsonApiRequestGenerator extends RequestGenerator
 
     protected function isCollectionRequest(Endpoint $endpoint): bool
     {
-        // Collection requests are GET requests without an ID parameter in the path
-        if (! $endpoint->method->isGet()) {
-            return false;
-        }
-
-        // Check if the path contains a parameter (like {id}, {budget}, etc.)
-        // Collection endpoints typically don't have path parameters
-        return empty($endpoint->pathParameters);
+        // Collection requests are GET requests without path parameters
+        return $endpoint->method->isGet() && empty($endpoint->pathParameters);
     }
 
-    protected function hasFilterParameters(ClassType $classType): bool
+    protected function hasFilterParameters(Endpoint $endpoint): bool
     {
-        if (! $classType->hasMethod('__construct')) {
-            return false;
-        }
-
-        $constructor = $classType->getMethod('__construct');
-        $parameters = $constructor->getParameters();
-
-        foreach ($parameters as $paramName => $parameter) {
-            if (str_starts_with($paramName, 'filter')) {
+        foreach ($endpoint->queryParameters as $param) {
+            if (str_starts_with($param->name, 'filter')) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    protected function addModelDataParameter(ClassType $classType, $namespace): void
-    {
-        // Get constructor
-        $constructor = $classType->getMethod('__construct');
-
-        // Add data parameter with Model|array|null type to match Resource signature
-        $constructor->addPromotedParameter('data')
-            ->setType('\\Timatic\\SDK\\Foundation\\Model|array|null')
-            ->setProtected()
-            ->setNullable();
-
-        // Add defaultBody method
-        $defaultBody = $classType->addMethod('defaultBody')
-            ->setProtected()
-            ->setReturnType('array')
-            ->addBody('return $this->data ? $this->data->toJsonApi() : [];');
-    }
-
-    protected function removeFilterParameters(ClassType $classType): void
-    {
-        $hasInclude = false;
-
-        // Remove filter parameters from constructor
-        if ($classType->hasMethod('__construct')) {
-            $constructor = $classType->getMethod('__construct');
-            $parameters = $constructor->getParameters();
-
-            foreach ($parameters as $paramName => $parameter) {
-                if (str_starts_with($paramName, 'filter')) {
-                    $constructor->removeParameter($paramName);
-                }
-            }
-
-            // Check if include parameter still exists after removing filters
-            $hasInclude = $constructor->hasParameter('include');
-
-            // Remove PHPDoc for filter parameters
-            $comment = $constructor->getComment();
-            if ($comment) {
-                // Remove all @param lines that start with filter
-                $lines = explode("\n", $comment);
-                $filteredLines = array_filter($lines, function ($line) {
-                    return ! preg_match('/@param.*\$filter/', $line);
-                });
-
-                // If only the opening /** and closing */ remain, remove the entire comment
-                $filteredLines = array_values($filteredLines);
-                if (count($filteredLines) <= 2) {
-                    $constructor->setComment(null);
-                } else {
-                    $constructor->setComment(implode("\n", $filteredLines));
-                }
-            }
-        }
-
-        // Update or remove defaultQuery
-        if ($classType->hasMethod('defaultQuery')) {
-            $defaultQuery = $classType->getMethod('defaultQuery');
-
-            if ($hasInclude) {
-                // If include parameter exists, only return that
-                $defaultQuery->setBody('return array_filter([\'include\' => $this->include]);');
-            } else {
-                // If no include parameter, remove defaultQuery entirely
-                $classType->removeMethod('defaultQuery');
-            }
-        }
     }
 }

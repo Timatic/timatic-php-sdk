@@ -23,13 +23,13 @@ class EntrySuggestion extends BaseResource
         return $this->connector->send(new GetEntrySuggestionsRequest($filterdate, $filterdateeq, $filterdatenq, $filterdategt, $filterdatelt, $filterdategte, $filterdatelte, $filterdatecontains));
     }
 
-    public function getEntrySuggestion(string $entrySuggestion): Response
+    public function getEntrySuggestion(string $entrySuggestionId): Response
     {
-        return $this->connector->send(new GetEntrySuggestionRequest($entrySuggestion));
+        return $this->connector->send(new GetEntrySuggestionRequest($entrySuggestionId));
     }
 
-    public function deleteEntrySuggestion(string $entrySuggestion): Response
+    public function deleteEntrySuggestion(string $entrySuggestionId): Response
     {
-        return $this->connector->send(new DeleteEntrySuggestionRequest($entrySuggestion));
+        return $this->connector->send(new DeleteEntrySuggestionRequest($entrySuggestionId));
     }
 }
