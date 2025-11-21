@@ -8,6 +8,8 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\PestTestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Timatic\SDK\Generator\TestGenerators\CollectionRequestTestGenerator;
+use Timatic\SDK\Generator\TestGenerators\MutationRequestTestGenerator;
 
 class JsonApiPestTestGenerator extends PestTestGenerator
 {
