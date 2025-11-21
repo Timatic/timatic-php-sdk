@@ -59,17 +59,35 @@ it('calls the getEntries method in the Entry resource', function () {
 });
 
 it('calls the postEntries method in the Entry resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PostEntriesRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->entry()->postEntries(
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Entry;
+    $dto->ticketId = 'test-id-123';
+    $dto->ticketNumber = 'test value';
+    $dto->ticketTitle = 'test value';
+    $dto->ticketType = 'test value';
+    // todo: add every other DTO field
 
-    );
-
+    $this->timaticConnector->entry()->postEntries($dto);
     Saloon::assertSent(PostEntriesRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            // POST calls dont have an ID field
+            ->data->type->toBe('entry')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->ticketId->toBe('test-id-123')
+            ->ticketNumber->toBe('test value')
+            ->ticketTitle->toBe('test value')
+            ->ticketType->toBe('test value')
+            );
+
+        return true;
+    });
 });
 
 it('calls the getEntry method in the Entry resource', function () {
@@ -109,15 +127,32 @@ it('calls the deleteEntry method in the Entry resource', function () {
 });
 
 it('calls the patchEntry method in the Entry resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PatchEntryRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->entry()->patchEntry(
-        entryId: 'test string'
-    );
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Entry;
+    $dto->ticketId = 'test-id-123';
+    $dto->ticketNumber = 'test value';
+    $dto->ticketTitle = 'test value';
+    $dto->ticketType = 'test value';
+    // todo: add every other DTO field
 
+    $this->timaticConnector->entry()->patchEntry(entryId: 'test string', $dto);
     Saloon::assertSent(PatchEntryRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('entry')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->ticketId->toBe('test-id-123')
+            ->ticketNumber->toBe('test value')
+            ->ticketTitle->toBe('test value')
+            ->ticketType->toBe('test value')
+            );
+
+        return true;
+    });
 });

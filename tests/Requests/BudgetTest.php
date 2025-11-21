@@ -59,17 +59,35 @@ it('calls the getBudgets method in the Budget resource', function () {
 });
 
 it('calls the postBudgets method in the Budget resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PostBudgetsRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->budget()->postBudgets(
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Budget;
+    $dto->budgetTypeId = 'test-id-123';
+    $dto->customerId = 'test-id-123';
+    $dto->showToCustomer = false;
+    $dto->changeId = 'test-id-123';
+    // todo: add every other DTO field
 
-    );
-
+    $this->timaticConnector->budget()->postBudgets($dto);
     Saloon::assertSent(PostBudgetsRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            // POST calls dont have an ID field
+            ->data->type->toBe('budget')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->budgetTypeId->toBe('test-id-123')
+            ->customerId->toBe('test-id-123')
+            ->showToCustomer->toBe(false)
+            ->changeId->toBe('test-id-123')
+            );
+
+        return true;
+    });
 });
 
 it('calls the getBudget method in the Budget resource', function () {
@@ -109,15 +127,32 @@ it('calls the deleteBudget method in the Budget resource', function () {
 });
 
 it('calls the patchBudget method in the Budget resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PatchBudgetRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->budget()->patchBudget(
-        budgetId: 'test string'
-    );
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Budget;
+    $dto->budgetTypeId = 'test-id-123';
+    $dto->customerId = 'test-id-123';
+    $dto->showToCustomer = false;
+    $dto->changeId = 'test-id-123';
+    // todo: add every other DTO field
 
+    $this->timaticConnector->budget()->patchBudget(budgetId: 'test string', $dto);
     Saloon::assertSent(PatchBudgetRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('budget')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->budgetTypeId->toBe('test-id-123')
+            ->customerId->toBe('test-id-123')
+            ->showToCustomer->toBe(false)
+            ->changeId->toBe('test-id-123')
+            );
+
+        return true;
+    });
 });

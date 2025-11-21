@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\Team\DeleteTeamRequest;
 use Timatic\SDK\Requests\Team\GetTeamRequest;
@@ -44,17 +45,35 @@ it('calls the getTeams method in the Team resource', function () {
 });
 
 it('calls the postTeams method in the Team resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PostTeamsRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->team()->postTeams(
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Team;
+    $dto->externalId = 'test-id-123';
+    $dto->name = 'test name';
+    $dto->createdAt = '2025-01-01T10:00:00Z';
+    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    // todo: add every other DTO field
 
-    );
-
+    $this->timaticConnector->team()->postTeams($dto);
     Saloon::assertSent(PostTeamsRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            // POST calls dont have an ID field
+            ->data->type->toBe('team')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('test-id-123')
+            ->name->toBe('test name')
+            ->createdAt->toBe('2025-01-01T10:00:00Z')
+            ->updatedAt->toBe('2025-01-01T10:00:00Z')
+            );
+
+        return true;
+    });
 });
 
 it('calls the getTeam method in the Team resource', function () {
@@ -94,15 +113,32 @@ it('calls the deleteTeam method in the Team resource', function () {
 });
 
 it('calls the patchTeam method in the Team resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PatchTeamRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->team()->patchTeam(
-        teamId: 'test string'
-    );
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Team;
+    $dto->externalId = 'test-id-123';
+    $dto->name = 'test name';
+    $dto->createdAt = '2025-01-01T10:00:00Z';
+    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    // todo: add every other DTO field
 
+    $this->timaticConnector->team()->patchTeam(teamId: 'test string', $dto);
     Saloon::assertSent(PatchTeamRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('team')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('test-id-123')
+            ->name->toBe('test name')
+            ->createdAt->toBe('2025-01-01T10:00:00Z')
+            ->updatedAt->toBe('2025-01-01T10:00:00Z')
+            );
+
+        return true;
+    });
 });

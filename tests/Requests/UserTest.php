@@ -55,17 +55,31 @@ it('calls the getUsers method in the User resource', function () {
 });
 
 it('calls the postUsers method in the User resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PostUsersRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->user()->postUsers(
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\User;
+    $dto->externalId = 'test-id-123';
+    $dto->email = 'test value';
+    // todo: add every other DTO field
 
-    );
-
+    $this->timaticConnector->user()->postUsers($dto);
     Saloon::assertSent(PostUsersRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            // POST calls dont have an ID field
+            ->data->type->toBe('user')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('test-id-123')
+            ->email->toBe('test value')
+            );
+
+        return true;
+    });
 });
 
 it('calls the getUser method in the User resource', function () {
@@ -105,15 +119,28 @@ it('calls the deleteUser method in the User resource', function () {
 });
 
 it('calls the patchUser method in the User resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PatchUserRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->user()->patchUser(
-        userId: 'test string'
-    );
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\User;
+    $dto->externalId = 'test-id-123';
+    $dto->email = 'test value';
+    // todo: add every other DTO field
 
+    $this->timaticConnector->user()->patchUser(userId: 'test string', $dto);
     Saloon::assertSent(PatchUserRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('user')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('test-id-123')
+            ->email->toBe('test value')
+            );
+
+        return true;
+    });
 });

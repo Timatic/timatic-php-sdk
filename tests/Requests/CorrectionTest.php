@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\Correction\PatchCorrectionRequest;
 use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
@@ -10,29 +11,56 @@ beforeEach(function () {
 });
 
 it('calls the postCorrections method in the Correction resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PostCorrectionsRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->correction()->postCorrections(
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Correction;
+    $dto->createdAt = '2025-01-01T10:00:00Z';
+    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    // todo: add every other DTO field
 
-    );
-
+    $this->timaticConnector->correction()->postCorrections($dto);
     Saloon::assertSent(PostCorrectionsRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            // POST calls dont have an ID field
+            ->data->type->toBe('correction')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->createdAt->toBe('2025-01-01T10:00:00Z')
+            ->updatedAt->toBe('2025-01-01T10:00:00Z')
+            );
+
+        return true;
+    });
 });
 
 it('calls the patchCorrection method in the Correction resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PatchCorrectionRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->correction()->patchCorrection(
-        correctionId: 'test string'
-    );
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Correction;
+    $dto->createdAt = '2025-01-01T10:00:00Z';
+    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    // todo: add every other DTO field
 
+    $this->timaticConnector->correction()->patchCorrection(correctionId: 'test string', $dto);
     Saloon::assertSent(PatchCorrectionRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('correction')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->createdAt->toBe('2025-01-01T10:00:00Z')
+            ->updatedAt->toBe('2025-01-01T10:00:00Z')
+            );
+
+        return true;
+    });
 });

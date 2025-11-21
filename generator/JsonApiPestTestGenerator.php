@@ -13,11 +13,14 @@ class JsonApiPestTestGenerator extends PestTestGenerator
 {
     protected CollectionRequestTestGenerator $collectionTestGenerator;
 
+    protected MutationRequestTestGenerator $mutationTestGenerator;
+
     protected ?array $openApiSpec = null;
 
     public function __construct()
     {
         $this->collectionTestGenerator = new CollectionRequestTestGenerator;
+        $this->mutationTestGenerator = new MutationRequestTestGenerator;
     }
 
     /**
@@ -77,6 +80,11 @@ class JsonApiPestTestGenerator extends PestTestGenerator
         // Delegate to CollectionRequestTestGenerator for collection requests
         if ($this->collectionTestGenerator->isCollectionRequest($endpoint)) {
             return $this->collectionTestGenerator->getStubPath();
+        }
+
+        // Delegate to MutationRequestTestGenerator for mutation requests
+        if ($this->mutationTestGenerator->isMutationRequest($endpoint)) {
+            return $this->mutationTestGenerator->getStubPath();
         }
 
         return __DIR__.'/stubs/pest-resource-test-func.stub';
@@ -143,7 +151,15 @@ class JsonApiPestTestGenerator extends PestTestGenerator
             $functionStub = $this->collectionTestGenerator->replaceStubVariables($functionStub, $endpoint);
         }
 
-        // Only generate mock data for GET requests
+        // Delegate to MutationRequestTestGenerator for mutation requests
+        if ($this->mutationTestGenerator->isMutationRequest($endpoint)) {
+            $functionStub = $this->mutationTestGenerator->replaceStubVariables($functionStub, $endpoint);
+
+            // Return early - mutation generator handles everything
+            return $functionStub;
+        }
+
+        // Generate mock data for GET requests (without validation)
         if ($endpoint->method->isGet()) {
             // Replace fixture with inline mock data
             // Match both the template variable and actual fixture names

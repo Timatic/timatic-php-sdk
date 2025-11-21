@@ -55,17 +55,35 @@ it('calls the getCustomers method in the Customer resource', function () {
 });
 
 it('calls the postCustomers method in the Customer resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PostCustomersRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->customer()->postCustomers(
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Customer;
+    $dto->externalId = 'test-id-123';
+    $dto->name = 'test name';
+    $dto->hourlyRate = 'test value';
+    $dto->accountManagerUserId = 'test-id-123';
+    // todo: add every other DTO field
 
-    );
-
+    $this->timaticConnector->customer()->postCustomers($dto);
     Saloon::assertSent(PostCustomersRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            // POST calls dont have an ID field
+            ->data->type->toBe('customer')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('test-id-123')
+            ->name->toBe('test name')
+            ->hourlyRate->toBe('test value')
+            ->accountManagerUserId->toBe('test-id-123')
+            );
+
+        return true;
+    });
 });
 
 it('calls the getCustomer method in the Customer resource', function () {
@@ -105,15 +123,32 @@ it('calls the deleteCustomer method in the Customer resource', function () {
 });
 
 it('calls the patchCustomer method in the Customer resource', function () {
-    Saloon::fake([
+    $mockClient = Saloon::fake([
         PatchCustomerRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->customer()->patchCustomer(
-        customerId: 'test string'
-    );
+    // Create DTO with sample data
+    $dto = new \Timatic\SDK\Dto\Customer;
+    $dto->externalId = 'test-id-123';
+    $dto->name = 'test name';
+    $dto->hourlyRate = 'test value';
+    $dto->accountManagerUserId = 'test-id-123';
+    // todo: add every other DTO field
 
+    $this->timaticConnector->customer()->patchCustomer(customerId: 'test string', $dto);
     Saloon::assertSent(PatchCustomerRequest::class);
 
-    expect($response->status())->toBe(200);
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('customer')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('test-id-123')
+            ->name->toBe('test name')
+            ->hourlyRate->toBe('test value')
+            ->accountManagerUserId->toBe('test-id-123')
+            );
+
+        return true;
+    });
 });
