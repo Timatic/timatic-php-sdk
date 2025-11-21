@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\Budget\DeleteBudgetRequest;
 use Timatic\SDK\Requests\Budget\GetBudgetRequest;
@@ -17,30 +18,25 @@ it('calls the getBudgets method in the Budget resource', function () {
         GetBudgetsRequest::class => MockResponse::fixture('budget.getBudgets'),
     ]);
 
-    $response = $this->timaticConnector->budget()->getBudgets(
-        filtercustomerId: 123,
-        filtercustomerIdeq: 123,
-        filtercustomerIdnq: 123,
-        filtercustomerIdgt: 123,
-        filtercustomerIdlt: 123,
-        filtercustomerIdgte: 123,
-        filtercustomerIdlte: 123,
-        filtercustomerIdcontains: 123,
-        filterbudgetTypeId: 'test string',
-        filterbudgetTypeIdeq: 'test string',
-        filterbudgetTypeIdnq: 'test string',
-        filterbudgetTypeIdgt: 'test string',
-        filterbudgetTypeIdlt: 'test string',
-        filterbudgetTypeIdgte: 'test string',
-        filterbudgetTypeIdlte: 'test string',
-        filterbudgetTypeIdcontains: 'test string',
-        filterisArchived: 'test string',
-        filtercustomerExternalId: 'test string',
-        filtershowToCustomer: 'test string',
-        include: 'test string'
-    );
+    $request = (new GetBudgetsRequest(include: 'test string'))
+        ->filter('customerId', 'test-id-123')
+        ->filter('budgetTypeId', 'test-id-123')
+        ->filter('isArchived', true);
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetBudgetsRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[customerId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[budgetTypeId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[isArchived]', true);
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

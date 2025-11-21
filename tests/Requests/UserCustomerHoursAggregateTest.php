@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\UserCustomerHoursAggregate\GetUserCustomerHoursAggregatesRequest;
 
@@ -13,42 +14,25 @@ it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggr
         GetUserCustomerHoursAggregatesRequest::class => MockResponse::fixture('userCustomerHoursAggregate.getUserCustomerHoursAggregates'),
     ]);
 
-    $response = $this->timaticConnector->userCustomerHoursAggregate()->getUserCustomerHoursAggregates(
-        filterstartedAt: 'test string',
-        filterstartedAteq: 'test string',
-        filterstartedAtnq: 'test string',
-        filterstartedAtgt: 'test string',
-        filterstartedAtlt: 'test string',
-        filterstartedAtgte: 'test string',
-        filterstartedAtlte: 'test string',
-        filterstartedAtcontains: 'test string',
-        filterendedAt: 'test string',
-        filterendedAteq: 'test string',
-        filterendedAtnq: 'test string',
-        filterendedAtgt: 'test string',
-        filterendedAtlt: 'test string',
-        filterendedAtgte: 'test string',
-        filterendedAtlte: 'test string',
-        filterendedAtcontains: 'test string',
-        filterteamId: 'test string',
-        filterteamIdeq: 'test string',
-        filterteamIdnq: 'test string',
-        filterteamIdgt: 'test string',
-        filterteamIdlt: 'test string',
-        filterteamIdgte: 'test string',
-        filterteamIdlte: 'test string',
-        filterteamIdcontains: 'test string',
-        filteruserId: 'test string',
-        filteruserIdeq: 'test string',
-        filteruserIdnq: 'test string',
-        filteruserIdgt: 'test string',
-        filteruserIdlt: 'test string',
-        filteruserIdgte: 'test string',
-        filteruserIdlte: 'test string',
-        filteruserIdcontains: 'test string'
-    );
+    $request = (new GetUserCustomerHoursAggregatesRequest)
+        ->filter('startedAt', '2025-01-01')
+        ->filter('endedAt', '2025-01-01')
+        ->filter('teamId', 'test-id-123');
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetUserCustomerHoursAggregatesRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01');
+        expect($query)->toHaveKey('filter[endedAt]', '2025-01-01');
+        expect($query)->toHaveKey('filter[teamId]', 'test-id-123');
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

@@ -28,9 +28,9 @@ it('calls the getChanges method in the Change resource', function () {
         GetChangesRequest::class => MockResponse::fixture('change.getChanges'),
     ]);
 
-    $response = $this->timaticConnector->change()->getChanges(
+    $request = (new GetChangesRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetChangesRequest::class);
 

@@ -13,9 +13,9 @@ it('calls the getMes method in the Me resource', function () {
         GetMesRequest::class => MockResponse::fixture('me.getMes'),
     ]);
 
-    $response = $this->timaticConnector->me()->getMes(
+    $request = (new GetMesRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetMesRequest::class);
 

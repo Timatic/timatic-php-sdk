@@ -13,9 +13,9 @@ it('calls the getDailyProgresses method in the DailyProgress resource', function
         GetDailyProgressesRequest::class => MockResponse::fixture('dailyProgress.getDailyProgresses'),
     ]);
 
-    $response = $this->timaticConnector->dailyProgress()->getDailyProgresses(
+    $request = (new GetDailyProgressesRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetDailyProgressesRequest::class);
 

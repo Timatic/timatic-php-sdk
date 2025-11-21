@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\Overtime\GetOvertimesRequest;
 
@@ -13,36 +14,25 @@ it('calls the getOvertimes method in the Overtime resource', function () {
         GetOvertimesRequest::class => MockResponse::fixture('overtime.getOvertimes'),
     ]);
 
-    $response = $this->timaticConnector->overtime()->getOvertimes(
-        filterstartedAt: 'test string',
-        filterstartedAteq: 'test string',
-        filterstartedAtnq: 'test string',
-        filterstartedAtgt: 'test string',
-        filterstartedAtlt: 'test string',
-        filterstartedAtgte: 'test string',
-        filterstartedAtlte: 'test string',
-        filterstartedAtcontains: 'test string',
-        filterendedAt: 'test string',
-        filterendedAteq: 'test string',
-        filterendedAtnq: 'test string',
-        filterendedAtgt: 'test string',
-        filterendedAtlt: 'test string',
-        filterendedAtgte: 'test string',
-        filterendedAtlte: 'test string',
-        filterendedAtcontains: 'test string',
-        filterisApproved: 'test string',
-        filterapprovedAt: 'test string',
-        filterapprovedAteq: 'test string',
-        filterapprovedAtnq: 'test string',
-        filterapprovedAtgt: 'test string',
-        filterapprovedAtlt: 'test string',
-        filterapprovedAtgte: 'test string',
-        filterapprovedAtlte: 'test string',
-        filterapprovedAtcontains: 'test string',
-        filterisExported: 'test string'
-    );
+    $request = (new GetOvertimesRequest)
+        ->filter('startedAt', '2025-01-01')
+        ->filter('endedAt', '2025-01-01')
+        ->filter('isApproved', true);
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetOvertimesRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01');
+        expect($query)->toHaveKey('filter[endedAt]', '2025-01-01');
+        expect($query)->toHaveKey('filter[isApproved]', true);
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

@@ -28,9 +28,9 @@ it('calls the getIncidents method in the Incident resource', function () {
         GetIncidentsRequest::class => MockResponse::fixture('incident.getIncidents'),
     ]);
 
-    $response = $this->timaticConnector->incident()->getIncidents(
+    $request = (new GetIncidentsRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetIncidentsRequest::class);
 

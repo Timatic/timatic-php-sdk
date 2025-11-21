@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\Entry\DeleteEntryRequest;
 use Timatic\SDK\Requests\Entry\GetEntriesRequest;
@@ -17,78 +18,25 @@ it('calls the getEntries method in the Entry resource', function () {
         GetEntriesRequest::class => MockResponse::fixture('entry.getEntries'),
     ]);
 
-    $response = $this->timaticConnector->entry()->getEntries(
-        filteruserId: 'test string',
-        filteruserIdeq: 'test string',
-        filteruserIdnq: 'test string',
-        filteruserIdgt: 'test string',
-        filteruserIdlt: 'test string',
-        filteruserIdgte: 'test string',
-        filteruserIdlte: 'test string',
-        filteruserIdcontains: 'test string',
-        filterbudgetId: 'test string',
-        filterbudgetIdeq: 'test string',
-        filterbudgetIdnq: 'test string',
-        filterbudgetIdgt: 'test string',
-        filterbudgetIdlt: 'test string',
-        filterbudgetIdgte: 'test string',
-        filterbudgetIdlte: 'test string',
-        filterbudgetIdcontains: 'test string',
-        filterstartedAt: 'test string',
-        filterstartedAteq: 'test string',
-        filterstartedAtnq: 'test string',
-        filterstartedAtgt: 'test string',
-        filterstartedAtlt: 'test string',
-        filterstartedAtgte: 'test string',
-        filterstartedAtlte: 'test string',
-        filterstartedAtcontains: 'test string',
-        filterendedAt: 'test string',
-        filterendedAteq: 'test string',
-        filterendedAtnq: 'test string',
-        filterendedAtgt: 'test string',
-        filterendedAtlt: 'test string',
-        filterendedAtgte: 'test string',
-        filterendedAtlte: 'test string',
-        filterendedAtcontains: 'test string',
-        filterhasOvertime: 'test string',
-        filterhasOvertimeeq: 'test string',
-        filterhasOvertimenq: 'test string',
-        filterhasOvertimegt: 'test string',
-        filterhasOvertimelt: 'test string',
-        filterhasOvertimegte: 'test string',
-        filterhasOvertimelte: 'test string',
-        filterhasOvertimecontains: 'test string',
-        filteruserFullName: 'test string',
-        filteruserFullNameeq: 'test string',
-        filteruserFullNamenq: 'test string',
-        filteruserFullNamegt: 'test string',
-        filteruserFullNamelt: 'test string',
-        filteruserFullNamegte: 'test string',
-        filteruserFullNamelte: 'test string',
-        filteruserFullNamecontains: 'test string',
-        filtercustomerId: 'test string',
-        filtercustomerIdeq: 'test string',
-        filtercustomerIdnq: 'test string',
-        filtercustomerIdgt: 'test string',
-        filtercustomerIdlt: 'test string',
-        filtercustomerIdgte: 'test string',
-        filtercustomerIdlte: 'test string',
-        filtercustomerIdcontains: 'test string',
-        filterticketNumber: 'test string',
-        filterticketNumbereq: 'test string',
-        filterticketNumbernq: 'test string',
-        filterticketNumbergt: 'test string',
-        filterticketNumberlt: 'test string',
-        filterticketNumbergte: 'test string',
-        filterticketNumberlte: 'test string',
-        filterticketNumbercontains: 'test string',
-        filtersettlement: 'test string',
-        filterisInvoiced: 'test string',
-        filterisInvoiceable: 'test string',
-        include: 'test string'
-    );
+    $request = (new GetEntriesRequest(include: 'test string'))
+        ->filter('userId', 'test-id-123')
+        ->filter('budgetId', 'test-id-123')
+        ->filter('startedAt', '2025-01-01');
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetEntriesRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[userId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[budgetId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01');
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

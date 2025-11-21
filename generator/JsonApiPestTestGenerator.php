@@ -11,6 +11,13 @@ use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 
 class JsonApiPestTestGenerator extends PestTestGenerator
 {
+    protected CollectionRequestTestGenerator $collectionTestGenerator;
+
+    public function __construct()
+    {
+        $this->collectionTestGenerator = new CollectionRequestTestGenerator;
+    }
+
     /**
      * Skip generating Pest.php - we have a custom version
      */
@@ -40,7 +47,7 @@ class JsonApiPestTestGenerator extends PestTestGenerator
      */
     protected function getTestStubPath(): string
     {
-        return __DIR__.'/Stubs/pest-resource-test.stub';
+        return __DIR__.'/stubs/pest-resource-test.stub';
     }
 
     /**
@@ -48,7 +55,12 @@ class JsonApiPestTestGenerator extends PestTestGenerator
      */
     protected function getTestFunctionStubPath(Endpoint $endpoint): string
     {
-        return __DIR__.'/Stubs/pest-resource-test-func.stub';
+        // Delegate to CollectionRequestTestGenerator for collection requests
+        if ($this->collectionTestGenerator->isCollectionRequest($endpoint)) {
+            return $this->collectionTestGenerator->getStubPath();
+        }
+
+        return __DIR__.'/stubs/pest-resource-test-func.stub';
     }
 
     /**
@@ -96,5 +108,22 @@ class JsonApiPestTestGenerator extends PestTestGenerator
         }
 
         return $name;
+    }
+
+    /**
+     * Hook: Replace additional stub variables
+     */
+    protected function replaceAdditionalStubVariables(
+        string $functionStub,
+        Endpoint $endpoint,
+        string $resourceName,
+        string $requestClassName
+    ): string {
+        // Delegate to CollectionRequestTestGenerator for collection requests
+        if ($this->collectionTestGenerator->isCollectionRequest($endpoint)) {
+            return $this->collectionTestGenerator->replaceStubVariables($functionStub, $endpoint);
+        }
+
+        return $functionStub;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\EntrySuggestion\DeleteEntrySuggestionRequest;
 use Timatic\SDK\Requests\EntrySuggestion\GetEntrySuggestionRequest;
@@ -15,18 +16,21 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
         GetEntrySuggestionsRequest::class => MockResponse::fixture('entrySuggestion.getEntrySuggestions'),
     ]);
 
-    $response = $this->timaticConnector->entrySuggestion()->getEntrySuggestions(
-        filterdate: 'test string',
-        filterdateeq: 'test string',
-        filterdatenq: 'test string',
-        filterdategt: 'test string',
-        filterdatelt: 'test string',
-        filterdategte: 'test string',
-        filterdatelte: 'test string',
-        filterdatecontains: 'test string'
-    );
+    $request = (new GetEntrySuggestionsRequest)
+        ->filter('date', 'test-value');
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetEntrySuggestionsRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[date]', 'test-value');
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

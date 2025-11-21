@@ -13,9 +13,9 @@ it('calls the getBudgetsExportMails method in the ExportMail resource', function
         GetBudgetsExportMailsRequest::class => MockResponse::fixture('exportMail.getBudgetsExportMails'),
     ]);
 
-    $response = $this->timaticConnector->exportMail()->getBudgetsExportMails(
+    $request = (new GetBudgetsExportMailsRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetBudgetsExportMailsRequest::class);
 

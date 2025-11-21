@@ -17,9 +17,9 @@ it('calls the getTeams method in the Team resource', function () {
         GetTeamsRequest::class => MockResponse::fixture('team.getTeams'),
     ]);
 
-    $response = $this->timaticConnector->team()->getTeams(
+    $request = (new GetTeamsRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetTeamsRequest::class);
 

@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\User\DeleteUserRequest;
 use Timatic\SDK\Requests\User\GetUserRequest;
@@ -17,12 +18,21 @@ it('calls the getUsers method in the User resource', function () {
         GetUsersRequest::class => MockResponse::fixture('user.getUsers'),
     ]);
 
-    $response = $this->timaticConnector->user()->getUsers(
-        filterexternalId: 'test string',
-        filterexternalIdeq: 'test string'
-    );
+    $request = (new GetUsersRequest)
+        ->filter('externalId', 'test-id-123');
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetUsersRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[externalId]', 'test-id-123');
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

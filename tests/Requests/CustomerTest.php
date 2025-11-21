@@ -1,6 +1,7 @@
 <?php
 
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\SDK\Requests\Customer\DeleteCustomerRequest;
 use Timatic\SDK\Requests\Customer\GetCustomerRequest;
@@ -17,12 +18,21 @@ it('calls the getCustomers method in the Customer resource', function () {
         GetCustomersRequest::class => MockResponse::fixture('customer.getCustomers'),
     ]);
 
-    $response = $this->timaticConnector->customer()->getCustomers(
-        filterexternalId: 'test string',
-        filterexternalIdeq: 'test string'
-    );
+    $request = (new GetCustomersRequest)
+        ->filter('externalId', 'test-id-123');
+
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetCustomersRequest::class);
+
+    // Verify filter query parameters are present
+    Saloon::assertSent(function (Request $request) {
+        $query = $request->query()->all();
+
+        expect($query)->toHaveKey('filter[externalId]', 'test-id-123');
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 });

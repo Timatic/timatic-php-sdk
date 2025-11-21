@@ -13,9 +13,9 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
         GetBudgetTypesRequest::class => MockResponse::fixture('budgetType.getBudgetTypes'),
     ]);
 
-    $response = $this->timaticConnector->budgetType()->getBudgetTypes(
+    $request = (new GetBudgetTypesRequest);
 
-    );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetBudgetTypesRequest::class);
 
