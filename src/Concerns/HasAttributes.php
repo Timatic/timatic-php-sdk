@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Foundation;
+namespace Timatic\SDK\Concerns;
 
 use ReflectionClass;
 use Timatic\SDK\Attributes\Property;

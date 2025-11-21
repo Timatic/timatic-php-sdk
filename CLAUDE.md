@@ -280,7 +280,7 @@ PUT is intentionally excluded as PATCH provides better semantics for partial upd
 - **`tests/*Test.php`** - All test files (auto-generated from OpenAPI endpoints, Pest.php and TestCase.php are preserved)
 
 ### ✅ SAFE TO EDIT:
-- **`src/Foundation/`** - Base classes (Model, HasAttributes, etc.)
+- **`src/Concerns/`** - Base classes and traits (Model, HasAttributes, HasFilters, etc.)
 - **`src/Attributes/`** - PHP attributes (Property, DateTime)
 - **`src/Responses/`** - Custom response classes (TimaticResponse)
 - **`src/Pagination/`** - Pagination classes (JsonApiPaginator)

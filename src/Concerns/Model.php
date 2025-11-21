@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Foundation;
+namespace Timatic\SDK\Concerns;
 
 use Illuminate\Support\Str;
 use ReflectionClass;

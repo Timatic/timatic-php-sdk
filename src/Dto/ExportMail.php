@@ -2,6 +2,6 @@
 
 namespace Timatic\SDK\Dto;
 
-use Timatic\SDK\Foundation\Model;
+use Timatic\SDK\Concerns\Model;
 
 class ExportMail extends Model {}

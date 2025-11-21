@@ -3,7 +3,7 @@
 namespace Timatic\SDK\Dto;
 
 use Timatic\SDK\Attributes\Property;
-use Timatic\SDK\Foundation\Model;
+use Timatic\SDK\Concerns\Model;
 
 class User extends Model
 {

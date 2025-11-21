@@ -15,7 +15,7 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Timatic\SDK\Attributes\DateTime;
 use Timatic\SDK\Attributes\Property;
-use Timatic\SDK\Foundation\Model;
+use Timatic\SDK\Concerns\Model;
 
 class JsonApiDtoGenerator extends Generator
 {

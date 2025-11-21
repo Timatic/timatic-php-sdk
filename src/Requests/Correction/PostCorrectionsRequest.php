@@ -6,7 +6,7 @@ use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\SDK\Foundation\Model;
+use Timatic\SDK\Concerns\Model;
 
 /**
  * postCorrections
@@ -23,7 +23,7 @@ class PostCorrectionsRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|Timatic\SDK\Foundation\Model|array|null  $data  Request data
+     * @param  null|Timatic\SDK\Concerns\Model|array|null  $data  Request data
      */
     public function __construct(
         protected Model|array|null $data = null,

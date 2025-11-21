@@ -11,7 +11,7 @@ use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
 use Nette\PhpGenerator\ClassType;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
-use Timatic\SDK\Foundation\Model;
+use Timatic\SDK\Concerns\Model;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
@@ -81,7 +81,7 @@ class JsonApiRequestGenerator extends RequestGenerator
         $namespace->addUse(Model::class);
 
         $dataParam = new Parameter(
-            type: 'Timatic\\SDK\\Foundation\\Model|array|null',
+            type: 'Timatic\\SDK\\Concerns\\Model|array|null',
             nullable: true,
             name: 'data',
             description: 'Request data',
