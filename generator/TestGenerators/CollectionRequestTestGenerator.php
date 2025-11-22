@@ -32,7 +32,7 @@ class CollectionRequestTestGenerator
      */
     public function getStubPath(): string
     {
-        return __DIR__.'/stubs/pest-fluent-filter-test-func.stub';
+        return __DIR__.'/stubs/pest-collection-request-test-func.stub';
     }
 
     /**
