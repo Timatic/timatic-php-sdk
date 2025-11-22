@@ -117,67 +117,6 @@ if ($result->connectorClass) {
 // Post-process and write resources
 echo "\n📦 Resources:\n";
 foreach ($result->resourceClasses as $resourceClass) {
-    $namespace = array_values($resourceClass->getNamespaces())[0];
-    $classType = array_values($namespace->getClasses())[0];
-
-    // Fix imports - add "Request" suffix to all Request class imports
-    foreach ($namespace->getUses() as $alias => $fqn) {
-        // Check if this is a Request class import
-        if (str_contains($fqn, '\\Requests\\')) {
-            $className = basename(str_replace('\\', '/', $fqn));
-            // Add "Request" suffix if not already present
-            if (! str_ends_with($className, 'Request')) {
-                $newFqn = substr($fqn, 0, -strlen($className)).$className.'Request';
-                $namespace->removeUse($fqn);
-                $namespace->addUse($newFqn, $className.'Request');
-            }
-        }
-    }
-
-    // Fix class references: add "Request" suffix to class instantiations in method body
-    foreach ($classType->getMethods() as $method) {
-        $body = $method->getBody();
-
-        // Add "Request" suffix to class instantiations in method body
-        $body = preg_replace_callback(
-            '/\(new\s+(\w+)\(/',
-            function ($matches) {
-                $className = $matches[1];
-                // Add "Request" suffix if not already present
-                if (! str_ends_with($className, 'Request')) {
-                    return '(new '.$className.'Request(';
-                }
-
-                return $matches[0];
-            },
-            $body
-        );
-
-        // Fix mutation methods that have $data parameter but don't pass it
-        $methodName = $method->getName();
-        if (preg_match('/^(post|patch)/i', $methodName) && $method->hasParameter('data')) {
-            // Check if Request instantiation exists without $data parameter
-            // Matches: new PostBudgetsRequest() or new PostBudgetsRequest (without parens)
-            if (preg_match('/new\s+\w+Request\(\s*\)/', $body)) {
-                // Has empty parens: replace () with ($data)
-                $body = preg_replace(
-                    '/new\s+(\w+Request)\(\s*\)/',
-                    'new $1($data)',
-                    $body
-                );
-            } elseif (preg_match('/new\s+\w+Request(?![(\w])/', $body)) {
-                // No parens: add ($data)
-                $body = preg_replace(
-                    '/new\s+(\w+Request)(?![(\w])/',
-                    'new $1($data)',
-                    $body
-                );
-            }
-        }
-
-        $method->setBody($body);
-    }
-
     $path = writeFile($resourceClass, $outputDir, $config->namespace);
     echo '  ✓ '.basename($path)."\n";
 }
@@ -227,22 +166,7 @@ if ($tests && is_array($tests)) {
                 mkdir($dir, 0755, true);
             }
 
-            // Apply path parameter transformations (as fallback if generator didn't do it)
-            $testContent = $file->file;
-            $resourceNames = [
-                'budget', 'customer', 'user', 'team', 'entry', 'entrySuggestion',
-                'correction', 'change', 'incident', 'overtime',
-            ];
-
-            foreach ($resourceNames as $resourceName) {
-                $testContent = preg_replace(
-                    "/\b{$resourceName}:\s*(['\"])/",
-                    "{$resourceName}Id: $1",
-                    $testContent
-                );
-            }
-
-            file_put_contents($testPath, $testContent);
+            file_put_contents($testPath, $file->file);
             echo '  ✓ '.basename($testPath)."\n";
         }
     }
