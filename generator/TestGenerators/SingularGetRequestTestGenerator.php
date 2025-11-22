@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Timatic\SDK\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
-use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\OpenApiSpecLoaderTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
@@ -57,29 +56,19 @@ class SingularGetRequestTestGenerator
         // Try to determine the schema for this endpoint
         $schema = $this->getResponseSchemaForEndpoint($endpoint);
 
-        if ($schema) {
-            // Generate mock data based on schema
-            $attributes = $this->generateMockAttributes($schema);
-            $resourceType = $this->getResourceTypeFromSchema($schema);
-
-            return [
-                'data' => [
-                    'type' => $resourceType,
-                    'id' => 'mock-id-123',
-                    'attributes' => $attributes,
-                ],
-            ];
+        if (! $schema) {
+            throw new \Exception('schema operation not found');
         }
 
-        // Fallback: generic mock data
-        $resourceName = NameHelper::resourceClassName($endpoint->collection);
-        $resourceType = NameHelper::safeVariableName($resourceName);
+        // Generate mock data based on schema
+        $attributes = $this->generateMockAttributes($schema);
+        $resourceType = $this->getResourceTypeFromSchema($schema);
 
         return [
             'data' => [
                 'type' => $resourceType,
                 'id' => 'mock-id-123',
-                'attributes' => ['name' => 'Mock item'],
+                'attributes' => $attributes,
             ],
         ];
     }
