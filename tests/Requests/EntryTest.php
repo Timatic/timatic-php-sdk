@@ -18,7 +18,7 @@ it('calls the getEntries method in the Entry resource', function () {
         GetEntriesRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'entries',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
@@ -49,7 +49,7 @@ it('calls the getEntries method in the Entry resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'entries',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
@@ -154,7 +154,6 @@ it('calls the postEntries method in the Entry resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->ticketId->toBe('ticket_id-123')
@@ -171,7 +170,7 @@ it('calls the getEntry method in the Entry resource', function () {
     Saloon::fake([
         GetEntryRequest::class => MockResponse::make([
             'data' => [
-                'type' => 'resources',
+                'type' => 'entries',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'ticketId' => 'mock-id-123',

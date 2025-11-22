@@ -28,7 +28,6 @@ it('calls the postEvents method in the Event resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('events')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->userId->toBe('user_id-123')

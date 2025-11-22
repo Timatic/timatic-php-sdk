@@ -28,7 +28,6 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('markAsInvoiceds')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->ticketId->toBe('ticket_id-123')

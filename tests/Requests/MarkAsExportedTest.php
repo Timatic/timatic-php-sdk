@@ -28,7 +28,6 @@ it('calls the postOvertimeMarkAsExported method in the MarkAsExported resource',
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('markAsExporteds')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->entryId->toBe('entry_id-123')

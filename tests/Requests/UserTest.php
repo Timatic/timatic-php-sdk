@@ -18,7 +18,7 @@ it('calls the getUsers method in the User resource', function () {
         GetUsersRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'users',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
@@ -26,7 +26,7 @@ it('calls the getUsers method in the User resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'users',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
@@ -79,7 +79,6 @@ it('calls the postUsers method in the User resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('external_id-123')
@@ -94,7 +93,7 @@ it('calls the getUser method in the User resource', function () {
     Saloon::fake([
         GetUserRequest::class => MockResponse::make([
             'data' => [
-                'type' => 'resources',
+                'type' => 'users',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'externalId' => 'mock-id-123',

@@ -18,7 +18,7 @@ it('calls the getTeams method in the Team resource', function () {
         GetTeamsRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'teams',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
@@ -26,7 +26,7 @@ it('calls the getTeams method in the Team resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'teams',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
@@ -69,7 +69,6 @@ it('calls the postTeams method in the Team resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('teams')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('external_id-123')
@@ -84,7 +83,7 @@ it('calls the getTeam method in the Team resource', function () {
     Saloon::fake([
         GetTeamRequest::class => MockResponse::make([
             'data' => [
-                'type' => 'resources',
+                'type' => 'teams',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'externalId' => 'mock-id-123',

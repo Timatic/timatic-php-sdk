@@ -13,7 +13,7 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
         GetBudgetTypesRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'budgetTypes',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'title' => 'Mock value',
@@ -28,7 +28,7 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'budgetTypes',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'title' => 'Mock value',

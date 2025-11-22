@@ -26,7 +26,6 @@ it('calls the postCorrections method in the Correction resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('corrections');
 
         return true;

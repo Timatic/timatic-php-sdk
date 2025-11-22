@@ -15,7 +15,7 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
         GetTimeSpentTotalsRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'timeSpentTotals',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'start' => '2025-11-22T10:40:04.065Z',
@@ -27,7 +27,7 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'timeSpentTotals',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'start' => '2025-11-22T10:40:04.065Z',

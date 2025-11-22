@@ -189,28 +189,6 @@ trait SchemaExtractorTrait
     }
 
     /**
-     * Get the resource type from a schema (e.g., "users", "entries")
-     */
-    protected function getResourceTypeFromSchema(Schema $schema): string
-    {
-        // Try to extract from schema title
-        if ($schema->title) {
-            return NameHelper::safeVariableName($schema->title);
-        }
-
-        // Try to get from properties.type.example (JSON:API type field)
-        if (isset($schema->properties['type'])) {
-            $typeProperty = $schema->properties['type'];
-            if ($typeProperty instanceof Schema && $typeProperty->example) {
-                return $typeProperty->example;
-            }
-        }
-
-        // Fallback to generic name
-        return 'resources';
-    }
-
-    /**
      * Get the resource type for JSON:API from endpoint (camelCase plural)
      * API uses ->camel()->plural()->toString() for type determination
      */

@@ -16,7 +16,7 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
         GetEntrySuggestionsRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'entrySuggestions',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
@@ -30,7 +30,7 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'entrySuggestions',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
@@ -82,7 +82,7 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
     Saloon::fake([
         GetEntrySuggestionRequest::class => MockResponse::make([
             'data' => [
-                'type' => 'resources',
+                'type' => 'entrySuggestions',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'ticketId' => 'mock-id-123',

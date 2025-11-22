@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators;
 
-use cebe\openapi\spec\Schema;
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
@@ -210,7 +208,7 @@ class MutationRequestTestGenerator
         $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
         if (empty($properties)) {
-            return $this->generateFallbackBodyValidation($resourceType, $endpoint);
+            throw new \Exception('DTO has no properties');
         }
 
         $lines = [];
@@ -218,11 +216,6 @@ class MutationRequestTestGenerator
         $lines[] = '    $mockClient->assertSent(function (Request $request) {';
         $lines[] = '        expect($request->body()->all())';
         $lines[] = "            ->toHaveKey('data')";
-
-        // POST calls don't have an ID field in the request
-        if ($endpoint->method->isPost()) {
-            $lines[] = '            // POST calls dont have an ID field';
-        }
 
         // Generate attribute validations
         $attributeValidations = $this->generateAttributeValidationsFromDto($properties);
@@ -271,31 +264,6 @@ class MutationRequestTestGenerator
             $lines[] = "                ->{$propName}->toBe({$assertionValue})";
             $count++;
         }
-
-        return implode("\n", $lines);
-    }
-
-    /**
-     * Generate fallback body validation when schema is not available
-     */
-    protected function generateFallbackBodyValidation(string $resourceType, Endpoint $endpoint): string
-    {
-        $lines = [];
-        $lines[] = '    $mockClient->assertSent(function (Request $request) {';
-        $lines[] = '        expect($request->body()->all())';
-        $lines[] = "            ->toHaveKey('data')";
-
-        if ($endpoint->method->isPost()) {
-            $lines[] = '            // POST calls dont have an ID field';
-        }
-
-        $lines[] = "            ->data->type->toBe('{$resourceType}')";
-        $lines[] = '            ->data->attributes->scoped(fn ($attributes) => $attributes';
-        $lines[] = "                ->name->toBe('test value')";
-        $lines[] = '            );';
-        $lines[] = '';
-        $lines[] = '        return true;';
-        $lines[] = '    });';
 
         return implode("\n", $lines);
     }

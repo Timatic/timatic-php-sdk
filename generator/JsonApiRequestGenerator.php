@@ -8,8 +8,6 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
-use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;

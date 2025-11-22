@@ -14,7 +14,7 @@ it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggr
         GetUserCustomerHoursAggregatesRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'userCustomerHoursAggregates',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'customerId' => 'mock-id-123',
@@ -25,7 +25,7 @@ it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggr
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'userCustomerHoursAggregates',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'customerId' => 'mock-id-123',

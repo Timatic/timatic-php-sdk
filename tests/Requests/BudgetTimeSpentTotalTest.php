@@ -15,7 +15,7 @@ it('calls the getBudgetTimeSpentTotals method in the BudgetTimeSpentTotal resour
         GetBudgetTimeSpentTotalsRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'budgetTimeSpentTotals',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'start' => '2025-11-22T10:40:04.065Z',
@@ -26,7 +26,7 @@ it('calls the getBudgetTimeSpentTotals method in the BudgetTimeSpentTotal resour
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'budgetTimeSpentTotals',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'start' => '2025-11-22T10:40:04.065Z',

@@ -14,7 +14,7 @@ it('calls the getDailyProgresses method in the DailyProgress resource', function
         GetDailyProgressesRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'dailyProgresses',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'userId' => 'mock-id-123',
@@ -23,7 +23,7 @@ it('calls the getDailyProgresses method in the DailyProgress resource', function
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'dailyProgresses',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'userId' => 'mock-id-123',

@@ -8,7 +8,6 @@ use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
@@ -114,7 +113,7 @@ class CollectionRequestTestGenerator
             $attributes = $this->generateMockAttributes($schema);
         }
 
-        $resourceType = $this->getResourceTypeFromSchema($schema);
+        $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
 
         // Generate 2-3 items for collections
         return [

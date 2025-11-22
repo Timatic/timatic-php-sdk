@@ -18,7 +18,7 @@ it('calls the getCustomers method in the Customer resource', function () {
         GetCustomersRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'customers',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
@@ -28,7 +28,7 @@ it('calls the getCustomers method in the Customer resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'customers',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
@@ -87,7 +87,6 @@ it('calls the postCustomers method in the Customer resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('external_id-123')
@@ -104,7 +103,7 @@ it('calls the getCustomer method in the Customer resource', function () {
     Saloon::fake([
         GetCustomerRequest::class => MockResponse::make([
             'data' => [
-                'type' => 'resources',
+                'type' => 'customers',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'externalId' => 'mock-id-123',

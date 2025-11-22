@@ -7,8 +7,6 @@ namespace Timatic\SDK\Generator\TestGenerators;
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
-use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
@@ -99,7 +97,7 @@ class SingularGetRequestTestGenerator
             $attributes = $this->generateMockAttributes($schema);
         }
 
-        $resourceType = $this->getResourceTypeFromSchema($schema);
+        $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
 
         return [
             'data' => [

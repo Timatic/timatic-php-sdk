@@ -14,7 +14,7 @@ it('calls the getOvertimes method in the Overtime resource', function () {
         GetOvertimesRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'overtimes',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'entryId' => 'mock-id-123',
@@ -28,7 +28,7 @@ it('calls the getOvertimes method in the Overtime resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'overtimes',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'entryId' => 'mock-id-123',

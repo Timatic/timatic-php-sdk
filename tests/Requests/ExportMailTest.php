@@ -13,14 +13,14 @@ it('calls the getBudgetsExportMails method in the ExportMail resource', function
         GetBudgetsExportMailsRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'exportMails',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'name' => 'Mock value',
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'exportMails',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'name' => 'Mock value',

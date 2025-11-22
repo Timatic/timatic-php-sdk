@@ -19,7 +19,7 @@ it('calls the getBudgets method in the Budget resource', function () {
         GetBudgetsRequest::class => MockResponse::make([
             'data' => [
                 0 => [
-                    'type' => 'resources',
+                    'type' => 'budgets',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'budgetTypeId' => 'mock-id-123',
@@ -39,7 +39,7 @@ it('calls the getBudgets method in the Budget resource', function () {
                     ],
                 ],
                 1 => [
-                    'type' => 'resources',
+                    'type' => 'budgets',
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'budgetTypeId' => 'mock-id-123',
@@ -122,7 +122,6 @@ it('calls the postBudgets method in the Budget resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            // POST calls dont have an ID field
             ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->budgetTypeId->toBe('budget_type_id-123')
@@ -139,7 +138,7 @@ it('calls the getBudget method in the Budget resource', function () {
     Saloon::fake([
         GetBudgetRequest::class => MockResponse::make([
             'data' => [
-                'type' => 'resources',
+                'type' => 'budgets',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'budgetTypeId' => 'mock-id-123',
