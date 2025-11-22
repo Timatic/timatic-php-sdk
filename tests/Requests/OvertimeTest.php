@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
@@ -19,12 +20,12 @@ it('calls the getOvertimes method in the Overtime resource', function () {
                     'attributes' => [
                         'entryId' => 'mock-id-123',
                         'overtimeTypeId' => 'mock-id-123',
-                        'startedAt' => 'Mock value',
-                        'endedAt' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04.065Z',
+                        'endedAt' => '2025-11-22T10:40:04.065Z',
                         'percentages' => 'Mock value',
-                        'approvedAt' => 'Mock value',
+                        'approvedAt' => '2025-11-22T10:40:04.065Z',
                         'approvedByUserId' => 'mock-id-123',
-                        'exportedAt' => 'Mock value',
+                        'exportedAt' => '2025-11-22T10:40:04.065Z',
                     ],
                 ],
                 1 => [
@@ -33,12 +34,12 @@ it('calls the getOvertimes method in the Overtime resource', function () {
                     'attributes' => [
                         'entryId' => 'mock-id-123',
                         'overtimeTypeId' => 'mock-id-123',
-                        'startedAt' => 'Mock value',
-                        'endedAt' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04.065Z',
+                        'endedAt' => '2025-11-22T10:40:04.065Z',
                         'percentages' => 'Mock value',
-                        'approvedAt' => 'Mock value',
+                        'approvedAt' => '2025-11-22T10:40:04.065Z',
                         'approvedByUserId' => 'mock-id-123',
-                        'exportedAt' => 'Mock value',
+                        'exportedAt' => '2025-11-22T10:40:04.065Z',
                     ],
                 ],
             ],
@@ -72,10 +73,10 @@ it('calls the getOvertimes method in the Overtime resource', function () {
     expect($dtoCollection->first())
         ->entryId->toBe('mock-id-123')
         ->overtimeTypeId->toBe('mock-id-123')
-        ->startedAt->toBe('Mock value')
-        ->endedAt->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
         ->percentages->toBe('Mock value')
-        ->approvedAt->toBe('Mock value')
+        ->approvedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
         ->approvedByUserId->toBe('mock-id-123')
-        ->exportedAt->toBe('Mock value');
+        ->exportedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'));
 });

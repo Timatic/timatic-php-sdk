@@ -105,8 +105,11 @@ class JsonApiDtoGenerator extends Generator
         // Add #[Property] attribute
         $property->addAttribute(Property::class);
 
-        // Check if this is a datetime field and add #[DateTime] attribute
-        if ($propertySpec instanceof Schema && $propertySpec->format === 'date-time') {
+        // Check if this is a datetime field by format OR by naming pattern
+        $isDateTime = ($propertySpec instanceof Schema && $propertySpec->format === 'date-time')
+            || $this->looksLikeDateTimeField($propertyName);
+
+        if ($isDateTime) {
             $property->addAttribute(DateTime::class);
             $namespace->addUse(DateTime::class);
 
@@ -120,6 +123,30 @@ class JsonApiDtoGenerator extends Generator
         if ($propertySpec instanceof Schema && $propertySpec->description) {
             $property->addComment($propertySpec->description);
         }
+    }
+
+    protected function looksLikeDateTimeField(string $name): bool
+    {
+        $patterns = [
+            '_at$',      // snake_case: created_at, updated_at, started_at, ended_at, etc.
+            'At$',       // camelCase: createdAt, updatedAt, startedAt, endedAt, etc.
+            '_date$',    // snake_case: birth_date, start_date, etc.
+            'Date$',     // camelCase: birthDate, startDate, etc.
+            '^date_',    // snake_case: date_created, date_modified, etc.
+            '^date[A-Z]', // camelCase: dateCreated, dateModified, etc.
+            '_time$',    // snake_case: start_time, end_time, etc.
+            'Time$',     // camelCase: startTime, endTime, etc.
+            '^time_',    // snake_case: time_started, time_ended, etc.
+            '^time[A-Z]', // camelCase: timeStarted, timeEnded, etc.
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match("/{$pattern}/", $name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function convertOpenApiTypeToPhp(Schema|Reference $schema): string

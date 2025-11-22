@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
@@ -41,9 +42,9 @@ it('calls the getEntries method in the Entry resource', function () {
                         'entryType' => 'Mock value',
                         'description' => 'Mock value',
                         'isInternal' => true,
-                        'startedAt' => 'Mock value',
-                        'endedAt' => 'Mock value',
-                        'invoicedAt' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04.065Z',
+                        'endedAt' => '2025-11-22T10:40:04.065Z',
+                        'invoicedAt' => '2025-11-22T10:40:04.065Z',
                         'isInvoiced' => 'Mock value',
                         'isBasedOnSuggestion' => true,
                     ],
@@ -72,9 +73,9 @@ it('calls the getEntries method in the Entry resource', function () {
                         'entryType' => 'Mock value',
                         'description' => 'Mock value',
                         'isInternal' => true,
-                        'startedAt' => 'Mock value',
-                        'endedAt' => 'Mock value',
-                        'invoicedAt' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04.065Z',
+                        'endedAt' => '2025-11-22T10:40:04.065Z',
+                        'invoicedAt' => '2025-11-22T10:40:04.065Z',
                         'isInvoiced' => 'Mock value',
                         'isBasedOnSuggestion' => true,
                     ],
@@ -128,9 +129,9 @@ it('calls the getEntries method in the Entry resource', function () {
         ->entryType->toBe('Mock value')
         ->description->toBe('Mock value')
         ->isInternal->toBe(true)
-        ->startedAt->toBe('Mock value')
-        ->endedAt->toBe('Mock value')
-        ->invoicedAt->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
         ->isInvoiced->toBe('Mock value')
         ->isBasedOnSuggestion->toBe(true);
 });
@@ -192,9 +193,9 @@ it('calls the getEntry method in the Entry resource', function () {
                     'entryType' => 'Mock value',
                     'description' => 'Mock value',
                     'isInternal' => true,
-                    'startedAt' => 'Mock value',
-                    'endedAt' => 'Mock value',
-                    'invoicedAt' => 'Mock value',
+                    'startedAt' => '2025-11-22T10:40:04.065Z',
+                    'endedAt' => '2025-11-22T10:40:04.065Z',
+                    'invoicedAt' => '2025-11-22T10:40:04.065Z',
                     'isInvoiced' => 'Mock value',
                     'isBasedOnSuggestion' => true,
                 ],
@@ -233,9 +234,9 @@ it('calls the getEntry method in the Entry resource', function () {
         ->entryType->toBe('Mock value')
         ->description->toBe('Mock value')
         ->isInternal->toBe(true)
-        ->startedAt->toBe('Mock value')
-        ->endedAt->toBe('Mock value')
-        ->invoicedAt->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
         ->isInvoiced->toBe('Mock value')
         ->isBasedOnSuggestion->toBe(true);
 });

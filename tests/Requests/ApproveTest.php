@@ -18,8 +18,8 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
     $dto = new \Timatic\SDK\Dto\Approve;
     $dto->entryId = 'entry_id-123';
     $dto->overtimeTypeId = 'overtime_type_id-123';
-    $dto->startedAt = '2025-01-15T10:30:00Z';
-    $dto->endedAt = '2025-01-15T10:30:00Z';
+    $dto->startedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
+    $dto->endedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
 
     $this->timaticConnector->approve()->postOvertimeApprove(overtimeId: 'test string', data: $dto);
     Saloon::assertSent(PostOvertimeApproveRequest::class);
@@ -31,8 +31,8 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->entryId->toBe('entry_id-123')
             ->overtimeTypeId->toBe('overtime_type_id-123')
-            ->startedAt->toBe('2025-01-15T10:30:00Z')
-            ->endedAt->toBe('2025-01-15T10:30:00Z')
+            ->startedAt->toEqual(new \Carbon\Carbon('2025-01-15T10:30:00Z'))
+            ->endedAt->toEqual(new \Carbon\Carbon('2025-01-15T10:30:00Z'))
             );
 
         return true;

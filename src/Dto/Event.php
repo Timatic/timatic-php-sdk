@@ -3,6 +3,7 @@
 namespace Timatic\SDK\Dto;
 
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Attributes\DateTime;
 use Timatic\SDK\Hydration\Attributes\Property;
 
 class Event extends Model
@@ -38,16 +39,20 @@ class Event extends Model
     public ?string $eventTypeId;
 
     #[Property]
-    public ?string $startedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $startedAt;
 
     #[Property]
-    public ?string $endedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $endedAt;
 
     #[Property]
-    public ?string $createdAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $createdAt;
 
     #[Property]
-    public ?string $updatedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $updatedAt;
 
     #[Property]
     public ?string $isInternal;

@@ -134,8 +134,18 @@ class MutationRequestTestGenerator
                 continue;
             }
 
-            $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
-            $lines[] = "    \$dto->{$propName} = {$value};";
+            // Check if this is a Carbon/DateTime field
+            $isDateTime = $propInfo['type'] && str_contains($propInfo['type'], 'Carbon');
+
+            if ($isDateTime) {
+                // Generate Carbon::parse() for DateTime fields
+                $dateString = $this->generateValue($propName, $propInfo['type']);
+                $lines[] = "    \$dto->{$propName} = \\Carbon\\Carbon::parse('{$dateString}');";
+            } else {
+                $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
+                $lines[] = "    \$dto->{$propName} = {$value};";
+            }
+
             $count++;
         }
 
@@ -258,9 +268,19 @@ class MutationRequestTestGenerator
                 continue;
             }
 
-            $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
-            $assertionValue = $this->formatValueForAssertion($value);
-            $lines[] = "                ->{$propName}->toBe({$assertionValue})";
+            // Check if this is a Carbon/DateTime field
+            $isDateTime = $propInfo['type'] && str_contains($propInfo['type'], 'Carbon');
+
+            if ($isDateTime) {
+                // Generate toEqual(new \Carbon\Carbon(...)) assertion for DateTime fields
+                $dateString = $this->generateValue($propName, $propInfo['type']);
+                $lines[] = "                ->{$propName}->toEqual(new \\Carbon\\Carbon('{$dateString}'))";
+            } else {
+                $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
+                $assertionValue = $this->formatValueForAssertion($value);
+                $lines[] = "                ->{$propName}->toBe({$assertionValue})";
+            }
+
             $count++;
         }
 

@@ -3,6 +3,7 @@
 namespace Timatic\SDK\Dto;
 
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Attributes\DateTime;
 use Timatic\SDK\Hydration\Attributes\Property;
 
 class Approve extends Model
@@ -14,26 +15,32 @@ class Approve extends Model
     public ?string $overtimeTypeId;
 
     #[Property]
-    public ?string $startedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $startedAt;
 
     #[Property]
-    public ?string $endedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $endedAt;
 
     #[Property]
     public ?string $percentages;
 
     #[Property]
-    public ?string $approvedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $approvedAt;
 
     #[Property]
     public ?string $approvedByUserId;
 
     #[Property]
-    public ?string $exportedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $exportedAt;
 
     #[Property]
-    public ?string $createdAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $createdAt;
 
     #[Property]
-    public ?string $updatedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $updatedAt;
 }

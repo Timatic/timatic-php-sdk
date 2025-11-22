@@ -3,6 +3,7 @@
 namespace Timatic\SDK\Dto;
 
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Attributes\DateTime;
 use Timatic\SDK\Hydration\Attributes\Property;
 
 class EntrySuggestion extends Model
@@ -29,10 +30,12 @@ class EntrySuggestion extends Model
     public ?string $ticketType;
 
     #[Property]
-    public ?string $createdAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $createdAt;
 
     #[Property]
-    public ?string $updatedAt;
+    #[DateTime]
+    public ?\Carbon\Carbon $updatedAt;
 
     #[Property]
     public ?string $budgetId;
