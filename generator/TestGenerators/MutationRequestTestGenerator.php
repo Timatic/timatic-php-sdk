@@ -102,7 +102,6 @@ class MutationRequestTestGenerator
         $lines = [];
         $lines[] = "    \$dto = new \\Timatic\\SDK\\Dto\\{$dtoClassName};";
         $lines[] = $properties;
-        $lines[] = '    // todo: add every other DTO field';
 
         return implode("\n", $lines);
     }

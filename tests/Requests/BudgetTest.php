@@ -114,7 +114,6 @@ it('calls the postBudgets method in the Budget resource', function () {
     $dto->customerId = 'customer_id-123';
     $dto->showToCustomer = true;
     $dto->changeId = 'change_id-123';
-    // todo: add every other DTO field
 
     $this->timaticConnector->budget()->postBudgets($dto);
     Saloon::assertSent(PostBudgetsRequest::class);
@@ -212,7 +211,6 @@ it('calls the patchBudget method in the Budget resource', function () {
     $dto->customerId = 'customer_id-123';
     $dto->showToCustomer = true;
     $dto->changeId = 'change_id-123';
-    // todo: add every other DTO field
 
     $this->timaticConnector->budget()->patchBudget(budgetId: 'test string', data: $dto);
     Saloon::assertSent(PatchBudgetRequest::class);

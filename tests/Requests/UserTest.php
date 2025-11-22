@@ -71,7 +71,6 @@ it('calls the postUsers method in the User resource', function () {
     $dto = new \Timatic\SDK\Dto\User;
     $dto->externalId = 'external_id-123';
     $dto->email = 'test@example.com';
-    // todo: add every other DTO field
 
     $this->timaticConnector->user()->postUsers($dto);
     Saloon::assertSent(PostUsersRequest::class);
@@ -141,7 +140,6 @@ it('calls the patchUser method in the User resource', function () {
     $dto = new \Timatic\SDK\Dto\User;
     $dto->externalId = 'external_id-123';
     $dto->email = 'test@example.com';
-    // todo: add every other DTO field
 
     $this->timaticConnector->user()->patchUser(userId: 'test string', data: $dto);
     Saloon::assertSent(PatchUserRequest::class);

@@ -18,7 +18,6 @@ it('calls the postCorrections method in the Correction resource', function () {
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Correction;
     $dto->name = 'test value';
-    // todo: add every other DTO field
 
     $this->timaticConnector->correction()->postCorrections($dto);
     Saloon::assertSent(PostCorrectionsRequest::class);
@@ -40,7 +39,6 @@ it('calls the patchCorrection method in the Correction resource', function () {
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Correction;
     $dto->name = 'test value';
-    // todo: add every other DTO field
 
     $this->timaticConnector->correction()->patchCorrection(correctionId: 'test string', data: $dto);
     Saloon::assertSent(PatchCorrectionRequest::class);

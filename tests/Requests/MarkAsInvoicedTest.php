@@ -20,7 +20,6 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
-    // todo: add every other DTO field
 
     $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(entryId: 'test string', data: $dto);
     Saloon::assertSent(PostEntryMarkAsInvoicedRequest::class);

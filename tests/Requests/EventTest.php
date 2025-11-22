@@ -20,7 +20,6 @@ it('calls the postEvents method in the Event resource', function () {
     $dto->budgetId = 'budget_id-123';
     $dto->ticketId = 'ticket_id-123';
     $dto->sourceId = 'source_id-123';
-    // todo: add every other DTO field
 
     $this->timaticConnector->event()->postEvents($dto);
     Saloon::assertSent(PostEventsRequest::class);

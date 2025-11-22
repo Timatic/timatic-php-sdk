@@ -79,7 +79,6 @@ it('calls the postCustomers method in the Customer resource', function () {
     $dto->name = 'test name';
     $dto->hourlyRate = 'test value';
     $dto->accountManagerUserId = 'account_manager_user_id-123';
-    // todo: add every other DTO field
 
     $this->timaticConnector->customer()->postCustomers($dto);
     Saloon::assertSent(PostCustomersRequest::class);
@@ -157,7 +156,6 @@ it('calls the patchCustomer method in the Customer resource', function () {
     $dto->name = 'test name';
     $dto->hourlyRate = 'test value';
     $dto->accountManagerUserId = 'account_manager_user_id-123';
-    // todo: add every other DTO field
 
     $this->timaticConnector->customer()->patchCustomer(customerId: 'test string', data: $dto);
     Saloon::assertSent(PatchCustomerRequest::class);

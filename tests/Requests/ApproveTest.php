@@ -20,7 +20,6 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
     $dto->overtimeTypeId = 'overtime_type_id-123';
     $dto->startedAt = '2025-01-15T10:30:00Z';
     $dto->endedAt = '2025-01-15T10:30:00Z';
-    // todo: add every other DTO field
 
     $this->timaticConnector->approve()->postOvertimeApprove(overtimeId: 'test string', data: $dto);
     Saloon::assertSent(PostOvertimeApproveRequest::class);

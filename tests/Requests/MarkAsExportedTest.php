@@ -20,7 +20,6 @@ it('calls the postOvertimeMarkAsExported method in the MarkAsExported resource',
     $dto->overtimeTypeId = 'overtime_type_id-123';
     $dto->startedAt = '2025-01-15T10:30:00Z';
     $dto->endedAt = '2025-01-15T10:30:00Z';
-    // todo: add every other DTO field
 
     $this->timaticConnector->markAsExported()->postOvertimeMarkAsExported(overtimeId: 'test string', data: $dto);
     Saloon::assertSent(PostOvertimeMarkAsExportedRequest::class);

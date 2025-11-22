@@ -146,7 +146,6 @@ it('calls the postEntries method in the Entry resource', function () {
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
-    // todo: add every other DTO field
 
     $this->timaticConnector->entry()->postEntries($dto);
     Saloon::assertSent(PostEntriesRequest::class);
@@ -266,7 +265,6 @@ it('calls the patchEntry method in the Entry resource', function () {
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
-    // todo: add every other DTO field
 
     $this->timaticConnector->entry()->patchEntry(entryId: 'test string', data: $dto);
     Saloon::assertSent(PatchEntryRequest::class);

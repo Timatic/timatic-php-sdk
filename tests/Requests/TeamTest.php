@@ -61,7 +61,6 @@ it('calls the postTeams method in the Team resource', function () {
     $dto = new \Timatic\SDK\Dto\Team;
     $dto->externalId = 'external_id-123';
     $dto->name = 'test name';
-    // todo: add every other DTO field
 
     $this->timaticConnector->team()->postTeams($dto);
     Saloon::assertSent(PostTeamsRequest::class);
@@ -131,7 +130,6 @@ it('calls the patchTeam method in the Team resource', function () {
     $dto = new \Timatic\SDK\Dto\Team;
     $dto->externalId = 'external_id-123';
     $dto->name = 'test name';
-    // todo: add every other DTO field
 
     $this->timaticConnector->team()->patchTeam(teamId: 'test string', data: $dto);
     Saloon::assertSent(PatchTeamRequest::class);
