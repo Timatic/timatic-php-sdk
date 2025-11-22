@@ -6,6 +6,7 @@ namespace Timatic\SDK\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
@@ -19,9 +20,12 @@ class CollectionRequestTestGenerator
 
     protected ApiSpecification $specification;
 
-    public function __construct(ApiSpecification $specification)
+    protected GeneratedCode $generatedCode;
+
+    public function __construct(ApiSpecification $specification, GeneratedCode $generatedCode)
     {
         $this->specification = $specification;
+        $this->generatedCode = $generatedCode;
     }
 
     /**

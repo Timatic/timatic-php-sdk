@@ -1,18 +1,14 @@
 <?php
 
-
-use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
-use Timatic\SDK\Requests\Correction\PatchCorrectionRequest;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\SDK\Requests\Correction\PatchCorrectionRequest;
+use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector(
-		
-	);
+    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
 });
-
 
 it('calls the postCorrections method in the Correction resource', function () {
     $mockClient = Saloon::fake([
@@ -31,12 +27,11 @@ it('calls the postCorrections method in the Correction resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('correction')
+            ->data->type->toBe('correction');
 
         return true;
     });
 });
-
 
 it('calls the patchCorrection method in the Correction resource', function () {
     $mockClient = Saloon::fake([
@@ -54,7 +49,7 @@ it('calls the patchCorrection method in the Correction resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('correction')
+            ->data->type->toBe('correction');
 
         return true;
     });

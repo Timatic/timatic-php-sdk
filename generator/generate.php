@@ -74,15 +74,15 @@ $config = new Config(
     dtoNamespaceSuffix: 'Dto',
 );
 
-// STEP 1: Generate SDK code (WITHOUT tests)
-echo "🏗️  Generating SDK with JSON:API models...\n";
+// Generate SDK code with tests in a single run
+echo "🏗️  Generating SDK with JSON:API models and tests...\n";
 $generator = new CodeGenerator(
     config: $config,
     connectorGenerator: new JsonApiConnectorGenerator($config),
     dtoGenerator: new JsonApiDtoGenerator($config),
     requestGenerator: new JsonApiRequestGenerator($config),
     resourceGenerator: new JsonApiResourceGenerator($config),
-    postProcessors: [] // No test generator in first pass
+    postProcessors: [new JsonApiPestTestGenerator] // Generate tests in same run
 );
 
 $result = $generator->run($specification);
@@ -135,28 +135,10 @@ foreach ($result->dtoClasses as $dtoClass) {
     echo '  ✓ '.basename($path)."\n";
 }
 
-// STEP 2: Dump autoload so DTOs are available for reflection
-echo "\n";
-passthru('composer dump-autoload --quiet');
-
-// STEP 3: Generate tests (NOW that DTOs exist on disk and can be reflected)
-echo "\n🧪 Generating tests...\n";
-$testGenerator = new CodeGenerator(
-    config: $config,
-    connectorGenerator: new JsonApiConnectorGenerator($config),
-    dtoGenerator: new JsonApiDtoGenerator($config),
-    requestGenerator: new JsonApiRequestGenerator($config),
-    resourceGenerator: new JsonApiResourceGenerator($config),
-    postProcessors: [new JsonApiPestTestGenerator]
-);
-
-$testResult = $testGenerator->run($specification);
-$tests = $testResult->additionalFiles ?? null;
-
-// Write test files (also apply path parameter transformations here as fallback)
-if ($tests && is_array($tests)) {
-    echo "🧪 Tests:\n";
-    foreach ($tests as $file) {
+// Write test files
+if ($result->additionalFiles && is_array($result->additionalFiles)) {
+    echo "\n🧪 Tests:\n";
+    foreach ($result->additionalFiles as $file) {
         if ($file instanceof \Crescat\SaloonSdkGenerator\Data\TaggedOutputFile) {
             $testPath = __DIR__.'/../'.$file->path;
 
@@ -171,3 +153,7 @@ if ($tests && is_array($tests)) {
         }
     }
 }
+
+// Dump autoload to make new classes available
+echo "\n";
+passthru('composer dump-autoload --quiet');

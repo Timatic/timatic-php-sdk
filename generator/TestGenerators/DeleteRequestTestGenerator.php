@@ -6,14 +6,18 @@ namespace Timatic\SDK\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 
 class DeleteRequestTestGenerator
 {
     protected ApiSpecification $specification;
 
-    public function __construct(ApiSpecification $specification)
+    protected GeneratedCode $generatedCode;
+
+    public function __construct(ApiSpecification $specification, GeneratedCode $generatedCode)
     {
         $this->specification = $specification;
+        $this->generatedCode = $generatedCode;
     }
 
     /**

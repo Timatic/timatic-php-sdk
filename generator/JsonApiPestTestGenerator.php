@@ -28,18 +28,18 @@ class JsonApiPestTestGenerator extends PestTestGenerator
     protected DeleteRequestTestGenerator $deleteTestGenerator;
 
     /**
-     * Override process() to instantiate test generators with ApiSpecification
+     * Override process() to instantiate test generators with ApiSpecification and GeneratedCode
      */
     public function process(
         Config $config,
         ApiSpecification $specification,
         GeneratedCode $generatedCode,
     ): PhpFile|array|null {
-        // Instantiate test generators with the parsed ApiSpecification
-        $this->collectionTestGenerator = new CollectionRequestTestGenerator($specification);
-        $this->mutationTestGenerator = new MutationRequestTestGenerator($specification);
-        $this->singularGetTestGenerator = new SingularGetRequestTestGenerator($specification);
-        $this->deleteTestGenerator = new DeleteRequestTestGenerator($specification);
+        // Instantiate test generators with the parsed ApiSpecification and GeneratedCode
+        $this->collectionTestGenerator = new CollectionRequestTestGenerator($specification, $generatedCode);
+        $this->mutationTestGenerator = new MutationRequestTestGenerator($specification, $generatedCode);
+        $this->singularGetTestGenerator = new SingularGetRequestTestGenerator($specification, $generatedCode);
+        $this->deleteTestGenerator = new DeleteRequestTestGenerator($specification, $generatedCode);
 
         // Call parent to continue normal processing
         return parent::process($config, $specification, $generatedCode);

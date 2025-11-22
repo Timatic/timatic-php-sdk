@@ -7,6 +7,7 @@ namespace Timatic\SDK\Generator\TestGenerators;
 use cebe\openapi\spec\Schema;
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
@@ -18,9 +19,12 @@ class MutationRequestTestGenerator
 
     protected ApiSpecification $specification;
 
-    public function __construct(ApiSpecification $specification)
+    protected GeneratedCode $generatedCode;
+
+    public function __construct(ApiSpecification $specification, GeneratedCode $generatedCode)
     {
         $this->specification = $specification;
+        $this->generatedCode = $generatedCode;
     }
 
     /**
@@ -104,7 +108,7 @@ class MutationRequestTestGenerator
     protected function generateDtoProperties(Endpoint $endpoint): string
     {
         $dtoClassName = $this->getDtoClassName($endpoint);
-        $properties = $this->getDtoPropertiesViaReflection($dtoClassName);
+        $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
         if (empty($properties)) {
             return "    \$dto->name = 'test value';";
@@ -140,45 +144,50 @@ class MutationRequestTestGenerator
     }
 
     /**
-     * Get DTO properties via PHP reflection (DTO classes now exist on disk)
+     * Get DTO properties from generated code (PhpFile objects)
      *
      * @return array<string, array{name: string, type: ?string}>
      */
-    protected function getDtoPropertiesViaReflection(string $dtoClassName): array
+    protected function getDtoPropertiesFromGeneratedCode(string $dtoClassName): array
     {
-        $fullClassName = "\\Timatic\\SDK\\Dto\\{$dtoClassName}";
-
-        // Check if class exists (it should, because we dumped autoload)
-        if (! class_exists($fullClassName)) {
+        // Check if DTO exists in generated code
+        if (! isset($this->generatedCode->dtoClasses[$dtoClassName])) {
             return [];
         }
 
+        $phpFile = $this->generatedCode->dtoClasses[$dtoClassName];
         $properties = [];
 
-        try {
-            $reflection = new \ReflectionClass($fullClassName);
-            $reflectionProperties = $reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
-
-            foreach ($reflectionProperties as $property) {
-                // Skip static properties
-                if ($property->isStatic()) {
-                    continue;
-                }
-
-                $type = $property->getType();
-                $typeName = null;
-
-                if ($type instanceof \ReflectionNamedType) {
-                    $typeName = ($type->allowsNull() ? '?' : '').$type->getName();
-                }
-
-                $properties[$property->getName()] = [
-                    'name' => $property->getName(),
-                    'type' => $typeName,
-                ];
-            }
-        } catch (\ReflectionException $e) {
+        // Get the first namespace in the file
+        $namespace = array_values($phpFile->getNamespaces())[0] ?? null;
+        if (! $namespace) {
             return [];
+        }
+
+        // Get the first class in the namespace
+        $classType = array_values($namespace->getClasses())[0] ?? null;
+        if (! $classType) {
+            return [];
+        }
+
+        // Extract properties from the class
+        foreach ($classType->getProperties() as $property) {
+            // Skip static properties
+            if ($property->isStatic()) {
+                continue;
+            }
+
+            $type = $property->getType();
+            $typeName = null;
+
+            if ($type) {
+                $typeName = (string) $type;
+            }
+
+            $properties[$property->getName()] = [
+                'name' => $property->getName(),
+                'type' => $typeName,
+            ];
         }
 
         return $properties;
@@ -229,7 +238,7 @@ class MutationRequestTestGenerator
     {
         $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
         $dtoClassName = $this->getDtoClassName($endpoint);
-        $properties = $this->getDtoPropertiesViaReflection($dtoClassName);
+        $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
         if (empty($properties)) {
             return $this->generateFallbackBodyValidation($resourceType, $endpoint);
@@ -246,14 +255,16 @@ class MutationRequestTestGenerator
             $lines[] = '            // POST calls dont have an ID field';
         }
 
-        $lines[] = "            ->data->type->toBe('{$resourceType}')";
-
         // Generate attribute validations
         $attributeValidations = $this->generateAttributeValidationsFromDto($properties);
         if ($attributeValidations) {
+            $lines[] = "            ->data->type->toBe('{$resourceType}')";
             $lines[] = '            ->data->attributes->scoped(fn ($attributes) => $attributes';
             $lines[] = $attributeValidations;
             $lines[] = '            );';
+        } else {
+            // No attributes to validate, just close the chain
+            $lines[] = "            ->data->type->toBe('{$resourceType}');";
         }
 
         $lines[] = '';
