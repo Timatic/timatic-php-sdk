@@ -8,10 +8,13 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
+use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Nette\PhpGenerator\ClassType;
+use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Facades\Hydrator;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
@@ -54,18 +57,21 @@ class JsonApiRequestGenerator extends RequestGenerator
      */
     protected function customizeRequestClass(ClassType $classType, $namespace, Endpoint $endpoint): void
     {
-        if (! $this->isCollectionRequest($endpoint)) {
-            return;
+        if ($this->isCollectionRequest($endpoint)) {
+            // Add Paginatable interface to all collection requests
+            $namespace->addUse(Paginatable::class);
+            $classType->addImplement(Paginatable::class);
+
+            // Add HasFilters trait if collection has filter parameters in the endpoint
+            if ($this->hasFilterParameters($endpoint)) {
+                $namespace->addUse(HasFilters::class);
+                $classType->addTrait(HasFilters::class);
+            }
         }
 
-        // Add Paginatable interface to all collection requests
-        $namespace->addUse(Paginatable::class);
-        $classType->addImplement(Paginatable::class);
-
-        // Add HasFilters trait if collection has filter parameters in the endpoint
-        if ($this->hasFilterParameters($endpoint)) {
-            $namespace->addUse(HasFilters::class);
-            $classType->addTrait(HasFilters::class);
+        // Add hydration support to GET, POST, and PATCH requests
+        if ($this->shouldHaveHydration($endpoint)) {
+            $this->addHydrationSupport($classType, $namespace, $endpoint);
         }
     }
 
@@ -141,5 +147,82 @@ class JsonApiRequestGenerator extends RequestGenerator
         }
 
         return false;
+    }
+
+    /**
+     * Determine if request should have hydration support
+     */
+    protected function shouldHaveHydration(Endpoint $endpoint): bool
+    {
+        // Add hydration to GET, POST, and PATCH requests
+        return $endpoint->method->isGet()
+            || $endpoint->method->isPost()
+            || $endpoint->method->isPatch();
+    }
+
+    /**
+     * Add hydration support to request class
+     */
+    protected function addHydrationSupport(ClassType $classType, $namespace, Endpoint $endpoint): void
+    {
+        // Determine DTO class name from endpoint
+        $dtoClassName = $this->getDtoClassName($endpoint);
+
+        // Add imports
+        $namespace->addUse(Hydrator::class);
+        $namespace->addUse(Response::class);
+        $namespace->addUse("Timatic\\SDK\\Dto\\{$dtoClassName}");
+
+        // Add $model property - use the imported class name with ::class
+        $classType->addProperty('model')
+            ->setProtected()
+            ->setValue(new \Nette\PhpGenerator\Literal("{$dtoClassName}::class"));
+
+        // Add createDtoFromResponse method
+        $method = $classType->addMethod('createDtoFromResponse')
+            ->setReturnType('mixed');
+
+        $param = $method->addParameter('response');
+        $param->setType(Response::class);
+
+        // Use appropriate hydration method based on request type
+        if ($this->isCollectionRequest($endpoint)) {
+            // Collection: use hydrateCollection
+            $method->addBody('return Hydrator::hydrateCollection(');
+            $method->addBody('    $this->model,');
+            $method->addBody('    $response->json(\'data\'),');
+            $method->addBody('    $response->json(\'included\')');
+            $method->addBody(');');
+        } else {
+            // Single resource: use hydrate
+            $method->addBody('return Hydrator::hydrate(');
+            $method->addBody('    $this->model,');
+            $method->addBody('    $response->json(\'data\'),');
+            $method->addBody('    $response->json(\'included\')');
+            $method->addBody(');');
+        }
+    }
+
+    /**
+     * Get DTO class name from endpoint
+     */
+    protected function getDtoClassName(Endpoint $endpoint): string
+    {
+        // Use collection name to determine DTO
+        if ($endpoint->collection) {
+            $resourceName = NameHelper::resourceClassName($endpoint->collection);
+
+            // Remove trailing 's' for singular DTO name
+            return rtrim($resourceName, 's');
+        }
+
+        // Fallback: try to parse from endpoint name
+        $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
+        // Remove method prefix (post, patch, get)
+        $name = preg_replace('/^(post|patch|get)/i', '', $name);
+        // Remove trailing 's' for singular
+        $name = rtrim($name, 's');
+
+        return NameHelper::resourceClassName($name);
     }
 }

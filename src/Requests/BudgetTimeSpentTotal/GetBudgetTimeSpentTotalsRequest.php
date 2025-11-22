@@ -4,8 +4,11 @@ namespace Timatic\SDK\Requests\BudgetTimeSpentTotal;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
+use Timatic\SDK\Dto\BudgetTimeSpentTotal;
+use Timatic\SDK\Hydration\Facades\Hydrator;
 
 /**
  * getBudgetTimeSpentTotals
@@ -14,7 +17,18 @@ class GetBudgetTimeSpentTotalsRequest extends Request implements Paginatable
 {
     use HasFilters;
 
+    protected $model = BudgetTimeSpentTotal::class;
+
     protected Method $method = Method::GET;
+
+    public function createDtoFromResponse(Response $response): mixed
+    {
+        return Hydrator::hydrateCollection(
+            $this->model,
+            $response->json('data'),
+            $response->json('included')
+        );
+    }
 
     public function resolveEndpoint(): string
     {
