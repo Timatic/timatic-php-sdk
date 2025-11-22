@@ -42,7 +42,7 @@ it('calls the getCustomers method in the Customer resource', function () {
     ]);
 
     $request = (new GetCustomersRequest)
-        ->filter('externalId', 'test-id-123');
+        ->filter('externalId', 'external_id-123');
 
     $response = $this->timaticConnector->send($request);
 
@@ -52,7 +52,7 @@ it('calls the getCustomers method in the Customer resource', function () {
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[externalId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[externalId]', 'external_id-123');
 
         return true;
     });
@@ -75,10 +75,10 @@ it('calls the postCustomers method in the Customer resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Customer;
-    $dto->externalId = 'mock-id-123';
-    $dto->name = 'test value';
+    $dto->externalId = 'external_id-123';
+    $dto->name = 'test name';
     $dto->hourlyRate = 'test value';
-    $dto->accountManagerUserId = 'mock-id-123';
+    $dto->accountManagerUserId = 'account_manager_user_id-123';
     // todo: add every other DTO field
 
     $this->timaticConnector->customer()->postCustomers($dto);
@@ -90,10 +90,10 @@ it('calls the postCustomers method in the Customer resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('mock-id-123')
-            ->name->toBe('test value')
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
             ->hourlyRate->toBe('test value')
-            ->accountManagerUserId->toBe('mock-id-123')
+            ->accountManagerUserId->toBe('account_manager_user_id-123')
             );
 
         return true;
@@ -154,10 +154,10 @@ it('calls the patchCustomer method in the Customer resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Customer;
-    $dto->externalId = 'mock-id-123';
-    $dto->name = 'test value';
+    $dto->externalId = 'external_id-123';
+    $dto->name = 'test name';
     $dto->hourlyRate = 'test value';
-    $dto->accountManagerUserId = 'mock-id-123';
+    $dto->accountManagerUserId = 'account_manager_user_id-123';
     // todo: add every other DTO field
 
     $this->timaticConnector->customer()->patchCustomer(customerId: 'test string', data: $dto);
@@ -168,10 +168,10 @@ it('calls the patchCustomer method in the Customer resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('mock-id-123')
-            ->name->toBe('test value')
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
             ->hourlyRate->toBe('test value')
-            ->accountManagerUserId->toBe('mock-id-123')
+            ->accountManagerUserId->toBe('account_manager_user_id-123')
             );
 
         return true;

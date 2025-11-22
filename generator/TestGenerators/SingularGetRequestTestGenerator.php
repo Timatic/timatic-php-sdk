@@ -10,14 +10,14 @@ use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
-use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class SingularGetRequestTestGenerator
 {
     use DtoAssertions;
-    use MockDataGeneratorTrait;
     use SchemaExtractorTrait;
+    use TestDataGeneratorTrait;
 
     protected ApiSpecification $specification;
 

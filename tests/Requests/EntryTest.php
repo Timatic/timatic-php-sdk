@@ -84,9 +84,9 @@ it('calls the getEntries method in the Entry resource', function () {
     ]);
 
     $request = (new GetEntriesRequest(include: 'test string'))
-        ->filter('userId', 'test-id-123')
-        ->filter('budgetId', 'test-id-123')
-        ->filter('startedAt', '2025-01-01T10:00:00Z');
+        ->filter('userId', 'user_id-123')
+        ->filter('budgetId', 'budget_id-123')
+        ->filter('startedAt', '2025-01-15T10:30:00Z');
 
     $response = $this->timaticConnector->send($request);
 
@@ -96,9 +96,9 @@ it('calls the getEntries method in the Entry resource', function () {
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[userId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[budgetId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01T10:00:00Z');
+        expect($query)->toHaveKey('filter[userId]', 'user_id-123');
+        expect($query)->toHaveKey('filter[budgetId]', 'budget_id-123');
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-15T10:30:00Z');
 
         return true;
     });
@@ -142,7 +142,7 @@ it('calls the postEntries method in the Entry resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Entry;
-    $dto->ticketId = 'mock-id-123';
+    $dto->ticketId = 'ticket_id-123';
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
@@ -157,7 +157,7 @@ it('calls the postEntries method in the Entry resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->ticketId->toBe('mock-id-123')
+            ->ticketId->toBe('ticket_id-123')
             ->ticketNumber->toBe('test value')
             ->ticketTitle->toBe('test value')
             ->ticketType->toBe('test value')
@@ -263,7 +263,7 @@ it('calls the patchEntry method in the Entry resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Entry;
-    $dto->ticketId = 'mock-id-123';
+    $dto->ticketId = 'ticket_id-123';
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
@@ -277,7 +277,7 @@ it('calls the patchEntry method in the Entry resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->ticketId->toBe('mock-id-123')
+            ->ticketId->toBe('ticket_id-123')
             ->ticketNumber->toBe('test value')
             ->ticketTitle->toBe('test value')
             ->ticketType->toBe('test value')

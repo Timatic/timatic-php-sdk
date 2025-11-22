@@ -11,12 +11,12 @@ use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class MutationRequestTestGenerator
 {
     use SchemaExtractorTrait;
-    use TestValueGeneratorTrait;
+    use TestDataGeneratorTrait;
 
     protected ApiSpecification $specification;
 
@@ -135,7 +135,7 @@ class MutationRequestTestGenerator
                 continue;
             }
 
-            $value = $this->generateTestValueForProperty($propName, $propInfo['type']);
+            $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
             $lines[] = "    \$dto->{$propName} = {$value};";
             $count++;
         }
@@ -196,44 +196,6 @@ class MutationRequestTestGenerator
         }
 
         return $properties;
-    }
-
-    /**
-     * Generate test value for a DTO property
-     */
-    protected function generateTestValueForProperty(string $propertyName, ?string $typeName): string
-    {
-        if (! $typeName) {
-            return "'test value'";
-        }
-
-        // Normalize type name (remove nullable prefix)
-        $typeName = ltrim($typeName, '?');
-
-        // DateTime fields
-        if (str_contains($typeName, 'Carbon') || str_contains($typeName, 'DateTime')) {
-            return "'2025-01-15T10:30:00Z'";
-        }
-
-        // ID fields
-        if (str_ends_with($propertyName, 'Id')) {
-            return "'mock-id-123'";
-        }
-
-        // Email fields
-        if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
-            return "'test@example.com'";
-        }
-
-        // Type-based generation
-        return match ($typeName) {
-            'bool' => 'true',
-            'int' => '42',
-            'float' => '3.14',
-            'string' => "'test value'",
-            'array' => '[]',
-            default => "'test value'",
-        };
     }
 
     /**
@@ -302,7 +264,7 @@ class MutationRequestTestGenerator
                 continue;
             }
 
-            $value = $this->generateTestValueForProperty($propName, $propInfo['type']);
+            $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
             $assertionValue = $this->formatValueForAssertion($value);
             $lines[] = "                ->{$propName}->toBe({$assertionValue})";
             $count++;

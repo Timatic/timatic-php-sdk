@@ -63,9 +63,9 @@ it('calls the getBudgets method in the Budget resource', function () {
     ]);
 
     $request = (new GetBudgetsRequest(include: 'test string'))
-        ->filter('customerId', 'test-id-123')
-        ->filter('budgetTypeId', 'test-id-123')
-        ->filter('isArchived', false);
+        ->filter('customerId', 'customer_id-123')
+        ->filter('budgetTypeId', 'budget_type_id-123')
+        ->filter('isArchived', true);
 
     $response = $this->timaticConnector->send($request);
 
@@ -75,9 +75,9 @@ it('calls the getBudgets method in the Budget resource', function () {
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[customerId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[budgetTypeId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[isArchived]', false);
+        expect($query)->toHaveKey('filter[customerId]', 'customer_id-123');
+        expect($query)->toHaveKey('filter[budgetTypeId]', 'budget_type_id-123');
+        expect($query)->toHaveKey('filter[isArchived]', true);
 
         return true;
     });
@@ -110,10 +110,10 @@ it('calls the postBudgets method in the Budget resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Budget;
-    $dto->budgetTypeId = 'mock-id-123';
-    $dto->customerId = 'mock-id-123';
+    $dto->budgetTypeId = 'budget_type_id-123';
+    $dto->customerId = 'customer_id-123';
     $dto->showToCustomer = true;
-    $dto->changeId = 'mock-id-123';
+    $dto->changeId = 'change_id-123';
     // todo: add every other DTO field
 
     $this->timaticConnector->budget()->postBudgets($dto);
@@ -125,10 +125,10 @@ it('calls the postBudgets method in the Budget resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->budgetTypeId->toBe('mock-id-123')
-            ->customerId->toBe('mock-id-123')
+            ->budgetTypeId->toBe('budget_type_id-123')
+            ->customerId->toBe('customer_id-123')
             ->showToCustomer->toBe(true)
-            ->changeId->toBe('mock-id-123')
+            ->changeId->toBe('change_id-123')
             );
 
         return true;
@@ -209,10 +209,10 @@ it('calls the patchBudget method in the Budget resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Budget;
-    $dto->budgetTypeId = 'mock-id-123';
-    $dto->customerId = 'mock-id-123';
+    $dto->budgetTypeId = 'budget_type_id-123';
+    $dto->customerId = 'customer_id-123';
     $dto->showToCustomer = true;
-    $dto->changeId = 'mock-id-123';
+    $dto->changeId = 'change_id-123';
     // todo: add every other DTO field
 
     $this->timaticConnector->budget()->patchBudget(budgetId: 'test string', data: $dto);
@@ -223,10 +223,10 @@ it('calls the patchBudget method in the Budget resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->budgetTypeId->toBe('mock-id-123')
-            ->customerId->toBe('mock-id-123')
+            ->budgetTypeId->toBe('budget_type_id-123')
+            ->customerId->toBe('customer_id-123')
             ->showToCustomer->toBe(true)
-            ->changeId->toBe('mock-id-123')
+            ->changeId->toBe('change_id-123')
             );
 
         return true;

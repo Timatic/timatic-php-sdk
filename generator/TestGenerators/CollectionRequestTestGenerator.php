@@ -10,16 +10,14 @@ use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
-use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class CollectionRequestTestGenerator
 {
     use DtoAssertions;
-    use MockDataGeneratorTrait;
     use SchemaExtractorTrait;
-    use TestValueGeneratorTrait;
+    use TestDataGeneratorTrait;
 
     protected ApiSpecification $specification;
 
@@ -202,7 +200,7 @@ class CollectionRequestTestGenerator
 
             // Only add filters without operators (simpler)
             if (! $operator && count($filters) < $maxFilters) {
-                $value = $this->generateTestValueForProperty($property);
+                $value = $this->formatAsCode($this->generateValue($property));
                 $filters[] = "->filter('{$property}', {$value})";
 
                 // Generate assertion for this filter

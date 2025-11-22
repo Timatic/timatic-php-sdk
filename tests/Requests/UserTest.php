@@ -38,7 +38,7 @@ it('calls the getUsers method in the User resource', function () {
     ]);
 
     $request = (new GetUsersRequest)
-        ->filter('externalId', 'test-id-123');
+        ->filter('externalId', 'external_id-123');
 
     $response = $this->timaticConnector->send($request);
 
@@ -48,7 +48,7 @@ it('calls the getUsers method in the User resource', function () {
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[externalId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[externalId]', 'external_id-123');
 
         return true;
     });
@@ -69,7 +69,7 @@ it('calls the postUsers method in the User resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\User;
-    $dto->externalId = 'mock-id-123';
+    $dto->externalId = 'external_id-123';
     $dto->email = 'test@example.com';
     // todo: add every other DTO field
 
@@ -82,7 +82,7 @@ it('calls the postUsers method in the User resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('mock-id-123')
+            ->externalId->toBe('external_id-123')
             ->email->toBe('test@example.com')
             );
 
@@ -140,7 +140,7 @@ it('calls the patchUser method in the User resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\User;
-    $dto->externalId = 'mock-id-123';
+    $dto->externalId = 'external_id-123';
     $dto->email = 'test@example.com';
     // todo: add every other DTO field
 
@@ -152,7 +152,7 @@ it('calls the patchUser method in the User resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('mock-id-123')
+            ->externalId->toBe('external_id-123')
             ->email->toBe('test@example.com')
             );
 

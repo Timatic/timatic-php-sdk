@@ -59,8 +59,8 @@ it('calls the postTeams method in the Team resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Team;
-    $dto->externalId = 'mock-id-123';
-    $dto->name = 'test value';
+    $dto->externalId = 'external_id-123';
+    $dto->name = 'test name';
     // todo: add every other DTO field
 
     $this->timaticConnector->team()->postTeams($dto);
@@ -72,8 +72,8 @@ it('calls the postTeams method in the Team resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('teams')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('mock-id-123')
-            ->name->toBe('test value')
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
             );
 
         return true;
@@ -130,8 +130,8 @@ it('calls the patchTeam method in the Team resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Team;
-    $dto->externalId = 'mock-id-123';
-    $dto->name = 'test value';
+    $dto->externalId = 'external_id-123';
+    $dto->name = 'test name';
     // todo: add every other DTO field
 
     $this->timaticConnector->team()->patchTeam(teamId: 'test string', data: $dto);
@@ -142,8 +142,8 @@ it('calls the patchTeam method in the Team resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('teams')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('mock-id-123')
-            ->name->toBe('test value')
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
             );
 
         return true;

@@ -46,9 +46,9 @@ it('calls the getOvertimes method in the Overtime resource', function () {
     ]);
 
     $request = (new GetOvertimesRequest)
-        ->filter('startedAt', '2025-01-01T10:00:00Z')
-        ->filter('endedAt', '2025-01-01T10:00:00Z')
-        ->filter('isApproved', false);
+        ->filter('startedAt', '2025-01-15T10:30:00Z')
+        ->filter('endedAt', '2025-01-15T10:30:00Z')
+        ->filter('isApproved', true);
 
     $response = $this->timaticConnector->send($request);
 
@@ -58,9 +58,9 @@ it('calls the getOvertimes method in the Overtime resource', function () {
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01T10:00:00Z');
-        expect($query)->toHaveKey('filter[endedAt]', '2025-01-01T10:00:00Z');
-        expect($query)->toHaveKey('filter[isApproved]', false);
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-15T10:30:00Z');
+        expect($query)->toHaveKey('filter[endedAt]', '2025-01-15T10:30:00Z');
+        expect($query)->toHaveKey('filter[isApproved]', true);
 
         return true;
     });

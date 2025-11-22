@@ -43,8 +43,8 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
     ]);
 
     $request = (new GetTimeSpentTotalsRequest)
-        ->filter('teamId', 'test-id-123')
-        ->filter('userId', 'test-id-123');
+        ->filter('teamId', 'team_id-123')
+        ->filter('userId', 'user_id-123');
 
     $response = $this->timaticConnector->send($request);
 
@@ -54,8 +54,8 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[teamId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[userId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[teamId]', 'team_id-123');
+        expect($query)->toHaveKey('filter[userId]', 'user_id-123');
 
         return true;
     });

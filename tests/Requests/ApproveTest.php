@@ -16,10 +16,10 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Approve;
-    $dto->entryId = 'mock-id-123';
-    $dto->overtimeTypeId = 'mock-id-123';
-    $dto->startedAt = 'test value';
-    $dto->endedAt = 'test value';
+    $dto->entryId = 'entry_id-123';
+    $dto->overtimeTypeId = 'overtime_type_id-123';
+    $dto->startedAt = '2025-01-15T10:30:00Z';
+    $dto->endedAt = '2025-01-15T10:30:00Z';
     // todo: add every other DTO field
 
     $this->timaticConnector->approve()->postOvertimeApprove(overtimeId: 'test string', data: $dto);
@@ -31,10 +31,10 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('approves')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->entryId->toBe('mock-id-123')
-            ->overtimeTypeId->toBe('mock-id-123')
-            ->startedAt->toBe('test value')
-            ->endedAt->toBe('test value')
+            ->entryId->toBe('entry_id-123')
+            ->overtimeTypeId->toBe('overtime_type_id-123')
+            ->startedAt->toBe('2025-01-15T10:30:00Z')
+            ->endedAt->toBe('2025-01-15T10:30:00Z')
             );
 
         return true;

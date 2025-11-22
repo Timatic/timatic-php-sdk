@@ -41,7 +41,7 @@ it('calls the getBudgetTimeSpentTotals method in the BudgetTimeSpentTotal resour
     ]);
 
     $request = (new GetBudgetTimeSpentTotalsRequest)
-        ->filter('budgetId', 'test-id-123');
+        ->filter('budgetId', 'budget_id-123');
 
     $response = $this->timaticConnector->send($request);
 
@@ -51,7 +51,7 @@ it('calls the getBudgetTimeSpentTotals method in the BudgetTimeSpentTotal resour
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[budgetId]', 'test-id-123');
+        expect($query)->toHaveKey('filter[budgetId]', 'budget_id-123');
 
         return true;
     });
