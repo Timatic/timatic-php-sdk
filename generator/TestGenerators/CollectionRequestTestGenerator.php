@@ -8,12 +8,15 @@ use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Illuminate\Support\Str;
+use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
 use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
 
 class CollectionRequestTestGenerator
 {
+    use DtoAssertions;
     use MockDataGeneratorTrait;
     use SchemaExtractorTrait;
     use TestValueGeneratorTrait;
@@ -73,6 +76,19 @@ class CollectionRequestTestGenerator
             $functionStub
         );
 
+        // Generate DTO assertions based on mock data
+        $mockData = $this->generateMockData($endpoint);
+        $dtoAssertions = $this->generateDtoAssertions($mockData);
+
+        // If no valid assertions (comments only), remove the DTO validation block entirely
+        if (str_starts_with(trim($dtoAssertions), '//')) {
+            // Remove the entire DTO validation block
+            $pattern = '/(.*\$response->status\(\)\)->toBe\(200\);.*?)(\n\s*\$dtoCollection = \$response->dto\(\);.*?{{ dtoAssertions }};)/s';
+            $functionStub = preg_replace($pattern, '$1', $functionStub);
+        } else {
+            $functionStub = str_replace('{{ dtoAssertions }}', $dtoAssertions, $functionStub);
+        }
+
         return $functionStub;
     }
 
@@ -81,41 +97,62 @@ class CollectionRequestTestGenerator
      */
     protected function generateMockData(Endpoint $endpoint): array
     {
+        // Get DTO class name from endpoint
+        $dtoClassName = $this->getDtoClassName($endpoint);
+
         // Try to determine the schema for this endpoint
         $schema = $this->getResponseSchemaForEndpoint($endpoint);
 
-        if ($schema) {
-            // Generate mock data based on schema
-            $attributes = $this->generateMockAttributes($schema);
-            $resourceType = $this->getResourceTypeFromSchema($schema);
-
-            // Generate 2-3 items for collections
-            return [
-                'data' => [
-                    [
-                        'type' => $resourceType,
-                        'id' => 'mock-id-1',
-                        'attributes' => $attributes,
-                    ],
-                    [
-                        'type' => $resourceType,
-                        'id' => 'mock-id-2',
-                        'attributes' => $this->generateMockAttributes($schema),
-                    ],
-                ],
-            ];
+        if (! $schema) {
+            throw new \Exception('Endpoint does not exist');
         }
 
-        // Fallback: generic mock data
-        $resourceName = NameHelper::resourceClassName($endpoint->collection);
-        $resourceType = NameHelper::safeVariableName($resourceName);
+        // Generate mock data based on DTO if available, otherwise fallback to schema
+        $attributes = $this->generateMockAttributesFromDto($dtoClassName);
+        if (empty($attributes) || $attributes === ['name' => 'Mock value']) {
+            // Fallback to schema-based generation
+            $attributes = $this->generateMockAttributes($schema);
+        }
 
+        $resourceType = $this->getResourceTypeFromSchema($schema);
+
+        // Generate 2-3 items for collections
         return [
             'data' => [
-                ['type' => $resourceType, 'id' => 'mock-id-1', 'attributes' => ['name' => 'Mock item 1']],
-                ['type' => $resourceType, 'id' => 'mock-id-2', 'attributes' => ['name' => 'Mock item 2']],
+                [
+                    'type' => $resourceType,
+                    'id' => 'mock-id-1',
+                    'attributes' => $attributes,
+                ],
+                [
+                    'type' => $resourceType,
+                    'id' => 'mock-id-2',
+                    'attributes' => $attributes,
+                ],
             ],
         ];
+    }
+
+    /**
+     * Get DTO class name from endpoint
+     */
+    protected function getDtoClassName(Endpoint $endpoint): string
+    {
+        // Use collection name to determine DTO
+        if ($endpoint->collection) {
+            $resourceName = NameHelper::resourceClassName($endpoint->collection);
+
+            // Use Laravel's Str::singular() for correct singular form
+            return Str::singular($resourceName);
+        }
+
+        // Fallback: try to parse from endpoint name
+        $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
+        // Remove method prefix (get, post, patch)
+        $name = preg_replace('/^(get|post|patch)/i', '', $name);
+
+        // Use Laravel's Str::singular() for correct singular form
+        return Str::singular(NameHelper::resourceClassName($name));
     }
 
     /**

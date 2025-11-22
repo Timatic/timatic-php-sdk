@@ -21,14 +21,16 @@ it('calls the getTeams method in the Team resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'externalId' => 'mock-id-123',
+                        'name' => 'Mock value',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'externalId' => 'mock-id-123',
+                        'name' => 'Mock value',
                     ],
                 ],
             ],
@@ -42,6 +44,12 @@ it('calls the getTeams method in the Team resource', function () {
     Saloon::assertSent(GetTeamsRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->externalId->toBe('mock-id-123')
+        ->name->toBe('Mock value');
 });
 
 it('calls the postTeams method in the Team resource', function () {
@@ -62,7 +70,7 @@ it('calls the postTeams method in the Team resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('team')
+            ->data->type->toBe('teams')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('mock-id-123')
             ->name->toBe('test value')
@@ -79,6 +87,7 @@ it('calls the getTeam method in the Team resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
+                    'externalId' => 'mock-id-123',
                     'name' => 'Mock value',
                 ],
             ],
@@ -92,6 +101,12 @@ it('calls the getTeam method in the Team resource', function () {
     Saloon::assertSent(GetTeamRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->externalId->toBe('mock-id-123')
+        ->name->toBe('Mock value');
 });
 
 it('calls the deleteTeam method in the Team resource', function () {
@@ -119,13 +134,13 @@ it('calls the patchTeam method in the Team resource', function () {
     $dto->name = 'test value';
     // todo: add every other DTO field
 
-    $this->timaticConnector->team()->patchTeam(teamId: 'test string', $dto);
+    $this->timaticConnector->team()->patchTeam(teamId: 'test string', data: $dto);
     Saloon::assertSent(PatchTeamRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('team')
+            ->data->type->toBe('teams')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('mock-id-123')
             ->name->toBe('test value')

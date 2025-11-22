@@ -29,6 +29,11 @@ it('calls the getIncident method in the Incident resource', function () {
     Saloon::assertSent(GetIncidentRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->name->toBe('Mock value');
 });
 
 it('calls the getIncidents method in the Incident resource', function () {
@@ -60,4 +65,9 @@ it('calls the getIncidents method in the Incident resource', function () {
     Saloon::assertSent(GetIncidentsRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->name->toBe('Mock value');
 });

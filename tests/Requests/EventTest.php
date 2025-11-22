@@ -29,7 +29,7 @@ it('calls the postEvents method in the Event resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('event')
+            ->data->type->toBe('events')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->userId->toBe('mock-id-123')
             ->budgetId->toBe('mock-id-123')

@@ -16,14 +16,30 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'title' => 'Mock value',
+                        'isArchived' => true,
+                        'hasChangeTicket' => true,
+                        'renewalFrequencies' => 'Mock value',
+                        'hasSupervisor' => true,
+                        'hasContractId' => 'mock-id-123',
+                        'hasTotalPrice' => true,
+                        'ticketIsRequired' => true,
+                        'defaultTitle' => 'Mock value',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'title' => 'Mock value',
+                        'isArchived' => true,
+                        'hasChangeTicket' => true,
+                        'renewalFrequencies' => 'Mock value',
+                        'hasSupervisor' => true,
+                        'hasContractId' => 'mock-id-123',
+                        'hasTotalPrice' => true,
+                        'ticketIsRequired' => true,
+                        'defaultTitle' => 'Mock value',
                     ],
                 ],
             ],
@@ -37,4 +53,17 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
     Saloon::assertSent(GetBudgetTypesRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->title->toBe('Mock value')
+        ->isArchived->toBe(true)
+        ->hasChangeTicket->toBe(true)
+        ->renewalFrequencies->toBe('Mock value')
+        ->hasSupervisor->toBe(true)
+        ->hasContractId->toBe('mock-id-123')
+        ->hasTotalPrice->toBe(true)
+        ->ticketIsRequired->toBe(true)
+        ->defaultTitle->toBe('Mock value');
 });

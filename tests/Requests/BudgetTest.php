@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
@@ -21,14 +22,40 @@ it('calls the getBudgets method in the Budget resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'budgetTypeId' => 'mock-id-123',
+                        'customerId' => 'mock-id-123',
+                        'showToCustomer' => true,
+                        'changeId' => 'mock-id-123',
+                        'contractId' => 'mock-id-123',
+                        'title' => 'Mock value',
+                        'description' => 'Mock value',
+                        'totalPrice' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04.065Z',
+                        'endedAt' => '2025-11-22T10:40:04.065Z',
+                        'initialMinutes' => 42,
+                        'isArchived' => true,
+                        'renewalFrequency' => 'Mock value',
+                        'supervisorUserId' => 'mock-id-123',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'budgetTypeId' => 'mock-id-123',
+                        'customerId' => 'mock-id-123',
+                        'showToCustomer' => true,
+                        'changeId' => 'mock-id-123',
+                        'contractId' => 'mock-id-123',
+                        'title' => 'Mock value',
+                        'description' => 'Mock value',
+                        'totalPrice' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04.065Z',
+                        'endedAt' => '2025-11-22T10:40:04.065Z',
+                        'initialMinutes' => 42,
+                        'isArchived' => true,
+                        'renewalFrequency' => 'Mock value',
+                        'supervisorUserId' => 'mock-id-123',
                     ],
                 ],
             ],
@@ -56,6 +83,24 @@ it('calls the getBudgets method in the Budget resource', function () {
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->budgetTypeId->toBe('mock-id-123')
+        ->customerId->toBe('mock-id-123')
+        ->showToCustomer->toBe(true)
+        ->changeId->toBe('mock-id-123')
+        ->contractId->toBe('mock-id-123')
+        ->title->toBe('Mock value')
+        ->description->toBe('Mock value')
+        ->totalPrice->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->initialMinutes->toBe(42)
+        ->isArchived->toBe(true)
+        ->renewalFrequency->toBe('Mock value')
+        ->supervisorUserId->toBe('mock-id-123');
 });
 
 it('calls the postBudgets method in the Budget resource', function () {
@@ -78,7 +123,7 @@ it('calls the postBudgets method in the Budget resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('budget')
+            ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->budgetTypeId->toBe('mock-id-123')
             ->customerId->toBe('mock-id-123')
@@ -97,7 +142,20 @@ it('calls the getBudget method in the Budget resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'name' => 'Mock value',
+                    'budgetTypeId' => 'mock-id-123',
+                    'customerId' => 'mock-id-123',
+                    'showToCustomer' => true,
+                    'changeId' => 'mock-id-123',
+                    'contractId' => 'mock-id-123',
+                    'title' => 'Mock value',
+                    'description' => 'Mock value',
+                    'totalPrice' => 'Mock value',
+                    'startedAt' => '2025-11-22T10:40:04.065Z',
+                    'endedAt' => '2025-11-22T10:40:04.065Z',
+                    'initialMinutes' => 42,
+                    'isArchived' => true,
+                    'renewalFrequency' => 'Mock value',
+                    'supervisorUserId' => 'mock-id-123',
                 ],
             ],
         ], 200),
@@ -110,6 +168,24 @@ it('calls the getBudget method in the Budget resource', function () {
     Saloon::assertSent(GetBudgetRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->budgetTypeId->toBe('mock-id-123')
+        ->customerId->toBe('mock-id-123')
+        ->showToCustomer->toBe(true)
+        ->changeId->toBe('mock-id-123')
+        ->contractId->toBe('mock-id-123')
+        ->title->toBe('Mock value')
+        ->description->toBe('Mock value')
+        ->totalPrice->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->initialMinutes->toBe(42)
+        ->isArchived->toBe(true)
+        ->renewalFrequency->toBe('Mock value')
+        ->supervisorUserId->toBe('mock-id-123');
 });
 
 it('calls the deleteBudget method in the Budget resource', function () {
@@ -139,13 +215,13 @@ it('calls the patchBudget method in the Budget resource', function () {
     $dto->changeId = 'mock-id-123';
     // todo: add every other DTO field
 
-    $this->timaticConnector->budget()->patchBudget(budgetId: 'test string', $dto);
+    $this->timaticConnector->budget()->patchBudget(budgetId: 'test string', data: $dto);
     Saloon::assertSent(PatchBudgetRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('budget')
+            ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->budgetTypeId->toBe('mock-id-123')
             ->customerId->toBe('mock-id-123')

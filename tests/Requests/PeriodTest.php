@@ -28,4 +28,9 @@ it('calls the getBudgetPeriods method in the Period resource', function () {
     Saloon::assertSent(GetBudgetPeriodsRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->name->toBe('Mock value');
 });

@@ -21,14 +21,62 @@ it('calls the getEntries method in the Entry resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'ticketId' => 'mock-id-123',
+                        'ticketNumber' => 'Mock value',
+                        'ticketTitle' => 'Mock value',
+                        'ticketType' => 'Mock value',
+                        'customerId' => 'mock-id-123',
+                        'customerName' => 'Mock value',
+                        'hourlyRate' => 'Mock value',
+                        'hadEmergencyShift' => true,
+                        'budgetId' => 'mock-id-123',
+                        'isPaidPerHour' => true,
+                        'minutesSpent' => 42,
+                        'userId' => 'mock-id-123',
+                        'userEmail' => 'test@example.com',
+                        'userFullName' => 'Mock value',
+                        'createdByUserId' => 'mock-id-123',
+                        'createdByUserEmail' => 'test@example.com',
+                        'createdByUserFullName' => 'Mock value',
+                        'entryType' => 'Mock value',
+                        'description' => 'Mock value',
+                        'isInternal' => true,
+                        'startedAt' => 'Mock value',
+                        'endedAt' => 'Mock value',
+                        'invoicedAt' => 'Mock value',
+                        'isInvoiced' => 'Mock value',
+                        'isBasedOnSuggestion' => true,
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'ticketId' => 'mock-id-123',
+                        'ticketNumber' => 'Mock value',
+                        'ticketTitle' => 'Mock value',
+                        'ticketType' => 'Mock value',
+                        'customerId' => 'mock-id-123',
+                        'customerName' => 'Mock value',
+                        'hourlyRate' => 'Mock value',
+                        'hadEmergencyShift' => true,
+                        'budgetId' => 'mock-id-123',
+                        'isPaidPerHour' => true,
+                        'minutesSpent' => 42,
+                        'userId' => 'mock-id-123',
+                        'userEmail' => 'test@example.com',
+                        'userFullName' => 'Mock value',
+                        'createdByUserId' => 'mock-id-123',
+                        'createdByUserEmail' => 'test@example.com',
+                        'createdByUserFullName' => 'Mock value',
+                        'entryType' => 'Mock value',
+                        'description' => 'Mock value',
+                        'isInternal' => true,
+                        'startedAt' => 'Mock value',
+                        'endedAt' => 'Mock value',
+                        'invoicedAt' => 'Mock value',
+                        'isInvoiced' => 'Mock value',
+                        'isBasedOnSuggestion' => true,
                     ],
                 ],
             ],
@@ -56,6 +104,35 @@ it('calls the getEntries method in the Entry resource', function () {
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->ticketId->toBe('mock-id-123')
+        ->ticketNumber->toBe('Mock value')
+        ->ticketTitle->toBe('Mock value')
+        ->ticketType->toBe('Mock value')
+        ->customerId->toBe('mock-id-123')
+        ->customerName->toBe('Mock value')
+        ->hourlyRate->toBe('Mock value')
+        ->hadEmergencyShift->toBe(true)
+        ->budgetId->toBe('mock-id-123')
+        ->isPaidPerHour->toBe(true)
+        ->minutesSpent->toBe(42)
+        ->userId->toBe('mock-id-123')
+        ->userEmail->toBe('test@example.com')
+        ->userFullName->toBe('Mock value')
+        ->createdByUserId->toBe('mock-id-123')
+        ->createdByUserEmail->toBe('test@example.com')
+        ->createdByUserFullName->toBe('Mock value')
+        ->entryType->toBe('Mock value')
+        ->description->toBe('Mock value')
+        ->isInternal->toBe(true)
+        ->startedAt->toBe('Mock value')
+        ->endedAt->toBe('Mock value')
+        ->invoicedAt->toBe('Mock value')
+        ->isInvoiced->toBe('Mock value')
+        ->isBasedOnSuggestion->toBe(true);
 });
 
 it('calls the postEntries method in the Entry resource', function () {
@@ -78,7 +155,7 @@ it('calls the postEntries method in the Entry resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('entry')
+            ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->ticketId->toBe('mock-id-123')
             ->ticketNumber->toBe('test value')
@@ -97,7 +174,31 @@ it('calls the getEntry method in the Entry resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'name' => 'Mock value',
+                    'ticketId' => 'mock-id-123',
+                    'ticketNumber' => 'Mock value',
+                    'ticketTitle' => 'Mock value',
+                    'ticketType' => 'Mock value',
+                    'customerId' => 'mock-id-123',
+                    'customerName' => 'Mock value',
+                    'hourlyRate' => 'Mock value',
+                    'hadEmergencyShift' => true,
+                    'budgetId' => 'mock-id-123',
+                    'isPaidPerHour' => true,
+                    'minutesSpent' => 42,
+                    'userId' => 'mock-id-123',
+                    'userEmail' => 'test@example.com',
+                    'userFullName' => 'Mock value',
+                    'createdByUserId' => 'mock-id-123',
+                    'createdByUserEmail' => 'test@example.com',
+                    'createdByUserFullName' => 'Mock value',
+                    'entryType' => 'Mock value',
+                    'description' => 'Mock value',
+                    'isInternal' => true,
+                    'startedAt' => 'Mock value',
+                    'endedAt' => 'Mock value',
+                    'invoicedAt' => 'Mock value',
+                    'isInvoiced' => 'Mock value',
+                    'isBasedOnSuggestion' => true,
                 ],
             ],
         ], 200),
@@ -110,6 +211,35 @@ it('calls the getEntry method in the Entry resource', function () {
     Saloon::assertSent(GetEntryRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->ticketId->toBe('mock-id-123')
+        ->ticketNumber->toBe('Mock value')
+        ->ticketTitle->toBe('Mock value')
+        ->ticketType->toBe('Mock value')
+        ->customerId->toBe('mock-id-123')
+        ->customerName->toBe('Mock value')
+        ->hourlyRate->toBe('Mock value')
+        ->hadEmergencyShift->toBe(true)
+        ->budgetId->toBe('mock-id-123')
+        ->isPaidPerHour->toBe(true)
+        ->minutesSpent->toBe(42)
+        ->userId->toBe('mock-id-123')
+        ->userEmail->toBe('test@example.com')
+        ->userFullName->toBe('Mock value')
+        ->createdByUserId->toBe('mock-id-123')
+        ->createdByUserEmail->toBe('test@example.com')
+        ->createdByUserFullName->toBe('Mock value')
+        ->entryType->toBe('Mock value')
+        ->description->toBe('Mock value')
+        ->isInternal->toBe(true)
+        ->startedAt->toBe('Mock value')
+        ->endedAt->toBe('Mock value')
+        ->invoicedAt->toBe('Mock value')
+        ->isInvoiced->toBe('Mock value')
+        ->isBasedOnSuggestion->toBe(true);
 });
 
 it('calls the deleteEntry method in the Entry resource', function () {
@@ -139,13 +269,13 @@ it('calls the patchEntry method in the Entry resource', function () {
     $dto->ticketType = 'test value';
     // todo: add every other DTO field
 
-    $this->timaticConnector->entry()->patchEntry(entryId: 'test string', $dto);
+    $this->timaticConnector->entry()->patchEntry(entryId: 'test string', data: $dto);
     Saloon::assertSent(PatchEntryRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('entry')
+            ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->ticketId->toBe('mock-id-123')
             ->ticketNumber->toBe('test value')

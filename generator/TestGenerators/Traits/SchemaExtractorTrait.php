@@ -10,6 +10,7 @@ use cebe\openapi\spec\Schema;
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Illuminate\Support\Str;
 
 trait SchemaExtractorTrait
 {
@@ -210,19 +211,27 @@ trait SchemaExtractorTrait
     }
 
     /**
-     * Get the resource type for JSON:API from endpoint (plural, lowercase)
+     * Get the resource type for JSON:API from endpoint (camelCase plural)
+     * API uses ->camel()->plural()->toString() for type determination
      */
     protected function getResourceTypeFromEndpoint(Endpoint $endpoint): string
     {
+        $name = null;
+
         if ($endpoint->collection) {
-            return NameHelper::safeVariableName($endpoint->collection);
+            $name = $endpoint->collection;
+        } else {
+            // Fallback: parse from endpoint path
+            $path = $endpoint->path;
+            // Extract first path segment (e.g., /budgets -> budgets)
+            preg_match('#^/([^/]+)#', $path, $matches);
+            $name = $matches[1] ?? 'resources';
         }
 
-        // Fallback: parse from endpoint path
-        $path = $endpoint->path;
-        // Extract first path segment (e.g., /budgets -> budgets)
-        preg_match('#^/([^/]+)#', $path, $matches);
+        // Convert to camelCase and ensure plural using Laravel's Str helper
+        $camelName = NameHelper::safeVariableName($name);
 
-        return $matches[1] ?? 'resources';
+        // Use Laravel's Str::plural() for correct English pluralization
+        return Str::plural($camelName);
     }
 }

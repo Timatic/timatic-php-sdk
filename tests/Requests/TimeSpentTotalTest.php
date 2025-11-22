@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
@@ -17,14 +18,24 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'start' => '2025-11-22T10:40:04.065Z',
+                        'end' => '2025-11-22T10:40:04.065Z',
+                        'internalMinutes' => 42,
+                        'billableMinutes' => 42,
+                        'periodUnit' => 'Mock value',
+                        'periodValue' => 42,
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'start' => '2025-11-22T10:40:04.065Z',
+                        'end' => '2025-11-22T10:40:04.065Z',
+                        'internalMinutes' => 42,
+                        'billableMinutes' => 42,
+                        'periodUnit' => 'Mock value',
+                        'periodValue' => 42,
                     ],
                 ],
             ],
@@ -50,4 +61,14 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->start->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->end->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->internalMinutes->toBe(42)
+        ->billableMinutes->toBe(42)
+        ->periodUnit->toBe('Mock value')
+        ->periodValue->toBe(42);
 });

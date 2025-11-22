@@ -37,4 +37,9 @@ it('calls the getMes method in the Me resource', function () {
     Saloon::assertSent(GetMesRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->name->toBe('Mock value');
 });

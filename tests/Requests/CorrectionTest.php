@@ -27,7 +27,7 @@ it('calls the postCorrections method in the Correction resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('correction');
+            ->data->type->toBe('corrections');
 
         return true;
     });
@@ -43,13 +43,13 @@ it('calls the patchCorrection method in the Correction resource', function () {
     $dto->name = 'test value';
     // todo: add every other DTO field
 
-    $this->timaticConnector->correction()->patchCorrection(correctionId: 'test string', $dto);
+    $this->timaticConnector->correction()->patchCorrection(correctionId: 'test string', data: $dto);
     Saloon::assertSent(PatchCorrectionRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('correction');
+            ->data->type->toBe('corrections');
 
         return true;
     });

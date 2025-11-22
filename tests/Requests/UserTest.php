@@ -21,14 +21,16 @@ it('calls the getUsers method in the User resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'name' => 'Mock value',
+                        'externalId' => 'mock-id-123',
+                        'email' => 'test@example.com',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'name' => 'Mock value',
+                        'externalId' => 'mock-id-123',
+                        'email' => 'test@example.com',
                     ],
                 ],
             ],
@@ -52,6 +54,12 @@ it('calls the getUsers method in the User resource', function () {
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->externalId->toBe('mock-id-123')
+        ->email->toBe('test@example.com');
 });
 
 it('calls the postUsers method in the User resource', function () {
@@ -72,7 +80,7 @@ it('calls the postUsers method in the User resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('user')
+            ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('mock-id-123')
             ->email->toBe('test@example.com')
@@ -89,7 +97,8 @@ it('calls the getUser method in the User resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'name' => 'Mock value',
+                    'externalId' => 'mock-id-123',
+                    'email' => 'test@example.com',
                 ],
             ],
         ], 200),
@@ -102,6 +111,12 @@ it('calls the getUser method in the User resource', function () {
     Saloon::assertSent(GetUserRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->externalId->toBe('mock-id-123')
+        ->email->toBe('test@example.com');
 });
 
 it('calls the deleteUser method in the User resource', function () {
@@ -129,13 +144,13 @@ it('calls the patchUser method in the User resource', function () {
     $dto->email = 'test@example.com';
     // todo: add every other DTO field
 
-    $this->timaticConnector->user()->patchUser(userId: 'test string', $dto);
+    $this->timaticConnector->user()->patchUser(userId: 'test string', data: $dto);
     Saloon::assertSent(PatchUserRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('user')
+            ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('mock-id-123')
             ->email->toBe('test@example.com')

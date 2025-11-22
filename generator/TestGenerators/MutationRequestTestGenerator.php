@@ -9,6 +9,7 @@ use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Illuminate\Support\Str;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
 
@@ -80,8 +81,12 @@ class MutationRequestTestGenerator
             $args[] = "{$paramName}: 'test string'";
         }
 
-        // Add $dto parameter last
-        $args[] = '$dto';
+        // Add $dto parameter last - use named argument if there are path params
+        if (empty($endpoint->pathParameters)) {
+            $args[] = '$dto';
+        } else {
+            $args[] = 'data: $dto';
+        }
 
         return implode(', ', $args);
     }
@@ -315,18 +320,17 @@ class MutationRequestTestGenerator
         if ($endpoint->collection) {
             $resourceName = NameHelper::resourceClassName($endpoint->collection);
 
-            // Remove trailing 's' for singular DTO name
-            return rtrim($resourceName, 's');
+            // Use Laravel's Str::singular() for correct singular form
+            return Str::singular($resourceName);
         }
 
         // Fallback: try to parse from endpoint name
         $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
         // Remove method prefix (post, patch)
         $name = preg_replace('/^(post|patch)/i', '', $name);
-        // Remove trailing 's' for singular
-        $name = rtrim($name, 's');
 
-        return NameHelper::resourceClassName($name);
+        // Use Laravel's Str::singular() for correct singular form
+        return Str::singular(NameHelper::resourceClassName($name));
     }
 
     /**

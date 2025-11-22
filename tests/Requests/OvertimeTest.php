@@ -17,14 +17,28 @@ it('calls the getOvertimes method in the Overtime resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'entryId' => 'mock-id-123',
+                        'overtimeTypeId' => 'mock-id-123',
+                        'startedAt' => 'Mock value',
+                        'endedAt' => 'Mock value',
+                        'percentages' => 'Mock value',
+                        'approvedAt' => 'Mock value',
+                        'approvedByUserId' => 'mock-id-123',
+                        'exportedAt' => 'Mock value',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'entryId' => 'mock-id-123',
+                        'overtimeTypeId' => 'mock-id-123',
+                        'startedAt' => 'Mock value',
+                        'endedAt' => 'Mock value',
+                        'percentages' => 'Mock value',
+                        'approvedAt' => 'Mock value',
+                        'approvedByUserId' => 'mock-id-123',
+                        'exportedAt' => 'Mock value',
                     ],
                 ],
             ],
@@ -52,4 +66,16 @@ it('calls the getOvertimes method in the Overtime resource', function () {
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->entryId->toBe('mock-id-123')
+        ->overtimeTypeId->toBe('mock-id-123')
+        ->startedAt->toBe('Mock value')
+        ->endedAt->toBe('Mock value')
+        ->percentages->toBe('Mock value')
+        ->approvedAt->toBe('Mock value')
+        ->approvedByUserId->toBe('mock-id-123')
+        ->exportedAt->toBe('Mock value');
 });

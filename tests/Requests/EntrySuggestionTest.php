@@ -19,14 +19,28 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'ticketId' => 'mock-id-123',
+                        'ticketNumber' => 'Mock value',
+                        'customerId' => 'mock-id-123',
+                        'userId' => 'mock-id-123',
+                        'date' => 'Mock value',
+                        'ticketTitle' => 'Mock value',
+                        'ticketType' => 'Mock value',
+                        'budgetId' => 'mock-id-123',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'ticketId' => 'mock-id-123',
+                        'ticketNumber' => 'Mock value',
+                        'customerId' => 'mock-id-123',
+                        'userId' => 'mock-id-123',
+                        'date' => 'Mock value',
+                        'ticketTitle' => 'Mock value',
+                        'ticketType' => 'Mock value',
+                        'budgetId' => 'mock-id-123',
                     ],
                 ],
             ],
@@ -50,6 +64,18 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->ticketId->toBe('mock-id-123')
+        ->ticketNumber->toBe('Mock value')
+        ->customerId->toBe('mock-id-123')
+        ->userId->toBe('mock-id-123')
+        ->date->toBe('Mock value')
+        ->ticketTitle->toBe('Mock value')
+        ->ticketType->toBe('Mock value')
+        ->budgetId->toBe('mock-id-123');
 });
 
 it('calls the getEntrySuggestion method in the EntrySuggestion resource', function () {
@@ -59,7 +85,14 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'name' => 'Mock value',
+                    'ticketId' => 'mock-id-123',
+                    'ticketNumber' => 'Mock value',
+                    'customerId' => 'mock-id-123',
+                    'userId' => 'mock-id-123',
+                    'date' => 'Mock value',
+                    'ticketTitle' => 'Mock value',
+                    'ticketType' => 'Mock value',
+                    'budgetId' => 'mock-id-123',
                 ],
             ],
         ], 200),
@@ -72,6 +105,18 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
     Saloon::assertSent(GetEntrySuggestionRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->ticketId->toBe('mock-id-123')
+        ->ticketNumber->toBe('Mock value')
+        ->customerId->toBe('mock-id-123')
+        ->userId->toBe('mock-id-123')
+        ->date->toBe('Mock value')
+        ->ticketTitle->toBe('Mock value')
+        ->ticketType->toBe('Mock value')
+        ->budgetId->toBe('mock-id-123');
 });
 
 it('calls the deleteEntrySuggestion method in the EntrySuggestion resource', function () {

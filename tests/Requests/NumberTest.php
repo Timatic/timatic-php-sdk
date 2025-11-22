@@ -28,4 +28,9 @@ it('calls the getIncidentsNumber method in the Number resource', function () {
     Saloon::assertSent(GetIncidentsNumberRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->name->toBe('Mock value');
 });

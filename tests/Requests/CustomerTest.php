@@ -21,14 +21,20 @@ it('calls the getCustomers method in the Customer resource', function () {
                     'type' => 'resources',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'data' => [],
+                        'externalId' => 'mock-id-123',
+                        'name' => 'Mock value',
+                        'hourlyRate' => 'Mock value',
+                        'accountManagerUserId' => 'mock-id-123',
                     ],
                 ],
                 1 => [
                     'type' => 'resources',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'data' => [],
+                        'externalId' => 'mock-id-123',
+                        'name' => 'Mock value',
+                        'hourlyRate' => 'Mock value',
+                        'accountManagerUserId' => 'mock-id-123',
                     ],
                 ],
             ],
@@ -52,6 +58,14 @@ it('calls the getCustomers method in the Customer resource', function () {
     });
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->externalId->toBe('mock-id-123')
+        ->name->toBe('Mock value')
+        ->hourlyRate->toBe('Mock value')
+        ->accountManagerUserId->toBe('mock-id-123');
 });
 
 it('calls the postCustomers method in the Customer resource', function () {
@@ -74,7 +88,7 @@ it('calls the postCustomers method in the Customer resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('customer')
+            ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('mock-id-123')
             ->name->toBe('test value')
@@ -93,7 +107,10 @@ it('calls the getCustomer method in the Customer resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
+                    'externalId' => 'mock-id-123',
                     'name' => 'Mock value',
+                    'hourlyRate' => 'Mock value',
+                    'accountManagerUserId' => 'mock-id-123',
                 ],
             ],
         ], 200),
@@ -106,6 +123,14 @@ it('calls the getCustomer method in the Customer resource', function () {
     Saloon::assertSent(GetCustomerRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->externalId->toBe('mock-id-123')
+        ->name->toBe('Mock value')
+        ->hourlyRate->toBe('Mock value')
+        ->accountManagerUserId->toBe('mock-id-123');
 });
 
 it('calls the deleteCustomer method in the Customer resource', function () {
@@ -135,13 +160,13 @@ it('calls the patchCustomer method in the Customer resource', function () {
     $dto->accountManagerUserId = 'mock-id-123';
     // todo: add every other DTO field
 
-    $this->timaticConnector->customer()->patchCustomer(customerId: 'test string', $dto);
+    $this->timaticConnector->customer()->patchCustomer(customerId: 'test string', data: $dto);
     Saloon::assertSent(PatchCustomerRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('customer')
+            ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('mock-id-123')
             ->name->toBe('test value')

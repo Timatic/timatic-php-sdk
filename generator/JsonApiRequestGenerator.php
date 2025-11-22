@@ -9,6 +9,7 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
@@ -212,17 +213,16 @@ class JsonApiRequestGenerator extends RequestGenerator
         if ($endpoint->collection) {
             $resourceName = NameHelper::resourceClassName($endpoint->collection);
 
-            // Remove trailing 's' for singular DTO name
-            return rtrim($resourceName, 's');
+            // Use Laravel's Str::singular() for correct singular form
+            return Str::singular($resourceName);
         }
 
         // Fallback: try to parse from endpoint name
         $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
         // Remove method prefix (post, patch, get)
         $name = preg_replace('/^(post|patch|get)/i', '', $name);
-        // Remove trailing 's' for singular
-        $name = rtrim($name, 's');
 
-        return NameHelper::resourceClassName($name);
+        // Use Laravel's Str::singular() for correct singular form
+        return Str::singular(NameHelper::resourceClassName($name));
     }
 }

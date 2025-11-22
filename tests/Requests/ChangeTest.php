@@ -29,6 +29,11 @@ it('calls the getChange method in the Change resource', function () {
     Saloon::assertSent(GetChangeRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->name->toBe('Mock value');
 });
 
 it('calls the getChanges method in the Change resource', function () {
@@ -60,4 +65,9 @@ it('calls the getChanges method in the Change resource', function () {
     Saloon::assertSent(GetChangesRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->name->toBe('Mock value');
 });

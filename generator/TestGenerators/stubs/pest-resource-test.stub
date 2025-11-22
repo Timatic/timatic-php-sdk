@@ -2,6 +2,7 @@
 
 {{ dtoImports }}
 {{ requestImports }}
+use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;

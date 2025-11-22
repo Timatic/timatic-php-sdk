@@ -96,4 +96,9 @@ it('calls the getBudgetEntriesExport method in the EntriesExport resource', func
     Saloon::assertSent(GetBudgetEntriesExportRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dto = $response->dto();
+
+    expect($dto)
+        ->name->toBe('Mock value');
 });

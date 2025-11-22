@@ -22,14 +22,14 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
     $dto->endedAt = 'test value';
     // todo: add every other DTO field
 
-    $this->timaticConnector->approve()->postOvertimeApprove(overtimeId: 'test string', $dto);
+    $this->timaticConnector->approve()->postOvertimeApprove(overtimeId: 'test string', data: $dto);
     Saloon::assertSent(PostOvertimeApproveRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('approve')
+            ->data->type->toBe('approves')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->entryId->toBe('mock-id-123')
             ->overtimeTypeId->toBe('mock-id-123')

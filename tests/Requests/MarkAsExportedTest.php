@@ -22,14 +22,14 @@ it('calls the postOvertimeMarkAsExported method in the MarkAsExported resource',
     $dto->endedAt = 'test value';
     // todo: add every other DTO field
 
-    $this->timaticConnector->markAsExported()->postOvertimeMarkAsExported(overtimeId: 'test string', $dto);
+    $this->timaticConnector->markAsExported()->postOvertimeMarkAsExported(overtimeId: 'test string', data: $dto);
     Saloon::assertSent(PostOvertimeMarkAsExportedRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('markAsExported')
+            ->data->type->toBe('markAsExporteds')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->entryId->toBe('mock-id-123')
             ->overtimeTypeId->toBe('mock-id-123')

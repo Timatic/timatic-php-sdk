@@ -22,14 +22,14 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
     $dto->ticketType = 'test value';
     // todo: add every other DTO field
 
-    $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(entryId: 'test string', $dto);
+    $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(entryId: 'test string', data: $dto);
     Saloon::assertSent(PostEntryMarkAsInvoicedRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
             // POST calls dont have an ID field
-            ->data->type->toBe('markAsInvoiced')
+            ->data->type->toBe('markAsInvoiceds')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->ticketId->toBe('mock-id-123')
             ->ticketNumber->toBe('test value')

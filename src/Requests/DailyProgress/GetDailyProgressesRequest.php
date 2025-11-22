@@ -6,7 +6,7 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Dto\DailyProgre;
+use Timatic\SDK\Dto\DailyProgress;
 use Timatic\SDK\Hydration\Facades\Hydrator;
 
 /**
@@ -14,7 +14,7 @@ use Timatic\SDK\Hydration\Facades\Hydrator;
  */
 class GetDailyProgressesRequest extends Request implements Paginatable
 {
-    protected $model = DailyProgre::class;
+    protected $model = DailyProgress::class;
 
     protected Method $method = Method::GET;
 

@@ -37,4 +37,9 @@ it('calls the getBudgetsExportMails method in the ExportMail resource', function
     Saloon::assertSent(GetBudgetsExportMailsRequest::class);
 
     expect($response->status())->toBe(200);
+
+    $dtoCollection = $response->dto();
+
+    expect($dtoCollection->first())
+        ->name->toBe('Mock value');
 });
