@@ -2,9 +2,9 @@
 
 namespace Timatic\SDK\Dto;
 
-use Timatic\SDK\Attributes\DateTime;
-use Timatic\SDK\Attributes\Property;
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Attributes\DateTime;
+use Timatic\SDK\Hydration\Attributes\Property;
 
 class Customer extends Model
 {

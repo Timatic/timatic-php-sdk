@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Timatic\SDK\Concerns;
 
 use ReflectionClass;
-use Timatic\SDK\Attributes\Property;
+use Timatic\SDK\Hydration\Attributes\Property;
 
 trait HasAttributes
 {

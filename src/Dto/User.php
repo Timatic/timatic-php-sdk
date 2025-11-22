@@ -2,8 +2,8 @@
 
 namespace Timatic\SDK\Dto;
 
-use Timatic\SDK\Attributes\Property;
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Attributes\Property;
 
 class User extends Model
 {

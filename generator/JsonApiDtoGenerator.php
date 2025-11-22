@@ -13,9 +13,9 @@ use Crescat\SaloonSdkGenerator\Helpers\Utils;
 use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
-use Timatic\SDK\Attributes\DateTime;
-use Timatic\SDK\Attributes\Property;
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Attributes\DateTime;
+use Timatic\SDK\Hydration\Attributes\Property;
 
 class JsonApiDtoGenerator extends Generator
 {

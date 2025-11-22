@@ -6,7 +6,7 @@ namespace Timatic\SDK\Concerns;
 
 use Illuminate\Support\Str;
 use ReflectionClass;
-use Timatic\SDK\Attributes\Property;
+use Timatic\SDK\Hydration\Attributes\Property;
 
 abstract class Model implements ModelInterface
 {
