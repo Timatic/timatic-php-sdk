@@ -137,25 +137,39 @@ trait DtoAssertions
             return '2025-11-22T10:40:04.065Z';
         }
 
-        // ID fields
-        if (str_ends_with($propertyName, 'Id')) {
-            return 'mock-id-123';
+        // Type-based generation (handle explicit types first)
+        if ($typeName === 'bool') {
+            return true;
         }
 
-        // Email fields
-        if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
-            return 'test@example.com';
+        if ($typeName === 'int') {
+            return 42;
         }
 
-        // Type-based generation
-        return match ($typeName) {
-            'bool' => true,
-            'int' => 42,
-            'float' => 3.14,
-            'string' => 'Mock value',
-            'array' => [],
-            default => 'Mock value',
-        };
+        if ($typeName === 'float') {
+            return 3.14;
+        }
+
+        if ($typeName === 'array') {
+            return [];
+        }
+
+        // String type - apply name-based heuristics
+        if ($typeName === 'string') {
+            // ID fields
+            if (str_ends_with($propertyName, 'Id')) {
+                return 'mock-id-123';
+            }
+
+            // Email fields
+            if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
+                return 'test@example.com';
+            }
+
+            return 'Mock value';
+        }
+
+        return 'Mock value';
     }
 
     /**

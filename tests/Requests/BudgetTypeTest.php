@@ -21,7 +21,7 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
                         'hasChangeTicket' => true,
                         'renewalFrequencies' => 'Mock value',
                         'hasSupervisor' => true,
-                        'hasContractId' => 'mock-id-123',
+                        'hasContractId' => true,
                         'hasTotalPrice' => true,
                         'ticketIsRequired' => true,
                         'defaultTitle' => 'Mock value',
@@ -36,7 +36,7 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
                         'hasChangeTicket' => true,
                         'renewalFrequencies' => 'Mock value',
                         'hasSupervisor' => true,
-                        'hasContractId' => 'mock-id-123',
+                        'hasContractId' => true,
                         'hasTotalPrice' => true,
                         'ticketIsRequired' => true,
                         'defaultTitle' => 'Mock value',
@@ -62,7 +62,7 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
         ->hasChangeTicket->toBe(true)
         ->renewalFrequencies->toBe('Mock value')
         ->hasSupervisor->toBe(true)
-        ->hasContractId->toBe('mock-id-123')
+        ->hasContractId->toBe(true)
         ->hasTotalPrice->toBe(true)
         ->ticketIsRequired->toBe(true)
         ->defaultTitle->toBe('Mock value');

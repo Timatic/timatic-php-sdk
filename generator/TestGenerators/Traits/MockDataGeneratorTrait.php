@@ -92,25 +92,39 @@ trait MockDataGeneratorTrait
             return '2025-01-15T10:30:00Z';
         }
 
-        // ID fields
-        if (str_ends_with($propertyName, 'Id')) {
-            return 'mock-id-123';
+        // Type-based generation (handle explicit types first)
+        if ($type === 'boolean') {
+            return true;
         }
 
-        // Email fields
-        if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
-            return 'test@example.com';
+        if ($type === 'integer' || $type === 'number') {
+            return 42;
         }
 
-        // Type-based generation
-        return match ($type) {
-            'boolean' => true,
-            'integer', 'number' => 42,
-            'string' => 'Mock value',
-            'array' => [],
-            'object' => [],
-            default => 'Mock value',
-        };
+        if ($type === 'array') {
+            return [];
+        }
+
+        if ($type === 'object') {
+            return [];
+        }
+
+        // String type - apply name-based heuristics
+        if ($type === 'string') {
+            // ID fields
+            if (str_ends_with($propertyName, 'Id')) {
+                return 'mock-id-123';
+            }
+
+            // Email fields
+            if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
+                return 'test@example.com';
+            }
+
+            return 'Mock value';
+        }
+
+        return 'Mock value';
     }
 
     /**
