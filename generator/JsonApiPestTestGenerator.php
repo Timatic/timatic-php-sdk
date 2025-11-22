@@ -27,6 +27,8 @@ class JsonApiPestTestGenerator extends PestTestGenerator
 
     protected DeleteRequestTestGenerator $deleteTestGenerator;
 
+    protected GeneratedCode $generatedCode;
+
     /**
      * Override process() to instantiate test generators with ApiSpecification and GeneratedCode
      */
@@ -35,6 +37,9 @@ class JsonApiPestTestGenerator extends PestTestGenerator
         ApiSpecification $specification,
         GeneratedCode $generatedCode,
     ): PhpFile|array|null {
+        // Store generated code for later use
+        $this->generatedCode = $generatedCode;
+
         // Instantiate test generators with the parsed ApiSpecification and GeneratedCode
         $this->collectionTestGenerator = new CollectionRequestTestGenerator($specification, $generatedCode);
         $this->mutationTestGenerator = new MutationRequestTestGenerator($specification, $generatedCode);
@@ -62,11 +67,53 @@ class JsonApiPestTestGenerator extends PestTestGenerator
     }
 
     /**
-     * Filter out PUT requests - not supported in JSON:API
+     * Filter out PUT requests and endpoints without DTOs
      */
     protected function shouldIncludeEndpoint(Endpoint $endpoint): bool
     {
-        return ! $endpoint->method->isPut();
+        if ($endpoint->method->isPut()) {
+            return false;
+        }
+
+        // Skip endpoints without DTOs (endpoints that don't return data)
+        if (! $this->hasDtoForEndpoint($endpoint)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a DTO exists for the endpoint
+     */
+    protected function hasDtoForEndpoint(Endpoint $endpoint): bool
+    {
+        $dtoClassName = $this->getDtoClassName($endpoint);
+
+        // Check if this DTO was generated in the current run
+        return array_key_exists($dtoClassName, $this->generatedCode->dtoClasses);
+    }
+
+    /**
+     * Get DTO class name from endpoint
+     */
+    protected function getDtoClassName(Endpoint $endpoint): string
+    {
+        // Use collection name to determine DTO
+        if ($endpoint->collection) {
+            $resourceName = NameHelper::resourceClassName($endpoint->collection);
+
+            // Use Laravel's Str::singular() for correct singular form
+            return \Illuminate\Support\Str::singular($resourceName);
+        }
+
+        // Fallback: try to parse from endpoint name
+        $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
+        // Remove method prefix (post, patch, get)
+        $name = preg_replace('/^(post|patch|get)/i', '', $name);
+
+        // Use Laravel's Str::singular() for correct singular form
+        return \Illuminate\Support\Str::singular(NameHelper::resourceClassName($name));
     }
 
     /**
