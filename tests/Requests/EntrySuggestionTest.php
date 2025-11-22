@@ -34,7 +34,7 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
     ]);
 
     $request = (new GetEntrySuggestionsRequest)
-        ->filter('date', 'test-value');
+        ->filter('date', 'test value');
 
     $response = $this->timaticConnector->send($request);
 
@@ -44,7 +44,7 @@ it('calls the getEntrySuggestions method in the EntrySuggestion resource', funct
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[date]', 'test-value');
+        expect($query)->toHaveKey('filter[date]', 'test value');
 
         return true;
     });

@@ -6,9 +6,18 @@ namespace Timatic\SDK\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\OpenApiSpecLoaderTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
 
 class CollectionRequestTestGenerator
 {
+    use MockDataGeneratorTrait;
+    use OpenApiSpecLoaderTrait;
+    use SchemaExtractorTrait;
+    use TestValueGeneratorTrait;
+
     /**
      * Check if endpoint is a GET collection request (implements Paginatable)
      */
@@ -46,7 +55,57 @@ class CollectionRequestTestGenerator
         $nonFilterParams = $this->getNonFilterQueryParameters($endpoint);
         $functionStub = str_replace('{{ nonFilterParams }}', $nonFilterParams, $functionStub);
 
+        // Replace fixture with inline mock data
+        $mockResponseBody = $this->generateMockResponseBody($endpoint);
+        $functionStub = preg_replace(
+            "/MockResponse::fixture\('[^']+'\)/",
+            "MockResponse::make($mockResponseBody, 200)",
+            $functionStub
+        );
+
         return $functionStub;
+    }
+
+    /**
+     * Generate mock data for collection response
+     */
+    protected function generateMockData(Endpoint $endpoint): array
+    {
+        // Try to determine the schema for this endpoint
+        $schema = $this->getResponseSchemaForEndpoint($endpoint);
+
+        if ($schema) {
+            // Generate mock data based on schema
+            $attributes = $this->generateMockAttributes($schema);
+            $resourceType = $this->getResourceTypeFromSchema($schema);
+
+            // Generate 2-3 items for collections
+            return [
+                'data' => [
+                    [
+                        'type' => $resourceType,
+                        'id' => 'mock-id-1',
+                        'attributes' => $attributes,
+                    ],
+                    [
+                        'type' => $resourceType,
+                        'id' => 'mock-id-2',
+                        'attributes' => $this->generateMockAttributes($schema),
+                    ],
+                ],
+            ];
+        }
+
+        // Fallback: generic mock data
+        $resourceName = NameHelper::resourceClassName($endpoint->collection);
+        $resourceType = NameHelper::safeVariableName($resourceName);
+
+        return [
+            'data' => [
+                ['type' => $resourceType, 'id' => 'mock-id-1', 'attributes' => ['name' => 'Mock item 1']],
+                ['type' => $resourceType, 'id' => 'mock-id-2', 'attributes' => ['name' => 'Mock item 2']],
+            ],
+        ];
     }
 
     /**
@@ -151,29 +210,5 @@ class CollectionRequestTestGenerator
         }
 
         return implode(', ', $params);
-    }
-
-    /**
-     * Generate appropriate test value based on property name
-     */
-    protected function generateTestValueForProperty(string $property): string
-    {
-        // Date/time properties
-        if (str_contains($property, 'At') || str_contains($property, 'Date')) {
-            return "'2025-01-01'";
-        }
-
-        // ID properties
-        if (str_ends_with($property, 'Id')) {
-            return "'test-id-123'";
-        }
-
-        // Boolean properties
-        if (str_starts_with($property, 'is') || str_starts_with($property, 'has')) {
-            return 'true';
-        }
-
-        // Default to string
-        return "'test-value'";
     }
 }

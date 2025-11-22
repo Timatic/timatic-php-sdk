@@ -38,7 +38,7 @@ it('calls the getEntries method in the Entry resource', function () {
     $request = (new GetEntriesRequest(include: 'test string'))
         ->filter('userId', 'test-id-123')
         ->filter('budgetId', 'test-id-123')
-        ->filter('startedAt', '2025-01-01');
+        ->filter('startedAt', '2025-01-01T10:00:00Z');
 
     $response = $this->timaticConnector->send($request);
 
@@ -50,7 +50,7 @@ it('calls the getEntries method in the Entry resource', function () {
 
         expect($query)->toHaveKey('filter[userId]', 'test-id-123');
         expect($query)->toHaveKey('filter[budgetId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01');
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01T10:00:00Z');
 
         return true;
     });

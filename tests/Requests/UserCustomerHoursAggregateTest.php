@@ -32,8 +32,8 @@ it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggr
     ]);
 
     $request = (new GetUserCustomerHoursAggregatesRequest)
-        ->filter('startedAt', '2025-01-01')
-        ->filter('endedAt', '2025-01-01')
+        ->filter('startedAt', '2025-01-01T10:00:00Z')
+        ->filter('endedAt', '2025-01-01T10:00:00Z')
         ->filter('teamId', 'test-id-123');
 
     $response = $this->timaticConnector->send($request);
@@ -44,8 +44,8 @@ it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggr
     Saloon::assertSent(function (Request $request) {
         $query = $request->query()->all();
 
-        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01');
-        expect($query)->toHaveKey('filter[endedAt]', '2025-01-01');
+        expect($query)->toHaveKey('filter[startedAt]', '2025-01-01T10:00:00Z');
+        expect($query)->toHaveKey('filter[endedAt]', '2025-01-01T10:00:00Z');
         expect($query)->toHaveKey('filter[teamId]', 'test-id-123');
 
         return true;

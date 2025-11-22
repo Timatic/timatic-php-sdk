@@ -38,7 +38,7 @@ it('calls the getBudgets method in the Budget resource', function () {
     $request = (new GetBudgetsRequest(include: 'test string'))
         ->filter('customerId', 'test-id-123')
         ->filter('budgetTypeId', 'test-id-123')
-        ->filter('isArchived', true);
+        ->filter('isArchived', false);
 
     $response = $this->timaticConnector->send($request);
 
@@ -50,7 +50,7 @@ it('calls the getBudgets method in the Budget resource', function () {
 
         expect($query)->toHaveKey('filter[customerId]', 'test-id-123');
         expect($query)->toHaveKey('filter[budgetTypeId]', 'test-id-123');
-        expect($query)->toHaveKey('filter[isArchived]', true);
+        expect($query)->toHaveKey('filter[isArchived]', false);
 
         return true;
     });
