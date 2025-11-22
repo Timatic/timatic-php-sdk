@@ -1,10 +1,4 @@
-Focus steeds op een enkele hoofdtaak. Als deze klaar is geef dan de gelegenheid om feedback te geven en de resultaten te committen. 
-
-
-## Task 1 - Extract 
-
-- Can we extract Singular GET Test logic from JsonAPIPestGenerator and Delete test logic into their own generator
-classes? Perhaps all four classes can share some logic using traits
+Focus steeds op een enkele hoofdtaak. Als deze klaar is geef dan de gelegenheid om feedback te geven en de resultaten te committen.
 
 ## Task 3: Validate DTO Hydration in GET Tests
 
@@ -22,5 +16,7 @@ classes? Perhaps all four classes can share some logic using traits
 
 - Make a plan how we can add filters like $timaticConnector->budget->getBudgets(['key'=>'value']);
 - or come up with a better way to add filters to resources
+
+## Gebruik raw JSON alleen om operationId → schema reference mapping te vinden (totdat we vendor package kunnen patchen)
 
 **Note:** Each task is independent and can be completed, tested, and committed separately.

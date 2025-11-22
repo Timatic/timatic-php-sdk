@@ -16,7 +16,10 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\MarkAsInvoiced;
-    $dto->name = 'test value';
+    $dto->ticketId = 'mock-id-123';
+    $dto->ticketNumber = 'test value';
+    $dto->ticketTitle = 'test value';
+    $dto->ticketType = 'test value';
     // todo: add every other DTO field
 
     $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(entryId: 'test string', $dto);
@@ -28,7 +31,10 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
             // POST calls dont have an ID field
             ->data->type->toBe('markAsInvoiced')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->name->toBe('test value')
+            ->ticketId->toBe('mock-id-123')
+            ->ticketNumber->toBe('test value')
+            ->ticketTitle->toBe('test value')
+            ->ticketType->toBe('test value')
             );
 
         return true;

@@ -1,14 +1,18 @@
 <?php
 
+
+use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
+use Timatic\SDK\Requests\Correction\PatchCorrectionRequest;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Correction\PatchCorrectionRequest;
-use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\SDK\TimaticConnector(
+		
+	);
 });
+
 
 it('calls the postCorrections method in the Correction resource', function () {
     $mockClient = Saloon::fake([
@@ -17,8 +21,7 @@ it('calls the postCorrections method in the Correction resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Correction;
-    $dto->createdAt = '2025-01-01T10:00:00Z';
-    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    $dto->name = 'test value';
     // todo: add every other DTO field
 
     $this->timaticConnector->correction()->postCorrections($dto);
@@ -29,14 +32,11 @@ it('calls the postCorrections method in the Correction resource', function () {
             ->toHaveKey('data')
             // POST calls dont have an ID field
             ->data->type->toBe('correction')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->createdAt->toBe('2025-01-01T10:00:00Z')
-            ->updatedAt->toBe('2025-01-01T10:00:00Z')
-            );
 
         return true;
     });
 });
+
 
 it('calls the patchCorrection method in the Correction resource', function () {
     $mockClient = Saloon::fake([
@@ -45,8 +45,7 @@ it('calls the patchCorrection method in the Correction resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Correction;
-    $dto->createdAt = '2025-01-01T10:00:00Z';
-    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    $dto->name = 'test value';
     // todo: add every other DTO field
 
     $this->timaticConnector->correction()->patchCorrection(correctionId: 'test string', $dto);
@@ -56,10 +55,6 @@ it('calls the patchCorrection method in the Correction resource', function () {
         expect($request->body()->all())
             ->toHaveKey('data')
             ->data->type->toBe('correction')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->createdAt->toBe('2025-01-01T10:00:00Z')
-            ->updatedAt->toBe('2025-01-01T10:00:00Z')
-            );
 
         return true;
     });

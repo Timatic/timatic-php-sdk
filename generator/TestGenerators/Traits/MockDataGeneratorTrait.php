@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators\Traits;
 
+use cebe\openapi\spec\Schema;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 
 trait MockDataGeneratorTrait
@@ -13,50 +14,40 @@ trait MockDataGeneratorTrait
      */
     protected function extractExampleFromSpec(Endpoint $endpoint): ?array
     {
-        $spec = $this->getOpenApiSpec();
-        if (empty($spec)) {
+        $operation = $this->findOperationByEndpoint($endpoint);
+        if (! $operation) {
             return null;
         }
 
-        // Find the endpoint spec by operationId
-        $endpointSpec = $this->findEndpointSpecByOperationId($endpoint->name);
-        if (! $endpointSpec) {
+        // Get the 200 response
+        $response = $operation->responses['200'] ?? $operation->responses[200] ?? null;
+        if (! $response) {
+            return null;
+        }
+
+        // Get JSON content
+        $mediaType = $response->content['application/json'] ?? null;
+        if (! $mediaType) {
             return null;
         }
 
         // Try to find examples in this order:
-        // 1. Response-level example: responses.200.content.application/json.example
-        if (isset($endpointSpec['responses']['200']['content']['application/json']['example'])) {
-            return $endpointSpec['responses']['200']['content']['application/json']['example'];
+        // 1. MediaType-level example
+        if ($mediaType->example !== null) {
+            return $mediaType->example;
         }
 
-        // 2. Response-level examples array (use first one)
-        if (isset($endpointSpec['responses']['200']['content']['application/json']['examples'])) {
-            $examples = $endpointSpec['responses']['200']['content']['application/json']['examples'];
-            $firstExample = reset($examples);
-            if (isset($firstExample['value'])) {
-                return $firstExample['value'];
+        // 2. MediaType-level examples array (use first one)
+        if ($mediaType->examples && is_array($mediaType->examples)) {
+            $firstExample = reset($mediaType->examples);
+            if ($firstExample && isset($firstExample->value)) {
+                return $firstExample->value;
             }
         }
 
         // 3. Schema-level example
-        if (isset($endpointSpec['responses']['200']['content']['application/json']['schema'])) {
-            $schema = $endpointSpec['responses']['200']['content']['application/json']['schema'];
-
-            // Check for direct example
-            if (isset($schema['example'])) {
-                return $schema['example'];
-            }
-
-            // Check if schema references a component
-            if (isset($schema['$ref'])) {
-                $schema = $this->resolveSchemaReference($schema['$ref']);
-
-                // Check for example in referenced schema
-                if (isset($schema['example'])) {
-                    return $schema['example'];
-                }
-            }
+        if ($mediaType->schema && $mediaType->schema->example !== null) {
+            return $mediaType->schema->example;
         }
 
         return null;
@@ -65,43 +56,36 @@ trait MockDataGeneratorTrait
     /**
      * Generate mock attributes based on schema properties
      */
-    protected function generateMockAttributes(array $schema): array
+    protected function generateMockAttributes(Schema $schema): array
     {
         $attributes = [];
 
-        // Check if this is a JSON:API schema with attributes object
-        if (isset($schema['properties']['attributes']['properties'])) {
-            $properties = $schema['properties']['attributes']['properties'];
-        } elseif (isset($schema['properties'])) {
-            $properties = $schema['properties'];
-        } else {
+        // Extract the actual properties from the schema
+        $properties = $this->extractPropertiesFromSchema($schema);
+
+        if (empty($properties)) {
             return ['name' => 'Mock value'];
         }
 
-        foreach ($properties as $propName => $propSpec) {
-            // Skip non-attribute fields
-            if (in_array($propName, ['id', 'type', 'attributes', 'relationships'])) {
-                continue;
-            }
-
-            $attributes[$propName] = $this->getMockValueForProperty($propName, $propSpec);
+        foreach ($properties as $propName => $propSchema) {
+            $attributes[$propName] = $this->getMockValueForPropertySchema($propName, $propSchema);
         }
 
         return $attributes;
     }
 
     /**
-     * Generate a mock value based on property name and type
+     * Generate a mock value based on property name and Schema
      */
-    protected function getMockValueForProperty(string $propertyName, array $propertySpec): mixed
+    protected function getMockValueForPropertySchema(string $propertyName, Schema $propertySchema): mixed
     {
-        // Check for example in property spec
-        if (isset($propertySpec['example'])) {
-            return $propertySpec['example'];
+        // Check for example in property schema
+        if ($propertySchema->example !== null) {
+            return $propertySchema->example;
         }
 
-        $type = $propertySpec['type'] ?? 'string';
-        $format = $propertySpec['format'] ?? null;
+        $type = $propertySchema->type ?? 'string';
+        $format = $propertySchema->format ?? null;
 
         // DateTime fields
         if ($format === 'date-time' || str_contains($propertyName, 'At') || str_contains($propertyName, 'Date')) {

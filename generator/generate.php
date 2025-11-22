@@ -74,7 +74,7 @@ $config = new Config(
     dtoNamespaceSuffix: 'Dto',
 );
 
-// Create code generator with our custom JSON:API generators
+// STEP 1: Generate SDK code (WITHOUT tests)
 echo "🏗️  Generating SDK with JSON:API models...\n";
 $generator = new CodeGenerator(
     config: $config,
@@ -82,14 +82,10 @@ $generator = new CodeGenerator(
     dtoGenerator: new JsonApiDtoGenerator($config),
     requestGenerator: new JsonApiRequestGenerator($config),
     resourceGenerator: new JsonApiResourceGenerator($config),
-    postProcessors: [new JsonApiPestTestGenerator]
+    postProcessors: [] // No test generator in first pass
 );
 
-// Generate the code
 $result = $generator->run($specification);
-
-// Extract tests from result
-$tests = $result->additionalFiles ?? null;
 
 // Output directory
 $outputDir = __DIR__.'/../src';
@@ -200,9 +196,27 @@ foreach ($result->dtoClasses as $dtoClass) {
     echo '  ✓ '.basename($path)."\n";
 }
 
+// STEP 2: Dump autoload so DTOs are available for reflection
+echo "\n";
+passthru('composer dump-autoload --quiet');
+
+// STEP 3: Generate tests (NOW that DTOs exist on disk and can be reflected)
+echo "\n🧪 Generating tests...\n";
+$testGenerator = new CodeGenerator(
+    config: $config,
+    connectorGenerator: new JsonApiConnectorGenerator($config),
+    dtoGenerator: new JsonApiDtoGenerator($config),
+    requestGenerator: new JsonApiRequestGenerator($config),
+    resourceGenerator: new JsonApiResourceGenerator($config),
+    postProcessors: [new JsonApiPestTestGenerator]
+);
+
+$testResult = $testGenerator->run($specification);
+$tests = $testResult->additionalFiles ?? null;
+
 // Write test files (also apply path parameter transformations here as fallback)
 if ($tests && is_array($tests)) {
-    echo "\n🧪 Tests:\n";
+    echo "🧪 Tests:\n";
     foreach ($tests as $file) {
         if ($file instanceof \Crescat\SaloonSdkGenerator\Data\TaggedOutputFile) {
             $testPath = __DIR__.'/../'.$file->path;

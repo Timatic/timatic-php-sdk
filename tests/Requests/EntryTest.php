@@ -65,7 +65,7 @@ it('calls the postEntries method in the Entry resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Entry;
-    $dto->ticketId = 'test-id-123';
+    $dto->ticketId = 'mock-id-123';
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
@@ -80,7 +80,7 @@ it('calls the postEntries method in the Entry resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('entry')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->ticketId->toBe('test-id-123')
+            ->ticketId->toBe('mock-id-123')
             ->ticketNumber->toBe('test value')
             ->ticketTitle->toBe('test value')
             ->ticketType->toBe('test value')
@@ -97,7 +97,7 @@ it('calls the getEntry method in the Entry resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'data' => 'Mock value',
+                    'name' => 'Mock value',
                 ],
             ],
         ], 200),
@@ -133,7 +133,7 @@ it('calls the patchEntry method in the Entry resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Entry;
-    $dto->ticketId = 'test-id-123';
+    $dto->ticketId = 'mock-id-123';
     $dto->ticketNumber = 'test value';
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
@@ -147,7 +147,7 @@ it('calls the patchEntry method in the Entry resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('entry')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->ticketId->toBe('test-id-123')
+            ->ticketId->toBe('mock-id-123')
             ->ticketNumber->toBe('test value')
             ->ticketTitle->toBe('test value')
             ->ticketType->toBe('test value')

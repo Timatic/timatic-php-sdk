@@ -4,108 +4,205 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators\Traits;
 
+use cebe\openapi\spec\Operation;
+use cebe\openapi\spec\Reference;
+use cebe\openapi\spec\Schema;
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 
 trait SchemaExtractorTrait
 {
     /**
-     * Get the request body schema for an endpoint from the OpenAPI spec
+     * The parsed ApiSpecification (must be provided by the class using this trait)
      */
-    protected function getRequestSchemaForEndpoint(Endpoint $endpoint): ?array
+    protected ApiSpecification $specification;
+
+    /**
+     * Get the response schema for an endpoint from the ApiSpecification
+     */
+    protected function getResponseSchemaForEndpoint(Endpoint $endpoint): ?Schema
     {
-        $spec = $this->getOpenApiSpec();
-        if (empty($spec)) {
+        $operation = $this->findOperationByEndpoint($endpoint);
+        if (! $operation) {
             return null;
         }
 
-        // Find the endpoint spec by operationId
-        $endpointSpec = $this->findEndpointSpecByOperationId($endpoint->name);
-        if (! $endpointSpec || ! isset($endpointSpec['requestBody']['content']['application/json']['schema'])) {
+        // Get the 200 response schema
+        $response = $operation->responses['200'] ?? $operation->responses[200] ?? null;
+        if (! $response) {
             return null;
         }
 
-        $schema = $endpointSpec['requestBody']['content']['application/json']['schema'];
+        // Get the JSON response schema
+        $mediaType = $response->content['application/json'] ?? null;
+        if (! $mediaType || ! $mediaType->schema) {
+            return null;
+        }
 
-        // Resolve $ref if present
-        if (isset($schema['$ref'])) {
-            $schema = $this->resolveSchemaReference($schema['$ref']);
+        $schema = $this->resolveSchema($mediaType->schema);
+
+        // Handle array responses (collections) - unwrap to get the item schema
+        if ($schema && $schema->type === 'array' && $schema->items) {
+            $schema = $this->resolveSchema($schema->items);
         }
 
         return $schema;
     }
 
     /**
-     * Get the response schema for an endpoint from the OpenAPI spec
+     * Get the request body schema for an endpoint from the ApiSpecification
      */
-    protected function getResponseSchemaForEndpoint(Endpoint $endpoint): ?array
+    protected function getRequestSchemaForEndpoint(Endpoint $endpoint): ?Schema
     {
-        $spec = $this->getOpenApiSpec();
-        if (empty($spec)) {
+        $operation = $this->findOperationByEndpoint($endpoint);
+        if (! $operation || ! $operation->requestBody) {
             return null;
         }
 
-        // Find the endpoint spec by operationId
-        $endpointSpec = $this->findEndpointSpecByOperationId($endpoint->name);
-        if (! $endpointSpec || ! isset($endpointSpec['responses']['200']['content']['application/json']['schema'])) {
+        // Get the JSON request schema
+        $mediaType = $operation->requestBody->content['application/json'] ?? null;
+        if (! $mediaType || ! $mediaType->schema) {
             return null;
         }
 
-        $schema = $endpointSpec['responses']['200']['content']['application/json']['schema'];
+        return $this->resolveSchema($mediaType->schema);
+    }
 
-        // Handle array responses (collections)
-        if (isset($schema['type']) && $schema['type'] === 'array' && isset($schema['items'])) {
-            $schema = $schema['items'];
+    /**
+     * Resolve a Schema or Reference to a Schema
+     */
+    protected function resolveSchema(Schema|Reference|null $schemaOrRef): ?Schema
+    {
+        if ($schemaOrRef === null) {
+            return null;
         }
 
-        // Resolve $ref if present
-        if (isset($schema['$ref'])) {
-            $schema = $this->resolveSchemaReference($schema['$ref']);
+        // If it's already a Schema, return it
+        if ($schemaOrRef instanceof Schema) {
+            return $schemaOrRef;
         }
 
-        return $schema;
+        // If it's a Reference, resolve it
+        if ($schemaOrRef instanceof Reference) {
+            $resolved = $schemaOrRef->resolve();
+            if ($resolved instanceof Schema) {
+                return $resolved;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find an Operation in the ApiSpecification by matching endpoint operationId
+     */
+    protected function findOperationByEndpoint(Endpoint $endpoint): ?Operation
+    {
+        if (! $this->specification->paths) {
+            return null;
+        }
+
+        // Search through all paths to find matching operation
+        foreach ($this->specification->paths as $pathItem) {
+            $httpMethod = strtolower($endpoint->method->value);
+
+            // Get the operation for this HTTP method
+            $operation = match ($httpMethod) {
+                'get' => $pathItem->get,
+                'post' => $pathItem->post,
+                'patch' => $pathItem->patch,
+                'delete' => $pathItem->delete,
+                'put' => $pathItem->put,
+                default => null,
+            };
+
+            if (! $operation) {
+                continue;
+            }
+
+            // Match by operationId
+            if ($operation->operationId === $endpoint->name) {
+                return $operation;
+            }
+        }
+
+        return null;
     }
 
     /**
      * Extract properties from a schema (handling JSON:API structure)
+     * Returns an array of Schema objects keyed by property name
+     *
+     * @return array<string, Schema>
      */
-    protected function extractPropertiesFromSchema(array $schema): array
+    protected function extractPropertiesFromSchema(Schema $schema): array
     {
+        if (! $schema->properties) {
+            return [];
+        }
+
         // For JSON:API, properties are nested in data.attributes
-        if (isset($schema['properties']['data']['properties']['attributes']['properties'])) {
-            return $schema['properties']['data']['properties']['attributes']['properties'];
+        if (isset($schema->properties['data'])) {
+            $dataSchema = $this->resolveSchema($schema->properties['data']);
+            if ($dataSchema && isset($dataSchema->properties['attributes'])) {
+                $attributesSchema = $this->resolveSchema($dataSchema->properties['attributes']);
+                if ($attributesSchema && $attributesSchema->properties) {
+                    return $this->resolvePropertySchemas($attributesSchema->properties);
+                }
+            }
         }
 
-        // Fallback: check if properties has attributes
-        if (isset($schema['properties']['attributes']['properties'])) {
-            return $schema['properties']['attributes']['properties'];
+        // Fallback: check if properties has attributes directly
+        if (isset($schema->properties['attributes'])) {
+            $attributesSchema = $this->resolveSchema($schema->properties['attributes']);
+            if ($attributesSchema && $attributesSchema->properties) {
+                return $this->resolvePropertySchemas($attributesSchema->properties);
+            }
         }
 
-        // Direct properties
-        if (isset($schema['properties'])) {
-            $properties = $schema['properties'];
-            // Remove non-attribute fields
-            unset($properties['id'], $properties['type'], $properties['attributes'], $properties['relationships']);
+        // Direct properties - filter out JSON:API reserved fields
+        $properties = $schema->properties;
+        unset($properties['id'], $properties['type'], $properties['attributes'], $properties['relationships']);
 
-            return $properties;
+        return $this->resolvePropertySchemas($properties);
+    }
+
+    /**
+     * Resolve all property schemas (convert References to Schemas)
+     *
+     * @param  array<string, Schema|Reference>  $properties
+     * @return array<string, Schema>
+     */
+    protected function resolvePropertySchemas(array $properties): array
+    {
+        $resolved = [];
+        foreach ($properties as $name => $property) {
+            $schema = $this->resolveSchema($property);
+            if ($schema) {
+                $resolved[$name] = $schema;
+            }
         }
 
-        return [];
+        return $resolved;
     }
 
     /**
      * Get the resource type from a schema (e.g., "users", "entries")
      */
-    protected function getResourceTypeFromSchema(array $schema): string
+    protected function getResourceTypeFromSchema(Schema $schema): string
     {
-        // Try to extract from schema title or description
-        if (isset($schema['title'])) {
-            return NameHelper::safeVariableName($schema['title']);
+        // Try to extract from schema title
+        if ($schema->title) {
+            return NameHelper::safeVariableName($schema->title);
         }
 
-        // Try to get from properties.type.example
-        if (isset($schema['properties']['type']['example'])) {
-            return $schema['properties']['type']['example'];
+        // Try to get from properties.type.example (JSON:API type field)
+        if (isset($schema->properties['type'])) {
+            $typeProperty = $schema->properties['type'];
+            if ($typeProperty instanceof Schema && $typeProperty->example) {
+                return $typeProperty->example;
+            }
         }
 
         // Fallback to generic name
@@ -113,7 +210,7 @@ trait SchemaExtractorTrait
     }
 
     /**
-     * Get the resource type for JSON:API (plural, lowercase)
+     * Get the resource type for JSON:API from endpoint (plural, lowercase)
      */
     protected function getResourceTypeFromEndpoint(Endpoint $endpoint): string
     {

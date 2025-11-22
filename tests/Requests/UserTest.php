@@ -61,8 +61,8 @@ it('calls the postUsers method in the User resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\User;
-    $dto->externalId = 'test-id-123';
-    $dto->email = 'test value';
+    $dto->externalId = 'mock-id-123';
+    $dto->email = 'test@example.com';
     // todo: add every other DTO field
 
     $this->timaticConnector->user()->postUsers($dto);
@@ -74,8 +74,8 @@ it('calls the postUsers method in the User resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('user')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('test-id-123')
-            ->email->toBe('test value')
+            ->externalId->toBe('mock-id-123')
+            ->email->toBe('test@example.com')
             );
 
         return true;
@@ -125,8 +125,8 @@ it('calls the patchUser method in the User resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\User;
-    $dto->externalId = 'test-id-123';
-    $dto->email = 'test value';
+    $dto->externalId = 'mock-id-123';
+    $dto->email = 'test@example.com';
     // todo: add every other DTO field
 
     $this->timaticConnector->user()->patchUser(userId: 'test string', $dto);
@@ -137,8 +137,8 @@ it('calls the patchUser method in the User resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('user')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('test-id-123')
-            ->email->toBe('test value')
+            ->externalId->toBe('mock-id-123')
+            ->email->toBe('test@example.com')
             );
 
         return true;

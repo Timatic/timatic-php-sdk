@@ -51,10 +51,8 @@ it('calls the postTeams method in the Team resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Team;
-    $dto->externalId = 'test-id-123';
-    $dto->name = 'test name';
-    $dto->createdAt = '2025-01-01T10:00:00Z';
-    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    $dto->externalId = 'mock-id-123';
+    $dto->name = 'test value';
     // todo: add every other DTO field
 
     $this->timaticConnector->team()->postTeams($dto);
@@ -66,10 +64,8 @@ it('calls the postTeams method in the Team resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('team')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('test-id-123')
-            ->name->toBe('test name')
-            ->createdAt->toBe('2025-01-01T10:00:00Z')
-            ->updatedAt->toBe('2025-01-01T10:00:00Z')
+            ->externalId->toBe('mock-id-123')
+            ->name->toBe('test value')
             );
 
         return true;
@@ -83,7 +79,7 @@ it('calls the getTeam method in the Team resource', function () {
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'data' => 'Mock value',
+                    'name' => 'Mock value',
                 ],
             ],
         ], 200),
@@ -119,10 +115,8 @@ it('calls the patchTeam method in the Team resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Team;
-    $dto->externalId = 'test-id-123';
-    $dto->name = 'test name';
-    $dto->createdAt = '2025-01-01T10:00:00Z';
-    $dto->updatedAt = '2025-01-01T10:00:00Z';
+    $dto->externalId = 'mock-id-123';
+    $dto->name = 'test value';
     // todo: add every other DTO field
 
     $this->timaticConnector->team()->patchTeam(teamId: 'test string', $dto);
@@ -133,10 +127,8 @@ it('calls the patchTeam method in the Team resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('team')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('test-id-123')
-            ->name->toBe('test name')
-            ->createdAt->toBe('2025-01-01T10:00:00Z')
-            ->updatedAt->toBe('2025-01-01T10:00:00Z')
+            ->externalId->toBe('mock-id-123')
+            ->name->toBe('test value')
             );
 
         return true;

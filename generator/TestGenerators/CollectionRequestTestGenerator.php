@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators;
 
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\OpenApiSpecLoaderTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
 
 class CollectionRequestTestGenerator
 {
     use MockDataGeneratorTrait;
-    use OpenApiSpecLoaderTrait;
     use SchemaExtractorTrait;
     use TestValueGeneratorTrait;
+
+    protected ApiSpecification $specification;
+
+    public function __construct(ApiSpecification $specification)
+    {
+        $this->specification = $specification;
+    }
 
     /**
      * Check if endpoint is a GET collection request (implements Paginatable)

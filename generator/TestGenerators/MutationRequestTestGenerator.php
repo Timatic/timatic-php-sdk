@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators;
 
+use cebe\openapi\spec\Schema;
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Timatic\SDK\Generator\TestGenerators\Traits\OpenApiSpecLoaderTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestValueGeneratorTrait;
 
 class MutationRequestTestGenerator
 {
-    use OpenApiSpecLoaderTrait;
     use SchemaExtractorTrait;
     use TestValueGeneratorTrait;
+
+    protected ApiSpecification $specification;
+
+    public function __construct(ApiSpecification $specification)
+    {
+        $this->specification = $specification;
+    }
 
     /**
      * Check if endpoint is a mutation request (POST or PATCH)
@@ -96,23 +103,123 @@ class MutationRequestTestGenerator
      */
     protected function generateDtoProperties(Endpoint $endpoint): string
     {
-        $schema = $this->getRequestSchemaForEndpoint($endpoint);
-        if (! $schema) {
+        $dtoClassName = $this->getDtoClassName($endpoint);
+        $properties = $this->getDtoPropertiesViaReflection($dtoClassName);
+
+        if (empty($properties)) {
             return "    \$dto->name = 'test value';";
         }
 
-        $properties = $this->extractPropertiesFromSchema($schema);
         $lines = [];
 
-        // Limit to first 4 properties for the test
-        $propertiesToShow = array_slice($properties, 0, 4);
+        // Limit to first 4 properties for the test, skip timestamp fields
+        $count = 0;
+        foreach ($properties as $propInfo) {
+            if ($count >= 4) {
+                break;
+            }
 
-        foreach ($propertiesToShow as $propName => $propSpec) {
-            $value = $this->generateTestValueForProperty($propName, $propSpec);
+            $propName = $propInfo['name'];
+
+            // Skip read-only/auto-managed fields
+            if (in_array($propName, ['id', 'createdAt', 'updatedAt', 'deletedAt'])) {
+                continue;
+            }
+
+            $value = $this->generateTestValueForProperty($propName, $propInfo['type']);
             $lines[] = "    \$dto->{$propName} = {$value};";
+            $count++;
+        }
+
+        // Fallback if no properties after filtering
+        if (empty($lines)) {
+            return "    \$dto->name = 'test value';";
         }
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * Get DTO properties via PHP reflection (DTO classes now exist on disk)
+     *
+     * @return array<string, array{name: string, type: ?string}>
+     */
+    protected function getDtoPropertiesViaReflection(string $dtoClassName): array
+    {
+        $fullClassName = "\\Timatic\\SDK\\Dto\\{$dtoClassName}";
+
+        // Check if class exists (it should, because we dumped autoload)
+        if (! class_exists($fullClassName)) {
+            return [];
+        }
+
+        $properties = [];
+
+        try {
+            $reflection = new \ReflectionClass($fullClassName);
+            $reflectionProperties = $reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
+
+            foreach ($reflectionProperties as $property) {
+                // Skip static properties
+                if ($property->isStatic()) {
+                    continue;
+                }
+
+                $type = $property->getType();
+                $typeName = null;
+
+                if ($type instanceof \ReflectionNamedType) {
+                    $typeName = ($type->allowsNull() ? '?' : '').$type->getName();
+                }
+
+                $properties[$property->getName()] = [
+                    'name' => $property->getName(),
+                    'type' => $typeName,
+                ];
+            }
+        } catch (\ReflectionException $e) {
+            return [];
+        }
+
+        return $properties;
+    }
+
+    /**
+     * Generate test value for a DTO property
+     */
+    protected function generateTestValueForProperty(string $propertyName, ?string $typeName): string
+    {
+        if (! $typeName) {
+            return "'test value'";
+        }
+
+        // Normalize type name (remove nullable prefix)
+        $typeName = ltrim($typeName, '?');
+
+        // DateTime fields
+        if (str_contains($typeName, 'Carbon') || str_contains($typeName, 'DateTime')) {
+            return "'2025-01-15T10:30:00Z'";
+        }
+
+        // ID fields
+        if (str_ends_with($propertyName, 'Id')) {
+            return "'mock-id-123'";
+        }
+
+        // Email fields
+        if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
+            return "'test@example.com'";
+        }
+
+        // Type-based generation
+        return match ($typeName) {
+            'bool' => 'true',
+            'int' => '42',
+            'float' => '3.14',
+            'string' => "'test value'",
+            'array' => '[]',
+            default => "'test value'",
+        };
     }
 
     /**
@@ -121,13 +228,13 @@ class MutationRequestTestGenerator
     protected function generateBodyValidation(Endpoint $endpoint): string
     {
         $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
-        $schema = $this->getRequestSchemaForEndpoint($endpoint);
+        $dtoClassName = $this->getDtoClassName($endpoint);
+        $properties = $this->getDtoPropertiesViaReflection($dtoClassName);
 
-        if (! $schema) {
+        if (empty($properties)) {
             return $this->generateFallbackBodyValidation($resourceType, $endpoint);
         }
 
-        $properties = $this->extractPropertiesFromSchema($schema);
         $lines = [];
 
         $lines[] = '    $mockClient->assertSent(function (Request $request) {';
@@ -142,7 +249,7 @@ class MutationRequestTestGenerator
         $lines[] = "            ->data->type->toBe('{$resourceType}')";
 
         // Generate attribute validations
-        $attributeValidations = $this->generateAttributeValidations($properties);
+        $attributeValidations = $this->generateAttributeValidationsFromDto($properties);
         if ($attributeValidations) {
             $lines[] = '            ->data->attributes->scoped(fn ($attributes) => $attributes';
             $lines[] = $attributeValidations;
@@ -157,19 +264,32 @@ class MutationRequestTestGenerator
     }
 
     /**
-     * Generate attribute validation chain
+     * Generate attribute validation chain from DTO properties
+     *
+     * @param  array<string, array{name: string, type: ?string}>  $properties
      */
-    protected function generateAttributeValidations(array $properties): string
+    protected function generateAttributeValidationsFromDto(array $properties): string
     {
         $lines = [];
 
-        // Limit to first 4 properties for the test
-        $propertiesToShow = array_slice($properties, 0, 4);
+        // Limit to first 4 properties for the test, skip timestamp fields
+        $count = 0;
+        foreach ($properties as $propInfo) {
+            if ($count >= 4) {
+                break;
+            }
 
-        foreach ($propertiesToShow as $propName => $propSpec) {
-            $value = $this->generateTestValueForProperty($propName, $propSpec);
+            $propName = $propInfo['name'];
+
+            // Skip read-only/auto-managed fields
+            if (in_array($propName, ['id', 'createdAt', 'updatedAt', 'deletedAt'])) {
+                continue;
+            }
+
+            $value = $this->generateTestValueForProperty($propName, $propInfo['type']);
             $assertionValue = $this->formatValueForAssertion($value);
             $lines[] = "                ->{$propName}->toBe({$assertionValue})";
+            $count++;
         }
 
         return implode("\n", $lines);

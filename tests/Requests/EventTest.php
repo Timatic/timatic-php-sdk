@@ -16,10 +16,10 @@ it('calls the postEvents method in the Event resource', function () {
 
     // Create DTO with sample data
     $dto = new \Timatic\SDK\Dto\Event;
-    $dto->userId = 'test-id-123';
-    $dto->budgetId = 'test-id-123';
-    $dto->ticketId = 'test-id-123';
-    $dto->sourceId = 'test-id-123';
+    $dto->userId = 'mock-id-123';
+    $dto->budgetId = 'mock-id-123';
+    $dto->ticketId = 'mock-id-123';
+    $dto->sourceId = 'mock-id-123';
     // todo: add every other DTO field
 
     $this->timaticConnector->event()->postEvents($dto);
@@ -31,10 +31,10 @@ it('calls the postEvents method in the Event resource', function () {
             // POST calls dont have an ID field
             ->data->type->toBe('event')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->userId->toBe('test-id-123')
-            ->budgetId->toBe('test-id-123')
-            ->ticketId->toBe('test-id-123')
-            ->sourceId->toBe('test-id-123')
+            ->userId->toBe('mock-id-123')
+            ->budgetId->toBe('mock-id-123')
+            ->ticketId->toBe('mock-id-123')
+            ->sourceId->toBe('mock-id-123')
             );
 
         return true;

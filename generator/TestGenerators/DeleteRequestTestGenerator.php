@@ -4,10 +4,18 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators;
 
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 
 class DeleteRequestTestGenerator
 {
+    protected ApiSpecification $specification;
+
+    public function __construct(ApiSpecification $specification)
+    {
+        $this->specification = $specification;
+    }
+
     /**
      * Check if endpoint is a DELETE request
      */

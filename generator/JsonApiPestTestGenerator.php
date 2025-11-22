@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator;
 
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
+use Crescat\SaloonSdkGenerator\Data\Generator\Config;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
+use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\PestTestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Nette\PhpGenerator\PhpFile;
 use Timatic\SDK\Generator\TestGenerators\CollectionRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\DeleteRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\MutationRequestTestGenerator;
@@ -23,12 +27,22 @@ class JsonApiPestTestGenerator extends PestTestGenerator
 
     protected DeleteRequestTestGenerator $deleteTestGenerator;
 
-    public function __construct()
-    {
-        $this->collectionTestGenerator = new CollectionRequestTestGenerator;
-        $this->mutationTestGenerator = new MutationRequestTestGenerator;
-        $this->singularGetTestGenerator = new SingularGetRequestTestGenerator;
-        $this->deleteTestGenerator = new DeleteRequestTestGenerator;
+    /**
+     * Override process() to instantiate test generators with ApiSpecification
+     */
+    public function process(
+        Config $config,
+        ApiSpecification $specification,
+        GeneratedCode $generatedCode,
+    ): PhpFile|array|null {
+        // Instantiate test generators with the parsed ApiSpecification
+        $this->collectionTestGenerator = new CollectionRequestTestGenerator($specification);
+        $this->mutationTestGenerator = new MutationRequestTestGenerator($specification);
+        $this->singularGetTestGenerator = new SingularGetRequestTestGenerator($specification);
+        $this->deleteTestGenerator = new DeleteRequestTestGenerator($specification);
+
+        // Call parent to continue normal processing
+        return parent::process($config, $specification, $generatedCode);
     }
 
     /**

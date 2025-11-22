@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator\TestGenerators;
 
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\OpenApiSpecLoaderTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 
 class SingularGetRequestTestGenerator
 {
     use MockDataGeneratorTrait;
-    use OpenApiSpecLoaderTrait;
     use SchemaExtractorTrait;
+
+    protected ApiSpecification $specification;
+
+    public function __construct(ApiSpecification $specification)
+    {
+        $this->specification = $specification;
+    }
 
     /**
      * Check if endpoint is a singular GET request (GET with path parameters)

@@ -59,7 +59,7 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
                 'type' => 'resources',
                 'id' => 'mock-id-123',
                 'attributes' => [
-                    'data' => 'Mock value',
+                    'name' => 'Mock value',
                 ],
             ],
         ], 200),
