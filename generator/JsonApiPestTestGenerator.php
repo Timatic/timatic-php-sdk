@@ -12,16 +12,9 @@ use Timatic\SDK\Generator\TestGenerators\CollectionRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\DeleteRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\MutationRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\SingularGetRequestTestGenerator;
-use Timatic\SDK\Generator\TestGenerators\Traits\MockDataGeneratorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\OpenApiSpecLoaderTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 
 class JsonApiPestTestGenerator extends PestTestGenerator
 {
-    use MockDataGeneratorTrait;
-    use OpenApiSpecLoaderTrait;
-    use SchemaExtractorTrait;
-
     protected CollectionRequestTestGenerator $collectionTestGenerator;
 
     protected MutationRequestTestGenerator $mutationTestGenerator;
@@ -175,70 +168,5 @@ class JsonApiPestTestGenerator extends PestTestGenerator
         }
 
         throw new \Exception('Unmatched request type');
-    }
-
-    /**
-     * Generate mock data based on property types (fallback when no examples exist)
-     */
-    protected function generateMockData(Endpoint $endpoint): array
-    {
-        $spec = $this->getOpenApiSpec();
-        $isCollection = $this->collectionTestGenerator->isCollectionRequest($endpoint);
-
-        // Try to determine the schema for this endpoint
-        $schema = $this->getResponseSchemaForEndpoint($endpoint);
-
-        if ($schema) {
-            // Generate mock data based on schema
-            $attributes = $this->generateMockAttributes($schema);
-            $resourceType = $this->getResourceTypeFromSchema($schema);
-
-            if ($isCollection) {
-                // Generate 2-3 items for collections
-                return [
-                    'data' => [
-                        [
-                            'type' => $resourceType,
-                            'id' => 'mock-id-1',
-                            'attributes' => $attributes,
-                        ],
-                        [
-                            'type' => $resourceType,
-                            'id' => 'mock-id-2',
-                            'attributes' => $this->generateMockAttributes($schema),
-                        ],
-                    ],
-                ];
-            }
-
-            return [
-                'data' => [
-                    'type' => $resourceType,
-                    'id' => 'mock-id-123',
-                    'attributes' => $attributes,
-                ],
-            ];
-        }
-
-        // Fallback: generic mock data
-        $resourceName = NameHelper::resourceClassName($endpoint->collection);
-        $resourceType = NameHelper::safeVariableName($resourceName);
-
-        if ($isCollection) {
-            return [
-                'data' => [
-                    ['type' => $resourceType, 'id' => 'mock-id-1', 'attributes' => ['name' => 'Mock item 1']],
-                    ['type' => $resourceType, 'id' => 'mock-id-2', 'attributes' => ['name' => 'Mock item 2']],
-                ],
-            ];
-        }
-
-        return [
-            'data' => [
-                'type' => $resourceType,
-                'id' => 'mock-id-123',
-                'attributes' => ['name' => 'Mock item'],
-            ],
-        ];
     }
 }
