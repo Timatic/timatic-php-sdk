@@ -15,10 +15,13 @@ use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
 use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Hydration\Facades\Hydrator;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
+    use DtoHelperTrait;
+
     /**
      * Hook: Filter out PUT requests - not supported in JSON:API
      */
@@ -202,27 +205,5 @@ class JsonApiRequestGenerator extends RequestGenerator
             $method->addBody('    $response->json(\'included\')');
             $method->addBody(');');
         }
-    }
-
-    /**
-     * Get DTO class name from endpoint
-     */
-    protected function getDtoClassName(Endpoint $endpoint): string
-    {
-        // Use collection name to determine DTO
-        if ($endpoint->collection) {
-            $resourceName = NameHelper::resourceClassName($endpoint->collection);
-
-            // Use Laravel's Str::singular() for correct singular form
-            return Str::singular($resourceName);
-        }
-
-        // Fallback: try to parse from endpoint name
-        $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
-        // Remove method prefix (post, patch, get)
-        $name = preg_replace('/^(post|patch|get)/i', '', $name);
-
-        // Use Laravel's Str::singular() for correct singular form
-        return Str::singular(NameHelper::resourceClassName($name));
     }
 }

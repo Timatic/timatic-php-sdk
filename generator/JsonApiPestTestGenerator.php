@@ -16,9 +16,12 @@ use Timatic\SDK\Generator\TestGenerators\CollectionRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\DeleteRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\MutationRequestTestGenerator;
 use Timatic\SDK\Generator\TestGenerators\SingularGetRequestTestGenerator;
+use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 
 class JsonApiPestTestGenerator extends PestTestGenerator
 {
+    use DtoHelperTrait;
+
     protected CollectionRequestTestGenerator $collectionTestGenerator;
 
     protected MutationRequestTestGenerator $mutationTestGenerator;
@@ -92,28 +95,6 @@ class JsonApiPestTestGenerator extends PestTestGenerator
 
         // Check if this DTO was generated in the current run
         return array_key_exists($dtoClassName, $this->generatedCode->dtoClasses);
-    }
-
-    /**
-     * Get DTO class name from endpoint
-     */
-    protected function getDtoClassName(Endpoint $endpoint): string
-    {
-        // Use collection name to determine DTO
-        if ($endpoint->collection) {
-            $resourceName = NameHelper::resourceClassName($endpoint->collection);
-
-            // Use Laravel's Str::singular() for correct singular form
-            return \Illuminate\Support\Str::singular($resourceName);
-        }
-
-        // Fallback: try to parse from endpoint name
-        $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
-        // Remove method prefix (post, patch, get)
-        $name = preg_replace('/^(post|patch|get)/i', '', $name);
-
-        // Use Laravel's Str::singular() for correct singular form
-        return \Illuminate\Support\Str::singular(NameHelper::resourceClassName($name));
     }
 
     /**

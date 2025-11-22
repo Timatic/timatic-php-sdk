@@ -10,11 +10,13 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Illuminate\Support\Str;
+use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class MutationRequestTestGenerator
 {
+    use DtoHelperTrait;
     use SchemaExtractorTrait;
     use TestDataGeneratorTrait;
 
@@ -271,28 +273,6 @@ class MutationRequestTestGenerator
         }
 
         return implode("\n", $lines);
-    }
-
-    /**
-     * Get the DTO class name for an endpoint
-     */
-    protected function getDtoClassName(Endpoint $endpoint): string
-    {
-        // Try to extract from endpoint collection name
-        if ($endpoint->collection) {
-            $resourceName = NameHelper::resourceClassName($endpoint->collection);
-
-            // Use Laravel's Str::singular() for correct singular form
-            return Str::singular($resourceName);
-        }
-
-        // Fallback: try to parse from endpoint name
-        $name = $endpoint->name ?: NameHelper::pathBasedName($endpoint);
-        // Remove method prefix (post, patch)
-        $name = preg_replace('/^(post|patch)/i', '', $name);
-
-        // Use Laravel's Str::singular() for correct singular form
-        return Str::singular(NameHelper::resourceClassName($name));
     }
 
     /**
