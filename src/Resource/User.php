@@ -13,14 +13,11 @@ use Timatic\SDK\Requests\User\PostUsersRequest;
 
 class User extends BaseResource
 {
-    public function getUsers(?string $filterexternalId = null, ?string $filterexternalIdeq = null): Response
+    public function getUsers(): Response
     {
         return $this->connector->send(new GetUsersRequest($filterexternalId, $filterexternalIdeq));
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postUsers(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostUsersRequest($data));
@@ -36,9 +33,6 @@ class User extends BaseResource
         return $this->connector->send(new DeleteUserRequest($userId));
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function patchUser(string $userId, Model|array|null $data = null): Response
     {
         return $this->connector->send(new PatchUserRequest($userId, $data));

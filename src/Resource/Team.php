@@ -18,9 +18,6 @@ class Team extends BaseResource
         return $this->connector->send(new GetTeamsRequest);
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postTeams(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostTeamsRequest($data));
@@ -36,9 +33,6 @@ class Team extends BaseResource
         return $this->connector->send(new DeleteTeamRequest($teamId));
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function patchTeam(string $teamId, Model|array|null $data = null): Response
     {
         return $this->connector->send(new PatchTeamRequest($teamId, $data));

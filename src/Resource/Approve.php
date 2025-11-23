@@ -9,9 +9,6 @@ use Timatic\SDK\Requests\Approve\PostOvertimeApproveRequest;
 
 class Approve extends BaseResource
 {
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postOvertimeApprove(string $overtimeId, Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostOvertimeApproveRequest($overtimeId, $data));

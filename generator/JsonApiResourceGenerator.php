@@ -7,6 +7,8 @@ namespace Timatic\SDK\Generator;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\ResourceGenerator;
+use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Nette\PhpGenerator\Method;
 use Timatic\SDK\Hydration\Model;
 
 class JsonApiResourceGenerator extends ResourceGenerator
@@ -78,5 +80,25 @@ class JsonApiResourceGenerator extends ResourceGenerator
 
         $this->addPropertyToMethod($method, $dataParam);
         $args[] = new \Nette\PhpGenerator\Literal('$data');
+    }
+
+    protected function addPropertyToMethod(Method $method, Parameter $parameter): Method
+    {
+        $name = NameHelper::safeVariableName($parameter->name);
+
+        if (str_contains($parameter->name, 'filter')) {
+            return $method;
+        }
+
+        $param = $method
+            ->addParameter($name)
+            ->setType($parameter->type)
+            ->setNullable($parameter->nullable);
+
+        if ($parameter->nullable) {
+            $param->setDefaultValue(null);
+        }
+
+        return $method;
     }
 }

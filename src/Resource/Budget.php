@@ -13,34 +13,11 @@ use Timatic\SDK\Requests\Budget\PostBudgetsRequest;
 
 class Budget extends BaseResource
 {
-    public function getBudgets(
-        ?int $filtercustomerId = null,
-        ?int $filtercustomerIdeq = null,
-        ?int $filtercustomerIdnq = null,
-        ?int $filtercustomerIdgt = null,
-        ?int $filtercustomerIdlt = null,
-        ?int $filtercustomerIdgte = null,
-        ?int $filtercustomerIdlte = null,
-        ?int $filtercustomerIdcontains = null,
-        ?string $filterbudgetTypeId = null,
-        ?string $filterbudgetTypeIdeq = null,
-        ?string $filterbudgetTypeIdnq = null,
-        ?string $filterbudgetTypeIdgt = null,
-        ?string $filterbudgetTypeIdlt = null,
-        ?string $filterbudgetTypeIdgte = null,
-        ?string $filterbudgetTypeIdlte = null,
-        ?string $filterbudgetTypeIdcontains = null,
-        ?string $filterisArchived = null,
-        ?string $filtercustomerExternalId = null,
-        ?string $filtershowToCustomer = null,
-        ?string $include = null,
-    ): Response {
+    public function getBudgets(?string $include = null): Response
+    {
         return $this->connector->send(new GetBudgetsRequest($filtercustomerId, $filtercustomerIdeq, $filtercustomerIdnq, $filtercustomerIdgt, $filtercustomerIdlt, $filtercustomerIdgte, $filtercustomerIdlte, $filtercustomerIdcontains, $filterbudgetTypeId, $filterbudgetTypeIdeq, $filterbudgetTypeIdnq, $filterbudgetTypeIdgt, $filterbudgetTypeIdlt, $filterbudgetTypeIdgte, $filterbudgetTypeIdlte, $filterbudgetTypeIdcontains, $filterisArchived, $filtercustomerExternalId, $filtershowToCustomer, $include));
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postBudgets(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostBudgetsRequest($data));
@@ -56,9 +33,6 @@ class Budget extends BaseResource
         return $this->connector->send(new DeleteBudgetRequest($budgetId));
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function patchBudget(string $budgetId, Model|array|null $data = null): Response
     {
         return $this->connector->send(new PatchBudgetRequest($budgetId, $data));

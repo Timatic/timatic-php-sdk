@@ -9,9 +9,6 @@ use Timatic\SDK\Requests\MarkAsExported\PostOvertimeMarkAsExportedRequest;
 
 class MarkAsExported extends BaseResource
 {
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postOvertimeMarkAsExported(string $overtimeId, Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostOvertimeMarkAsExportedRequest($overtimeId, $data));

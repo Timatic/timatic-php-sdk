@@ -10,16 +10,8 @@ use Timatic\SDK\Requests\EntrySuggestion\GetEntrySuggestionsRequest;
 
 class EntrySuggestion extends BaseResource
 {
-    public function getEntrySuggestions(
-        ?string $filterdate = null,
-        ?string $filterdateeq = null,
-        ?string $filterdatenq = null,
-        ?string $filterdategt = null,
-        ?string $filterdatelt = null,
-        ?string $filterdategte = null,
-        ?string $filterdatelte = null,
-        ?string $filterdatecontains = null,
-    ): Response {
+    public function getEntrySuggestions(): Response
+    {
         return $this->connector->send(new GetEntrySuggestionsRequest($filterdate, $filterdateeq, $filterdatenq, $filterdategt, $filterdatelt, $filterdategte, $filterdatelte, $filterdatecontains));
     }
 

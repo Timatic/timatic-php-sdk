@@ -10,17 +10,11 @@ use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
 
 class Correction extends BaseResource
 {
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postCorrections(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostCorrectionsRequest($data));
     }
 
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function patchCorrection(string $correctionId, Model|array|null $data = null): Response
     {
         return $this->connector->send(new PatchCorrectionRequest($correctionId, $data));

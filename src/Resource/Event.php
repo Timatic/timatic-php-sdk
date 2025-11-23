@@ -9,9 +9,6 @@ use Timatic\SDK\Requests\Event\PostEventsRequest;
 
 class Event extends BaseResource
 {
-    /**
-     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
-     */
     public function postEvents(Model|array|null $data = null): Response
     {
         return $this->connector->send(new PostEventsRequest($data));
