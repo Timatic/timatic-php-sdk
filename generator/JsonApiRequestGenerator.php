@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Timatic\SDK\Generator;
 
+use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\PhpFile;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
@@ -19,6 +21,15 @@ use Timatic\SDK\Hydration\Model;
 class JsonApiRequestGenerator extends RequestGenerator
 {
     use DtoHelperTrait;
+
+    private ApiSpecification $specification;
+
+    public function generate(ApiSpecification $specification): PhpFile|array
+    {
+        $this->specification = $specification;
+
+        return parent::generate($specification);
+    }
 
     /**
      * Hook: Filter out PUT requests - not supported in JSON:API
@@ -156,6 +167,14 @@ class JsonApiRequestGenerator extends RequestGenerator
      */
     protected function shouldHaveHydration(Endpoint $endpoint): bool
     {
+        $schemas = array_keys($this->specification->components->schemas);
+        $dtoName = $this->getDtoClassName($endpoint);
+
+        if (! in_array($dtoName, $schemas)) {
+            // There is no schema, so also no DTO to hydrate
+            return false;
+        }
+
         // Add hydration to GET, POST, and PATCH requests
         return $endpoint->method->isGet()
             || $endpoint->method->isPost()
