@@ -27,12 +27,12 @@
         "laravel/pint": "^1.0",
         "larastan/larastan": "^3.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "crescat-io/saloon-sdk-generator": "dev-master"
+        "crescat-io/saloon-sdk-generator": "dev-add-hooks-to-pest-generator"
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../saloon-sdk-generator"
+            "type": "vcs",
+            "url": "https://github.com/tomasvanrijsse/saloon-sdk-generator"
         }
     ],
     "scripts": {
