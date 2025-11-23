@@ -44,7 +44,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer remove "crescat-io/saloon-sdk-generator" --dev --no-interaction
+          composer remove "crescat-io/saloon-sdk-generator" "larastan/larastan" "laravel/boost" "laravel/pint" --dev --no-interaction
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
