@@ -9,14 +9,16 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\MockJsonDataTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\ResourceTypeExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class SingularGetRequestTestGenerator
 {
     use DtoAssertions;
     use DtoHelperTrait;
-    use SchemaExtractorTrait;
+    use MockJsonDataTrait;
+    use ResourceTypeExtractorTrait;
     use TestDataGeneratorTrait;
 
     protected ApiSpecification $specification;
@@ -52,7 +54,9 @@ class SingularGetRequestTestGenerator
     public function replaceStubVariables(string $functionStub, Endpoint $endpoint): string
     {
         // Generate mock response body
-        $mockResponseBody = $this->generateMockResponseBody($endpoint);
+        $mockData = $this->generateMockData($endpoint);
+        $mockResponseBody = $this->formatArrayAsPhp($mockData);
+
         $functionStub = str_replace(
             '{{ mockResponse }}',
             "MockResponse::make($mockResponseBody, 200)",
@@ -78,24 +82,13 @@ class SingularGetRequestTestGenerator
     /**
      * Generate mock data for singular GET response
      */
-    protected function generateMockData(Endpoint $endpoint): array
+    public function generateMockData(Endpoint $endpoint): array
     {
         // Get DTO class name from endpoint
         $dtoClassName = $this->getDtoClassName($endpoint);
 
-        // Try to determine the schema for this endpoint
-        $schema = $this->getResponseSchemaForEndpoint($endpoint);
-
-        if (! $schema) {
-            throw new \RuntimeException('schema operation not found');
-        }
-
-        // Generate mock data based on DTO if available, otherwise fallback to schema
+        // Generate mock data based on DTO - must have properties
         $attributes = $this->generateMockAttributesFromDto($dtoClassName);
-        if (empty($attributes) || $attributes === ['name' => 'Mock value']) {
-            // Fallback to schema-based generation
-            $attributes = $this->generateMockAttributes($schema);
-        }
 
         $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
 

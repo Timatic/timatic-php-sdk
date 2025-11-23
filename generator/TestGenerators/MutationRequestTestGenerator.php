@@ -10,14 +10,14 @@ use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
+use Timatic\SDK\Generator\TestGenerators\Traits\ResourceTypeExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class MutationRequestTestGenerator
 {
     use DtoAssertions;
     use DtoHelperTrait;
-    use SchemaExtractorTrait;
+    use ResourceTypeExtractorTrait;
     use TestDataGeneratorTrait;
 
     protected ApiSpecification $specification;
