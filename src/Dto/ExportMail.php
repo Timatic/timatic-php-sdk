@@ -2,6 +2,6 @@
 
 namespace Timatic\SDK\Dto;
 
-use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Model;
 
 class ExportMail extends Model {}

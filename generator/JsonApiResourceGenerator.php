@@ -7,7 +7,7 @@ namespace Timatic\SDK\Generator;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\ResourceGenerator;
-use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Model;
 
 class JsonApiResourceGenerator extends ResourceGenerator
 {
@@ -70,7 +70,7 @@ class JsonApiResourceGenerator extends ResourceGenerator
         $namespace->addUse(Model::class);
 
         $dataParam = new Parameter(
-            type: 'Timatic\\SDK\\Concerns\\Model|array|null',
+            type: 'Timatic\\SDK\\Hydration\\Model|array|null',
             nullable: true,
             name: 'data',
             description: 'Request data',

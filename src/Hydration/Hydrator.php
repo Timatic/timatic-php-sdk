@@ -11,7 +11,6 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
-use Timatic\SDK\Concerns\Model;
 use Timatic\SDK\Hydration\Attributes\DateTime;
 use Timatic\SDK\Hydration\Attributes\Property;
 use Timatic\SDK\Hydration\Attributes\Relationship;

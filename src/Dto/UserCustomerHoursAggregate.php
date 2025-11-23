@@ -2,8 +2,8 @@
 
 namespace Timatic\SDK\Dto;
 
-use Timatic\SDK\Concerns\Model;
 use Timatic\SDK\Hydration\Attributes\Property;
+use Timatic\SDK\Hydration\Model;
 
 class UserCustomerHoursAggregate extends Model
 {

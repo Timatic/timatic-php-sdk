@@ -7,9 +7,9 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\SDK\Concerns\Model;
 use Timatic\SDK\Dto\User;
 use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\SDK\Hydration\Model;
 
 /**
  * postUsers
@@ -37,7 +37,7 @@ class PostUsersRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|Timatic\SDK\Concerns\Model|array|null  $data  Request data
+     * @param  null|\Timatic\SDK\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected Model|array|null $data = null,

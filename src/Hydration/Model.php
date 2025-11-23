@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Concerns;
+namespace Timatic\SDK\Hydration;
 
 use Illuminate\Support\Str;
 use ReflectionClass;
+use Timatic\SDK\Concerns\HasAttributes;
 use Timatic\SDK\Hydration\Attributes\Property;
 
 abstract class Model implements ModelInterface

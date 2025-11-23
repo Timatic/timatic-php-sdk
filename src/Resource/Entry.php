@@ -4,7 +4,7 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
-use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Model;
 use Timatic\SDK\Requests\Entry\DeleteEntryRequest;
 use Timatic\SDK\Requests\Entry\GetEntriesRequest;
 use Timatic\SDK\Requests\Entry\GetEntryRequest;
@@ -87,7 +87,7 @@ class Entry extends BaseResource
     }
 
     /**
-     * @param  Timatic\SDK\Concerns\Model|array|null  $data  Request data
+     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
      */
     public function postEntries(Model|array|null $data = null): Response
     {
@@ -105,7 +105,7 @@ class Entry extends BaseResource
     }
 
     /**
-     * @param  Timatic\SDK\Concerns\Model|array|null  $data  Request data
+     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
      */
     public function patchEntry(string $entryId, Model|array|null $data = null): Response
     {

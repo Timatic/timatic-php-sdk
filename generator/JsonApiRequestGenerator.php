@@ -12,9 +12,9 @@ use Nette\PhpGenerator\ClassType;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\SDK\Concerns\HasFilters;
-use Timatic\SDK\Concerns\Model;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\SDK\Hydration\Model;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
@@ -89,7 +89,7 @@ class JsonApiRequestGenerator extends RequestGenerator
         $namespace->addUse(Model::class);
 
         $dataParam = new Parameter(
-            type: 'Timatic\\SDK\\Concerns\\Model|array|null',
+            type: '\\Timatic\\SDK\\Hydration\\Model|array|null',
             nullable: true,
             name: 'data',
             description: 'Request data',

@@ -4,13 +4,13 @@ namespace Timatic\SDK\Resource;
 
 use Saloon\Http\BaseResource;
 use Saloon\Http\Response;
-use Timatic\SDK\Concerns\Model;
+use Timatic\SDK\Hydration\Model;
 use Timatic\SDK\Requests\MarkAsExported\PostOvertimeMarkAsExportedRequest;
 
 class MarkAsExported extends BaseResource
 {
     /**
-     * @param  Timatic\SDK\Concerns\Model|array|null  $data  Request data
+     * @param  Timatic\SDK\Hydration\Model|array|null  $data  Request data
      */
     public function postOvertimeMarkAsExported(string $overtimeId, Model|array|null $data = null): Response
     {
