@@ -123,12 +123,8 @@ trait DtoAssertions
     /**
      * Generate a mock value for a DTO property based on its type
      */
-    protected function generateMockValueForDtoProperty(string $propertyName, ?string $typeName): mixed
+    protected function generateMockValueForDtoProperty(string $propertyName, string $typeName): mixed
     {
-        if (! $typeName) {
-            return 'Mock value';
-        }
-
         // Normalize type name (remove nullable prefix)
         $typeName = ltrim($typeName, '?');
 
@@ -169,7 +165,8 @@ trait DtoAssertions
             return 'Mock value';
         }
 
-        return 'Mock value';
+        // This should never be reached with the current OpenAPI spec
+        throw new \RuntimeException("Unexpected type '{$typeName}' for property '{$propertyName}'");
     }
 
     /**

@@ -34,7 +34,7 @@ class JsonApiDtoGenerator extends Generator
 
     protected function generateModelClass(string $className, Schema $schema): PhpFile
     {
-        $modelName = NameHelper::dtoClassName($className ?: $this->config->fallbackResourceName);
+        $modelName = NameHelper::dtoClassName($className);
 
         $classType = new ClassType($modelName);
         $classFile = new PhpFile;
@@ -159,11 +159,7 @@ class JsonApiDtoGenerator extends Generator
             return collect($schema->type)->map(fn ($type) => $this->mapType($type))->implode('|');
         }
 
-        if (is_string($schema->type)) {
-            return $this->mapType($schema->type, $schema->format);
-        }
-
-        return 'mixed';
+        return $this->mapType($schema->type, $schema->format);
     }
 
     protected function mapType(string $type, ?string $format = null): string
@@ -176,11 +172,9 @@ class JsonApiDtoGenerator extends Generator
             'number' => match ($format) {
                 'float' => 'float',
                 'int32', 'int64' => 'int',
-                default => 'int|float',
             },
             'array' => 'array',
             'null' => 'null',
-            default => 'mixed',
         };
     }
 }

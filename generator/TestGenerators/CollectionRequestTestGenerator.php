@@ -103,7 +103,7 @@ class CollectionRequestTestGenerator
         $schema = $this->getResponseSchemaForEndpoint($endpoint);
 
         if (! $schema) {
-            throw new \Exception('Endpoint does not exist');
+            throw new \RuntimeException('Endpoint does not exist');
         }
 
         // Generate mock data based on DTO if available, otherwise fallback to schema

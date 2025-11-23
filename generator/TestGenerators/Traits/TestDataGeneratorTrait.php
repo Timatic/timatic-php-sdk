@@ -76,7 +76,8 @@ trait TestDataGeneratorTrait
             return 'test value';
         }
 
-        return 'test value';
+        // This should never be reached with the current OpenAPI spec
+        throw new \RuntimeException("Unexpected type '{$type}' for property '{$propertyName}'");
     }
 
     /**

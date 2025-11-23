@@ -114,10 +114,6 @@ class MutationRequestTestGenerator
         $dtoClassName = $this->getDtoClassName($endpoint);
         $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
-        if (empty($properties)) {
-            return "    \$dto->name = 'test value';";
-        }
-
         $lines = [];
 
         // Limit to first 4 properties for the test, skip timestamp fields
@@ -217,7 +213,7 @@ class MutationRequestTestGenerator
         $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
         if (empty($properties)) {
-            throw new \Exception('DTO has no properties');
+            throw new \RuntimeException('DTO has no properties');
         }
 
         $lines = [];

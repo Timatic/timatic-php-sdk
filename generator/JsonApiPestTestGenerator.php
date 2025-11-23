@@ -130,7 +130,7 @@ class JsonApiPestTestGenerator extends PestTestGenerator
             return $this->deleteTestGenerator->getStubPath();
         }
 
-        throw \Exception('Unmatched request type');
+        throw new \RuntimeException('Unmatched request type');
     }
 
     /**
@@ -209,6 +209,6 @@ class JsonApiPestTestGenerator extends PestTestGenerator
             return $this->deleteTestGenerator->replaceStubVariables($functionStub, $endpoint);
         }
 
-        throw new \Exception('Unmatched request type');
+        throw new \RuntimeException('Unmatched request type');
     }
 }

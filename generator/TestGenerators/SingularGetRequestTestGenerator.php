@@ -87,7 +87,7 @@ class SingularGetRequestTestGenerator
         $schema = $this->getResponseSchemaForEndpoint($endpoint);
 
         if (! $schema) {
-            throw new \Exception('schema operation not found');
+            throw new \RuntimeException('schema operation not found');
         }
 
         // Generate mock data based on DTO if available, otherwise fallback to schema
