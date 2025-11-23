@@ -8,12 +8,14 @@ use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
+use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
 use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\SchemaExtractorTrait;
 use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class MutationRequestTestGenerator
 {
+    use DtoAssertions;
     use DtoHelperTrait;
     use SchemaExtractorTrait;
     use TestDataGeneratorTrait;
@@ -107,22 +109,18 @@ class MutationRequestTestGenerator
     }
 
     /**
-     * Generate DTO property assignments
+     * Filter properties for test generation (skip timestamps, check DateTime)
+     *
+     * @return array<array{name: string, type: ?string, isDateTime: bool}>
      */
-    protected function generateDtoProperties(Endpoint $endpoint): string
+    protected function getFilteredPropertiesForTest(Endpoint $endpoint): array
     {
         $dtoClassName = $this->getDtoClassName($endpoint);
         $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
-        $lines = [];
+        $filtered = [];
 
-        // Limit to first 4 properties for the test, skip timestamp fields
-        $count = 0;
         foreach ($properties as $propInfo) {
-            if ($count >= 4) {
-                break;
-            }
-
             $propName = $propInfo['name'];
 
             // Skip read-only/auto-managed fields
@@ -133,7 +131,29 @@ class MutationRequestTestGenerator
             // Check if this is a Carbon/DateTime field
             $isDateTime = $propInfo['type'] && str_contains($propInfo['type'], 'Carbon');
 
-            if ($isDateTime) {
+            $filtered[] = [
+                'name' => $propName,
+                'type' => $propInfo['type'],
+                'isDateTime' => $isDateTime,
+            ];
+        }
+
+        return array_slice($filtered, 0, 4);
+    }
+
+    /**
+     * Generate DTO property assignments
+     */
+    protected function generateDtoProperties(Endpoint $endpoint): string
+    {
+        $filteredProperties = $this->getFilteredPropertiesForTest($endpoint);
+
+        $lines = [];
+
+        foreach ($filteredProperties as $propInfo) {
+            $propName = $propInfo['name'];
+
+            if ($propInfo['isDateTime']) {
                 // Generate Carbon::parse() for DateTime fields
                 $dateString = $this->generateValue($propName, $propInfo['type']);
                 $lines[] = "    \$dto->{$propName} = \\Carbon\\Carbon::parse('{$dateString}');";
@@ -141,8 +161,6 @@ class MutationRequestTestGenerator
                 $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
                 $lines[] = "    \$dto->{$propName} = {$value};";
             }
-
-            $count++;
         }
 
         // Fallback if no properties after filtering
@@ -154,67 +172,13 @@ class MutationRequestTestGenerator
     }
 
     /**
-     * Get DTO properties from generated code (PhpFile objects)
-     *
-     * @return array<string, array{name: string, type: ?string}>
-     */
-    protected function getDtoPropertiesFromGeneratedCode(string $dtoClassName): array
-    {
-        // Check if DTO exists in generated code
-        if (! isset($this->generatedCode->dtoClasses[$dtoClassName])) {
-            return [];
-        }
-
-        $phpFile = $this->generatedCode->dtoClasses[$dtoClassName];
-        $properties = [];
-
-        // Get the first namespace in the file
-        $namespace = array_values($phpFile->getNamespaces())[0] ?? null;
-        if (! $namespace) {
-            return [];
-        }
-
-        // Get the first class in the namespace
-        $classType = array_values($namespace->getClasses())[0] ?? null;
-        if (! $classType) {
-            return [];
-        }
-
-        // Extract properties from the class
-        foreach ($classType->getProperties() as $property) {
-            // Skip static properties
-            if ($property->isStatic()) {
-                continue;
-            }
-
-            $type = $property->getType();
-            $typeName = null;
-
-            if ($type) {
-                $typeName = (string) $type;
-            }
-
-            $properties[$property->getName()] = [
-                'name' => $property->getName(),
-                'type' => $typeName,
-            ];
-        }
-
-        return $properties;
-    }
-
-    /**
      * Generate body validation code
      */
     protected function generateBodyValidation(Endpoint $endpoint): string
     {
         $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
-        $dtoClassName = $this->getDtoClassName($endpoint);
-        $properties = $this->getDtoPropertiesFromGeneratedCode($dtoClassName);
 
-        if (empty($properties)) {
-            throw new \RuntimeException('DTO has no properties');
-        }
+        $attributeValidations = $this->generateAttributeValidationsFromDto($endpoint);
 
         $lines = [];
 
@@ -223,7 +187,6 @@ class MutationRequestTestGenerator
         $lines[] = "            ->toHaveKey('data')";
 
         // Generate attribute validations
-        $attributeValidations = $this->generateAttributeValidationsFromDto($properties);
         if ($attributeValidations) {
             $lines[] = "            ->data->type->toBe('{$resourceType}')";
             $lines[] = '            ->data->attributes->scoped(fn ($attributes) => $attributes';
@@ -243,31 +206,16 @@ class MutationRequestTestGenerator
 
     /**
      * Generate attribute validation chain from DTO properties
-     *
-     * @param  array<string, array{name: string, type: ?string}>  $properties
      */
-    protected function generateAttributeValidationsFromDto(array $properties): string
+    protected function generateAttributeValidationsFromDto(Endpoint $endpoint): string
     {
+        $filteredProperties = $this->getFilteredPropertiesForTest($endpoint);
         $lines = [];
 
-        // Limit to first 4 properties for the test, skip timestamp fields
-        $count = 0;
-        foreach ($properties as $propInfo) {
-            if ($count >= 4) {
-                break;
-            }
-
+        foreach ($filteredProperties as $propInfo) {
             $propName = $propInfo['name'];
 
-            // Skip read-only/auto-managed fields
-            if (in_array($propName, ['id', 'createdAt', 'updatedAt', 'deletedAt'])) {
-                continue;
-            }
-
-            // Check if this is a Carbon/DateTime field
-            $isDateTime = $propInfo['type'] && str_contains($propInfo['type'], 'Carbon');
-
-            if ($isDateTime) {
+            if ($propInfo['isDateTime']) {
                 // Generate toEqual(new \Carbon\Carbon(...)) assertion for DateTime fields
                 $dateString = $this->generateValue($propName, $propInfo['type']);
                 $lines[] = "                ->{$propName}->toEqual(new \\Carbon\\Carbon('{$dateString}'))";
@@ -276,8 +224,6 @@ class MutationRequestTestGenerator
                 $assertionValue = $this->formatValueForAssertion($value);
                 $lines[] = "                ->{$propName}->toBe({$assertionValue})";
             }
-
-            $count++;
         }
 
         return implode("\n", $lines);
