@@ -83,7 +83,38 @@ class JsonApiPestTestGenerator extends PestTestGenerator
             return false;
         }
 
+        // Skip endpoints where DTO has no properties (will fail during mock data generation)
+        if (! $this->hasValidDtoProperties($endpoint)) {
+            return false;
+        }
+
         return true;
+    }
+
+    /**
+     * Check if endpoint has a DTO with valid properties for test generation
+     */
+    protected function hasValidDtoProperties(Endpoint $endpoint): bool
+    {
+        try {
+            // Try to generate mock data - will throw if DTO has no properties
+            if ($this->collectionTestGenerator->isCollectionRequest($endpoint)) {
+                $this->collectionTestGenerator->generateMockData($endpoint);
+            } elseif ($this->singularGetTestGenerator->isSingularGetRequest($endpoint)) {
+                $this->singularGetTestGenerator->generateMockData($endpoint);
+            }
+
+            return true;
+        } catch (\RuntimeException $e) {
+            // DTO has no properties - skip test generation
+            if (str_contains($e->getMessage(), 'has no properties')) {
+                echo "  ⊘ Skipping {$endpoint->name}: ".$e->getMessage()."\n";
+
+                return false;
+            }
+            // Re-throw other exceptions
+            throw $e;
+        }
     }
 
     /**
