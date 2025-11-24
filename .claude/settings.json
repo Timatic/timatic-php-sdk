@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(file_path:tests/Pest.php)",
+      "Edit(file_path:tests/TestCase.php)",
+      "Edit(file_path:generator/**)",
+      "Write(file_path:tests/Pest.php)",
+      "Write(file_path:tests/TestCase.php)",
+      "Write(file_path:generator/**)"
+    ],
+    "deny": [
+      "Edit(file_path:src/TimaticConnector.php)",
+      "Edit(file_path:src/Dto/**)",
+      "Edit(file_path:src/Requests/**)",
+      "Edit(file_path:src/Resource/**)",
+      "Edit(file_path:tests/*Test.php)",
+      "Write(file_path:src/TimaticConnector.php)",
+      "Write(file_path:src/Dto/**)",
+      "Write(file_path:src/Requests/**)",
+      "Write(file_path:src/Resource/**)",
+      "Write(file_path:tests/*Test.php)"
+    ],
+    "ask": []
+  }
+}
