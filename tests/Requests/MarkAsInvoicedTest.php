@@ -21,7 +21,9 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
 
-    $this->timaticConnector->markAsInvoiced()->postEntryMarkAsInvoiced(entryId: 'test string', data: $dto);
+    $request = new PostEntryMarkAsInvoicedRequest(entryId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostEntryMarkAsInvoicedRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

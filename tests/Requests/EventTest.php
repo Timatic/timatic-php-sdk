@@ -21,7 +21,9 @@ it('calls the postEvents method in the Event resource', function () {
     $dto->ticketId = 'ticket_id-123';
     $dto->sourceId = 'source_id-123';
 
-    $this->timaticConnector->event()->postEvents($dto);
+    $request = new PostEventsRequest($dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostEventsRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

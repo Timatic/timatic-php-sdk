@@ -7,25 +7,24 @@ trait MockJsonDataTrait
     /**
      * Format an array as PHP code string
      */
-    protected function formatArrayAsPhp(array $data, int $indent = 0): string
+    protected function formatArrayAsPhp(array $data): string
     {
-        $indentStr = str_repeat('    ', $indent);
         $lines = [];
 
         foreach ($data as $key => $value) {
             $keyStr = is_string($key) ? "'$key'" : $key;
 
             if (is_array($value)) {
-                $lines[] = $indentStr."    $keyStr => ".$this->formatArrayAsPhp($value, $indent + 1).',';
+                $lines[] = "$keyStr => ".$this->formatArrayAsPhp($value).',';
             } elseif (is_string($value)) {
                 $escapedValue = addslashes($value);
-                $lines[] = $indentStr."    $keyStr => '$escapedValue',";
+                $lines[] = "$keyStr => '$escapedValue',";
             } elseif (is_bool($value)) {
-                $lines[] = $indentStr."    $keyStr => ".($value ? 'true' : 'false').',';
+                $lines[] = "$keyStr => ".($value ? 'true' : 'false').',';
             } elseif (is_null($value)) {
-                $lines[] = $indentStr."    $keyStr => null,";
+                $lines[] = "$keyStr => null,";
             } else {
-                $lines[] = $indentStr."    $keyStr => $value,";
+                $lines[] = "$keyStr => $value,";
             }
         }
 
@@ -33,6 +32,6 @@ trait MockJsonDataTrait
             return '[]';
         }
 
-        return "[\n".implode("\n", $lines)."\n$indentStr]";
+        return "[\n".implode("\n", $lines)."\n]";
     }
 }

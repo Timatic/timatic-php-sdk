@@ -72,7 +72,9 @@ it('calls the postUsers method in the User resource', function () {
     $dto->externalId = 'external_id-123';
     $dto->email = 'test@example.com';
 
-    $this->timaticConnector->user()->postUsers($dto);
+    $request = new PostUsersRequest($dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostUsersRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
@@ -102,9 +104,10 @@ it('calls the getUser method in the User resource', function () {
         ], 200),
     ]);
 
-    $response = $this->timaticConnector->user()->getUser(
+    $request = new GetUserRequest(
         userId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetUserRequest::class);
 
@@ -122,9 +125,10 @@ it('calls the deleteUser method in the User resource', function () {
         DeleteUserRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->user()->deleteUser(
+    $request = new DeleteUserRequest(
         userId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(DeleteUserRequest::class);
 
@@ -141,7 +145,9 @@ it('calls the patchUser method in the User resource', function () {
     $dto->externalId = 'external_id-123';
     $dto->email = 'test@example.com';
 
-    $this->timaticConnector->user()->patchUser(userId: 'test string', data: $dto);
+    $request = new PatchUserRequest(userId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PatchUserRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

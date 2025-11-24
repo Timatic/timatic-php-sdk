@@ -148,7 +148,9 @@ it('calls the postEntries method in the Entry resource', function () {
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
 
-    $this->timaticConnector->entry()->postEntries($dto);
+    $request = new PostEntriesRequest($dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostEntriesRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
@@ -203,9 +205,10 @@ it('calls the getEntry method in the Entry resource', function () {
         ], 200),
     ]);
 
-    $response = $this->timaticConnector->entry()->getEntry(
+    $request = new GetEntryRequest(
         entryId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetEntryRequest::class);
 
@@ -246,9 +249,10 @@ it('calls the deleteEntry method in the Entry resource', function () {
         DeleteEntryRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->entry()->deleteEntry(
+    $request = new DeleteEntryRequest(
         entryId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(DeleteEntryRequest::class);
 
@@ -267,7 +271,9 @@ it('calls the patchEntry method in the Entry resource', function () {
     $dto->ticketTitle = 'test value';
     $dto->ticketType = 'test value';
 
-    $this->timaticConnector->entry()->patchEntry(entryId: 'test string', data: $dto);
+    $request = new PatchEntryRequest(entryId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PatchEntryRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

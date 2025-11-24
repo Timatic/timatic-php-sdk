@@ -21,7 +21,9 @@ it('calls the postOvertimeMarkAsExported method in the MarkAsExported resource',
     $dto->startedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
     $dto->endedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
 
-    $this->timaticConnector->markAsExported()->postOvertimeMarkAsExported(overtimeId: 'test string', data: $dto);
+    $request = new PostOvertimeMarkAsExportedRequest(overtimeId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostOvertimeMarkAsExportedRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

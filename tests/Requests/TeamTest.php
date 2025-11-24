@@ -62,7 +62,9 @@ it('calls the postTeams method in the Team resource', function () {
     $dto->externalId = 'external_id-123';
     $dto->name = 'test name';
 
-    $this->timaticConnector->team()->postTeams($dto);
+    $request = new PostTeamsRequest($dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostTeamsRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
@@ -92,9 +94,10 @@ it('calls the getTeam method in the Team resource', function () {
         ], 200),
     ]);
 
-    $response = $this->timaticConnector->team()->getTeam(
+    $request = new GetTeamRequest(
         teamId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetTeamRequest::class);
 
@@ -112,9 +115,10 @@ it('calls the deleteTeam method in the Team resource', function () {
         DeleteTeamRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->team()->deleteTeam(
+    $request = new DeleteTeamRequest(
         teamId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(DeleteTeamRequest::class);
 
@@ -131,7 +135,9 @@ it('calls the patchTeam method in the Team resource', function () {
     $dto->externalId = 'external_id-123';
     $dto->name = 'test name';
 
-    $this->timaticConnector->team()->patchTeam(teamId: 'test string', data: $dto);
+    $request = new PatchTeamRequest(teamId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PatchTeamRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

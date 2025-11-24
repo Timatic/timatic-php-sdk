@@ -3,7 +3,8 @@ it('{{ testDescription }}', function () {
         {{ requestClass }}::class => {{ mockResponse }},
     ]);
 
-    $response = $this->{{ clientName }}->{{ resourceName }}()->{{ methodName }}({{ methodArguments }});
+    $request = new {{ requestClass }}({{ methodArguments }});
+    $response = $this->{{ clientName }}->send($request);
 
     Saloon::assertSent({{ requestClass }}::class);
 

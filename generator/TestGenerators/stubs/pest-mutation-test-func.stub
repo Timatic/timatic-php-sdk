@@ -4,9 +4,11 @@ it('{{ testDescription }}', function () {
     ]);
 
     // Create DTO with sample data
-{{ dtoInstantiation }}
+    {{ dtoInstantiation }}
 
-    $this->{{ clientName }}->{{ resourceName }}()->{{ methodName }}({{ mutationMethodArguments }});
+    $request = new {{ requestClass }}({{ mutationMethodArguments }});
+    $this->{{ clientName }}->send($request);
+
     Saloon::assertSent({{ requestClass }}::class);
 
 {{ bodyValidation }}

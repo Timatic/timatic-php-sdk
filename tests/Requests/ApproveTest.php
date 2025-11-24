@@ -21,7 +21,9 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
     $dto->startedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
     $dto->endedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
 
-    $this->timaticConnector->approve()->postOvertimeApprove(overtimeId: 'test string', data: $dto);
+    $request = new PostOvertimeApproveRequest(overtimeId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostOvertimeApproveRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

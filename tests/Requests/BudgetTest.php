@@ -115,7 +115,9 @@ it('calls the postBudgets method in the Budget resource', function () {
     $dto->showToCustomer = true;
     $dto->changeId = 'change_id-123';
 
-    $this->timaticConnector->budget()->postBudgets($dto);
+    $request = new PostBudgetsRequest($dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostBudgetsRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
@@ -159,9 +161,10 @@ it('calls the getBudget method in the Budget resource', function () {
         ], 200),
     ]);
 
-    $response = $this->timaticConnector->budget()->getBudget(
+    $request = new GetBudgetRequest(
         budgetId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetBudgetRequest::class);
 
@@ -191,9 +194,10 @@ it('calls the deleteBudget method in the Budget resource', function () {
         DeleteBudgetRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->budget()->deleteBudget(
+    $request = new DeleteBudgetRequest(
         budgetId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(DeleteBudgetRequest::class);
 
@@ -212,7 +216,9 @@ it('calls the patchBudget method in the Budget resource', function () {
     $dto->showToCustomer = true;
     $dto->changeId = 'change_id-123';
 
-    $this->timaticConnector->budget()->patchBudget(budgetId: 'test string', data: $dto);
+    $request = new PatchBudgetRequest(budgetId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PatchBudgetRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

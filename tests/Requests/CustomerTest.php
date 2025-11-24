@@ -80,7 +80,9 @@ it('calls the postCustomers method in the Customer resource', function () {
     $dto->hourlyRate = 'test value';
     $dto->accountManagerUserId = 'account_manager_user_id-123';
 
-    $this->timaticConnector->customer()->postCustomers($dto);
+    $request = new PostCustomersRequest($dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PostCustomersRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
@@ -114,9 +116,10 @@ it('calls the getCustomer method in the Customer resource', function () {
         ], 200),
     ]);
 
-    $response = $this->timaticConnector->customer()->getCustomer(
+    $request = new GetCustomerRequest(
         customerId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetCustomerRequest::class);
 
@@ -136,9 +139,10 @@ it('calls the deleteCustomer method in the Customer resource', function () {
         DeleteCustomerRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->customer()->deleteCustomer(
+    $request = new DeleteCustomerRequest(
         customerId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(DeleteCustomerRequest::class);
 
@@ -157,7 +161,9 @@ it('calls the patchCustomer method in the Customer resource', function () {
     $dto->hourlyRate = 'test value';
     $dto->accountManagerUserId = 'account_manager_user_id-123';
 
-    $this->timaticConnector->customer()->patchCustomer(customerId: 'test string', data: $dto);
+    $request = new PatchCustomerRequest(customerId: 'test string', data: $dto);
+    $this->timaticConnector->send($request);
+
     Saloon::assertSent(PatchCustomerRequest::class);
 
     $mockClient->assertSent(function (Request $request) {

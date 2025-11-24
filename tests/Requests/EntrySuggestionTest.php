@@ -98,9 +98,10 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
         ], 200),
     ]);
 
-    $response = $this->timaticConnector->entrySuggestion()->getEntrySuggestion(
+    $request = new GetEntrySuggestionRequest(
         entrySuggestionId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(GetEntrySuggestionRequest::class);
 
@@ -124,9 +125,10 @@ it('calls the deleteEntrySuggestion method in the EntrySuggestion resource', fun
         DeleteEntrySuggestionRequest::class => MockResponse::make([], 200),
     ]);
 
-    $response = $this->timaticConnector->entrySuggestion()->deleteEntrySuggestion(
+    $request = new DeleteEntrySuggestionRequest(
         entrySuggestionId: 'test string'
     );
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(DeleteEntrySuggestionRequest::class);
 
