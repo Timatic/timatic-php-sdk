@@ -108,19 +108,6 @@ function writeFile($file, $outputDir, $namespace)
     return $filePath;
 }
 
-// Write connector
-if ($result->connectorClass) {
-    $path = writeFile($result->connectorClass, $outputDir, $config->namespace);
-    echo "✓ Connector: {$path}\n";
-}
-
-// Post-process and write resources
-echo "\n📦 Resources:\n";
-foreach ($result->resourceClasses as $resourceClass) {
-    $path = writeFile($resourceClass, $outputDir, $config->namespace);
-    echo '  ✓ '.basename($path)."\n";
-}
-
 // Write requests
 echo "\n📝 Requests:\n";
 foreach ($result->requestClasses as $requestClass) {
