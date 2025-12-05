@@ -1,6 +1,7 @@
 # Timatic PHP SDK
 
 [![Tests](https://github.com/Timatic/timatic-php-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/Timatic/timatic-php-sdk/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/Timatic/timatic-php-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/Timatic/timatic-php-sdk)
 [![Code Style](https://github.com/Timatic/timatic-php-sdk/actions/workflows/code-style.yml/badge.svg)](https://github.com/Timatic/timatic-php-sdk/actions/workflows/code-style.yml)
 [![Static Analysis](https://github.com/Timatic/timatic-php-sdk/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/Timatic/timatic-php-sdk/actions/workflows/static-analysis.yml)
 
@@ -245,7 +246,11 @@ The SDK uses a custom `JsonApiDtoGenerator` that:
 ### Running Tests
 
 ```bash
+# Run tests
 composer test
+
+# Run tests with code coverage
+composer coverage
 ```
 
 ## License
