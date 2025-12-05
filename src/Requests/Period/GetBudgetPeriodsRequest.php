@@ -1,6 +1,8 @@
 <?php
 
-namespace Timatic\SDK\Requests\Period;
+// auto-generated
+
+namespace Timatic\Requests\Period;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;

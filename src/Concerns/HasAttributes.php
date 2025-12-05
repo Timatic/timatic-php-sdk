@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Concerns;
+namespace Timatic\Concerns;
 
 use ReflectionClass;
-use Timatic\SDK\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Property;
 
 trait HasAttributes
 {

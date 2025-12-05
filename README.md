@@ -42,8 +42,8 @@ TIMATIC_API_TOKEN=your-api-token-here
 The SDK connector is automatically registered in Laravel's service container, making it easy to inject into your controllers, commands, and other classes:
 
 ```php
-use Timatic\SDK\TimaticConnector;
-use Timatic\SDK\Requests\BudgetType\GetBudgetTypeCollection;
+use Timatic\TimaticConnector;
+use Timatic\Requests\BudgetType\GetBudgetTypeCollection;
 
 class BudgetController extends Controller
 {
@@ -66,13 +66,13 @@ class BudgetController extends Controller
 
     public function store(Request $request)
     {
-        $budget = new \Timatic\SDK\Dto\Budget([
+        $budget = new \Timatic\Dto\Budget([
             'title' => $request->input('title'),
             'totalPrice' => $request->input('total_price'),
         ]);
 
         $created = $this->timatic
-            ->send(new \Timatic\SDK\Requests\Budget\PostBudgets($budget))
+            ->send(new \Timatic\Requests\Budget\PostBudgets($budget))
             ->dtoOrFail();
 
         return redirect()->route('budgets.show', $created->id);
@@ -83,7 +83,7 @@ class BudgetController extends Controller
 **In Console Commands:**
 
 ```php
-use Timatic\SDK\TimaticConnector;
+use Timatic\TimaticConnector;
 
 class SyncBudgetsCommand extends Command
 {
@@ -100,13 +100,155 @@ class SyncBudgetsCommand extends Command
 }
 ```
 
+### Testing
+
+When testing code that uses the Timatic SDK, you can mock the connector and its responses using factories. The SDK includes factory classes for all DTOs that make it easy to generate test data.
+
+Here's an example of testing the `BudgetController` from the example above:
+
+```php
+use Timatic\TimaticConnector;
+use Timatic\Dto\Budget;
+use Timatic\Dto\BudgetType;
+use Timatic\Requests\Budget\GetBudgetsRequest;
+use Timatic\Requests\BudgetType\GetBudgetTypesRequest;
+use Saloon\Http\Faking\MockClient;
+use Saloon\Http\Faking\MockResponse;
+
+test('it displays budgets and budget types', function () {
+    // Generate test data using factories
+    $budget = Budget::factory()->state(['id' => '1'])->make();
+    $budgetType = BudgetType::factory()->state(['id' => '1'])->make();
+
+    // Create mock responses using factory-generated data
+    $mockClient = new MockClient([
+        GetBudgetsRequest::class => MockResponse::make([
+            'data' => [$budget->toJsonApi()],
+        ], 200),
+        GetBudgetTypesRequest::class => MockResponse::make([
+            'data' => [$budgetType->toJsonApi()],
+        ], 200),
+    ]);
+
+    // Bind mock to container
+    $connector = new TimaticConnector();
+    $connector->withMockClient($mockClient);
+    $this->app->instance(TimaticConnector::class, $connector);
+
+    // Make request
+    $response = $this->get(route('budgets.index'));
+
+    // Assert
+    $response->assertOk();
+    $response->assertViewHas('budgets');
+    $response->assertViewHas('budgetTypes');
+});
+
+test('it creates a new budget', function () {
+    // Generate test data with specific attributes
+    $budget = Budget::factory()->state([
+        'id' => '2',
+        'title' => 'New Budget',
+        'totalPrice' => '5000.00',
+    ])->make();
+
+    $mockClient = new MockClient([
+        PostBudgetsRequest::class => MockResponse::make([
+            'data' => $budget->toJsonApi(),
+        ], 201),
+    ]);
+
+    $connector = new TimaticConnector();
+    $connector->withMockClient($mockClient);
+    $this->app->instance(TimaticConnector::class, $connector);
+
+    $response = $this->post(route('budgets.store'), [
+        'title' => 'New Budget',
+        'total_price' => 5000.00,
+    ]);
+
+    $response->assertRedirect(route('budgets.show', '2'));
+});
+
+test('it sends a POST request to create a budget using the SDK', function () {
+    $budgetToCreate = Budget::factory()->state([
+        'title' => 'New Budget',
+        'totalPrice' => '5000.00',
+        'customerId' => 'customer-123',
+    ])->make();
+
+    $createdBudget = Budget::factory()->state([
+        'id' => 'created-456',
+        'title' => 'New Budget',
+        'totalPrice' => '5000.00',
+        'customerId' => 'customer-123',
+    ])->make();
+
+    $mockClient = new MockClient([
+        PostBudgetsRequest::class => MockResponse::make([
+            'data' => $createdBudget->toJsonApi(),
+        ], 201),
+    ]);
+
+    $connector = new TimaticConnector();
+    $connector->withMockClient($mockClient);
+
+    $response = $connector->send(new PostBudgetsRequest($budgetToCreate));
+
+    // Assert the request body was sent correctly
+    $mockClient->assertSent(function (\Saloon\Http\Request $request) {
+        $body = $request->body()->all();
+
+        return $body['data']['attributes']['title'] === 'New Budget'
+            && $body['data']['attributes']['totalPrice'] === '5000.00'
+            && $body['data']['attributes']['customerId'] === 'customer-123';
+    });
+
+    // Assert response
+    expect($response->status())->toBe(201);
+
+    $dto = $response->dto();
+    expect($dto)
+        ->toBeInstanceOf(Budget::class)
+        ->id->toBe('created-456')
+        ->title->toBe('New Budget')
+        ->totalPrice->toBe('5000.00');
+});
+```
+
+#### Factory Methods
+
+Every DTO in the SDK has a corresponding factory class with the following methods:
+
+```php
+// Create a single model with random data
+$budget = Budget::factory()->make();
+
+// Create multiple models with unique UUID IDs
+$budgets = Budget::factory()->withId()->count(3)->make(); // Returns Collection
+
+// Override specific attributes
+$budget = Budget::factory()->state([
+    'title' => 'Q1 Budget',
+    'totalPrice' => '10000.00',
+])->make();
+
+// Chain state calls for complex scenarios
+$budget = Budget::factory()
+    ->state(['customerId' => $customerId])
+    ->state(['budgetTypeId' => $budgetTypeId])
+    ->make();
+```
+
+For more information on mocking Saloon requests, see the [Saloon Mocking Documentation](https://docs.saloon.dev/testing/faking-responses).
+
 ### Pagination
 
 The SDK supports automatic pagination for all collection endpoints using Saloon's pagination plugin:
 
 ```php
-use Timatic\SDK\TimaticConnector;
-use Timatic\SDK\Requests\Budget\GetBudgets;
+use Timatic\TimaticConnector;
+use Timatic\Requests\Budget\GetBudgets;
 
 class BudgetController extends Controller
 {

@@ -1,12 +1,14 @@
 <?php
 
-namespace Timatic\SDK\Requests\Entry;
+// auto-generated
+
+namespace Timatic\Requests\Entry;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Timatic\SDK\Dto\Entry;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Dto\Entry;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getEntry

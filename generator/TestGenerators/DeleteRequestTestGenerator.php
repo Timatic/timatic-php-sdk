@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator\TestGenerators;
+namespace Timatic\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;

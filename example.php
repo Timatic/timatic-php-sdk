@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/vendor/autoload.php';
 
-use Timatic\SDK\TimaticConnector;
+use Timatic\TimaticConnector;
 
 // Initialize the Timatic SDK
 $timatic = new TimaticConnector;
@@ -42,7 +42,7 @@ if ($response->successful()) {
 // Example 5: Create a new entry (commented out to prevent accidental execution)
 
 echo "Creating a new entry...\n";
-$response = $timatic->entry()->postEntries(new \Timatic\SDK\Dto\Entry([
+$response = $timatic->entry()->postEntries(new \Timatic\Dto\Entry([
     'user_id' => 1,
     'customer_id' => 1,
     'date' => date('Y-m-d'),

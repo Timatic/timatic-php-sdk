@@ -1,13 +1,15 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Correction\PatchCorrectionRequest;
-use Timatic\SDK\Requests\Correction\PostCorrectionsRequest;
+use Timatic\Requests\Correction\PatchCorrectionRequest;
+use Timatic\Requests\Correction\PostCorrectionsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the postCorrections method in the Correction resource', function () {
@@ -16,8 +18,9 @@ it('calls the postCorrections method in the Correction resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Correction;
-    $dto->name = 'test value';
+    $dto = \Timatic\Dto\Correction::factory()->state([
+        'name' => 'test value',
+    ])->make();
 
     $request = new PostCorrectionsRequest($dto);
     $this->timaticConnector->send($request);
@@ -39,8 +42,9 @@ it('calls the patchCorrection method in the Correction resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Correction;
-    $dto->name = 'test value';
+    $dto = \Timatic\Dto\Correction::factory()->state([
+        'name' => 'test value',
+    ])->make();
 
     $request = new PatchCorrectionRequest(correctionId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

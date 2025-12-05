@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Hydration\Attributes;
+namespace Timatic\Hydration\Attributes;
 
 use Attribute;
 

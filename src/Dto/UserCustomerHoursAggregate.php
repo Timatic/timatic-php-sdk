@@ -1,9 +1,11 @@
 <?php
 
-namespace Timatic\SDK\Dto;
+// auto-generated
 
-use Timatic\SDK\Hydration\Attributes\Property;
-use Timatic\SDK\Hydration\Model;
+namespace Timatic\Dto;
+
+use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Model;
 
 class UserCustomerHoursAggregate extends Model
 {

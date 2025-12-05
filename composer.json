@@ -5,13 +5,14 @@
     "license": "Elastic-2.0",
     "autoload": {
         "psr-4": {
-            "Timatic\\SDK\\": "src/",
-            "Timatic\\SDK\\Generator\\": "generator/"
+            "Timatic\\": "src/",
+            "Timatic\\Generator\\": "generator/",
+            "Timatic\\Factories\\": "factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Timatic\\SDK\\Tests\\": "tests/"
+            "Timatic\\Tests\\": "tests/"
         }
     },
     "require": {
@@ -21,6 +22,7 @@
         "saloonphp/pagination-plugin": "^2.0"
     },
     "require-dev": {
+        "fakerphp/faker": "^1.23",
         "laravel/boost": "^1.8",
         "phpunit/phpunit": "^10.0|^11.0",
         "pestphp/pest": "^2.0|^3.0",
@@ -49,10 +51,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Timatic\\SDK\\Providers\\TimaticServiceProvider"
+                "Timatic\\Providers\\TimaticServiceProvider"
             ],
             "aliases": {
-                "Timatic": "Timatic\\SDK\\Facades\\Timatic"
+                "Timatic": "Timatic\\Facades\\Timatic"
             }
         }
     },

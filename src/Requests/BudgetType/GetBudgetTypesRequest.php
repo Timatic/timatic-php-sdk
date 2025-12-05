@@ -1,13 +1,15 @@
 <?php
 
-namespace Timatic\SDK\Requests\BudgetType;
+// auto-generated
+
+namespace Timatic\Requests\BudgetType;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Dto\BudgetType;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Dto\BudgetType;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getBudgetTypes

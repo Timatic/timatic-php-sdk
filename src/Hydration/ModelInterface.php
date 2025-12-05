@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Hydration;
+namespace Timatic\Hydration;
 
 interface ModelInterface
 {

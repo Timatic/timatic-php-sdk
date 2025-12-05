@@ -1,17 +1,19 @@
 <?php
 
+// auto-generated
+
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Entry\DeleteEntryRequest;
-use Timatic\SDK\Requests\Entry\GetEntriesRequest;
-use Timatic\SDK\Requests\Entry\GetEntryRequest;
-use Timatic\SDK\Requests\Entry\PatchEntryRequest;
-use Timatic\SDK\Requests\Entry\PostEntriesRequest;
+use Timatic\Requests\Entry\DeleteEntryRequest;
+use Timatic\Requests\Entry\GetEntriesRequest;
+use Timatic\Requests\Entry\GetEntryRequest;
+use Timatic\Requests\Entry\PatchEntryRequest;
+use Timatic\Requests\Entry\PostEntriesRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getEntries method in the Entry resource', function () {
@@ -142,11 +144,12 @@ it('calls the postEntries method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Entry;
-    $dto->ticketId = 'ticket_id-123';
-    $dto->ticketNumber = 'test value';
-    $dto->ticketTitle = 'test value';
-    $dto->ticketType = 'test value';
+    $dto = \Timatic\Dto\Entry::factory()->state([
+        'ticketId' => 'ticket_id-123',
+        'ticketNumber' => 'test value',
+        'ticketTitle' => 'test value',
+        'ticketType' => 'test value',
+    ])->make();
 
     $request = new PostEntriesRequest($dto);
     $this->timaticConnector->send($request);
@@ -265,11 +268,12 @@ it('calls the patchEntry method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Entry;
-    $dto->ticketId = 'ticket_id-123';
-    $dto->ticketNumber = 'test value';
-    $dto->ticketTitle = 'test value';
-    $dto->ticketType = 'test value';
+    $dto = \Timatic\Dto\Entry::factory()->state([
+        'ticketId' => 'ticket_id-123',
+        'ticketNumber' => 'test value',
+        'ticketTitle' => 'test value',
+        'ticketType' => 'test value',
+    ])->make();
 
     $request = new PatchEntryRequest(entryId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

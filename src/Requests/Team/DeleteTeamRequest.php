@@ -1,6 +1,8 @@
 <?php
 
-namespace Timatic\SDK\Requests\Team;
+// auto-generated
+
+namespace Timatic\Requests\Team;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator;
+namespace Timatic\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Config;
@@ -12,11 +12,11 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\PestTestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Nette\PhpGenerator\PhpFile;
-use Timatic\SDK\Generator\TestGenerators\CollectionRequestTestGenerator;
-use Timatic\SDK\Generator\TestGenerators\DeleteRequestTestGenerator;
-use Timatic\SDK\Generator\TestGenerators\MutationRequestTestGenerator;
-use Timatic\SDK\Generator\TestGenerators\SingularGetRequestTestGenerator;
-use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
+use Timatic\Generator\TestGenerators\CollectionRequestTestGenerator;
+use Timatic\Generator\TestGenerators\DeleteRequestTestGenerator;
+use Timatic\Generator\TestGenerators\MutationRequestTestGenerator;
+use Timatic\Generator\TestGenerators\SingularGetRequestTestGenerator;
+use Timatic\Generator\TestGenerators\Traits\DtoHelperTrait;
 
 class JsonApiPestTestGenerator extends PestTestGenerator
 {

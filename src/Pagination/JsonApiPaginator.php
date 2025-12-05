@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Pagination;
+namespace Timatic\Pagination;
 
 use Saloon\Http\Request;
 use Saloon\Http\Response;

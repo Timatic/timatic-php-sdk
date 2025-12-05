@@ -1,12 +1,14 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Event\PostEventsRequest;
+use Timatic\Requests\Event\PostEventsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the postEvents method in the Event resource', function () {
@@ -15,11 +17,12 @@ it('calls the postEvents method in the Event resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Event;
-    $dto->userId = 'user_id-123';
-    $dto->budgetId = 'budget_id-123';
-    $dto->ticketId = 'ticket_id-123';
-    $dto->sourceId = 'source_id-123';
+    $dto = \Timatic\Dto\Event::factory()->state([
+        'userId' => 'user_id-123',
+        'budgetId' => 'budget_id-123',
+        'ticketId' => 'ticket_id-123',
+        'sourceId' => 'source_id-123',
+    ])->make();
 
     $request = new PostEventsRequest($dto);
     $this->timaticConnector->send($request);

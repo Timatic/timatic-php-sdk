@@ -1,14 +1,16 @@
 <?php
 
-namespace Timatic\SDK\Requests\BudgetTimeSpentTotal;
+// auto-generated
+
+namespace Timatic\Requests\BudgetTimeSpentTotal;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Concerns\HasFilters;
-use Timatic\SDK\Dto\BudgetTimeSpentTotal;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Concerns\HasFilters;
+use Timatic\Dto\BudgetTimeSpentTotal;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getBudgetTimeSpentTotals

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Facades;
+namespace Timatic\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Saloon\Http\Response send(\Saloon\Http\Request $request)
- * @method static \Timatic\SDK\TimaticConnector withMockClient(\Saloon\Http\Faking\MockClient $mockClient)
- * @method static \Timatic\SDK\TimaticConnector headers()
- * @method static \Timatic\SDK\TimaticConnector baseUrl(string $url)
+ * @method static \Timatic\TimaticConnector withMockClient(\Saloon\Http\Faking\MockClient $mockClient)
+ * @method static \Timatic\TimaticConnector headers()
+ * @method static \Timatic\TimaticConnector baseUrl(string $url)
  *
- * @see \Timatic\SDK\TimaticConnector
+ * @see \Timatic\TimaticConnector
  */
 class Timatic extends Facade
 {
@@ -21,6 +21,6 @@ class Timatic extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return \Timatic\SDK\TimaticConnector::class;
+        return \Timatic\TimaticConnector::class;
     }
 }

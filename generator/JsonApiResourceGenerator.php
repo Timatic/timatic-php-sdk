@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator;
+namespace Timatic\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\ResourceGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Nette\PhpGenerator\Method;
-use Timatic\SDK\Hydration\Model;
+use Timatic\Hydration\Model;
 
 class JsonApiResourceGenerator extends ResourceGenerator
 {

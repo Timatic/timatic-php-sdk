@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Responses;
+namespace Timatic\Responses;
 
 use Saloon\Http\Response;
 

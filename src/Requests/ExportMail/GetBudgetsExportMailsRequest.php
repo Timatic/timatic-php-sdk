@@ -1,13 +1,15 @@
 <?php
 
-namespace Timatic\SDK\Requests\ExportMail;
+// auto-generated
+
+namespace Timatic\Requests\ExportMail;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Dto\ExportMail;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Dto\ExportMail;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getBudgetsExportMails

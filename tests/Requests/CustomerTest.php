@@ -1,16 +1,18 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Customer\DeleteCustomerRequest;
-use Timatic\SDK\Requests\Customer\GetCustomerRequest;
-use Timatic\SDK\Requests\Customer\GetCustomersRequest;
-use Timatic\SDK\Requests\Customer\PatchCustomerRequest;
-use Timatic\SDK\Requests\Customer\PostCustomersRequest;
+use Timatic\Requests\Customer\DeleteCustomerRequest;
+use Timatic\Requests\Customer\GetCustomerRequest;
+use Timatic\Requests\Customer\GetCustomersRequest;
+use Timatic\Requests\Customer\PatchCustomerRequest;
+use Timatic\Requests\Customer\PostCustomersRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getCustomers method in the Customer resource', function () {
@@ -74,11 +76,12 @@ it('calls the postCustomers method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Customer;
-    $dto->externalId = 'external_id-123';
-    $dto->name = 'test name';
-    $dto->hourlyRate = 'test value';
-    $dto->accountManagerUserId = 'account_manager_user_id-123';
+    $dto = \Timatic\Dto\Customer::factory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
+        'hourlyRate' => 'test value',
+        'accountManagerUserId' => 'account_manager_user_id-123',
+    ])->make();
 
     $request = new PostCustomersRequest($dto);
     $this->timaticConnector->send($request);
@@ -155,11 +158,12 @@ it('calls the patchCustomer method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Customer;
-    $dto->externalId = 'external_id-123';
-    $dto->name = 'test name';
-    $dto->hourlyRate = 'test value';
-    $dto->accountManagerUserId = 'account_manager_user_id-123';
+    $dto = \Timatic\Dto\Customer::factory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
+        'hourlyRate' => 'test value',
+        'accountManagerUserId' => 'account_manager_user_id-123',
+    ])->make();
 
     $request = new PatchCustomerRequest(customerId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

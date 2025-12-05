@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator;
+namespace Timatic\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Generators\ConnectorGenerator;
@@ -11,8 +11,8 @@ use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpFile;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
-use Timatic\SDK\Pagination\JsonApiPaginator;
-use Timatic\SDK\Responses\TimaticResponse;
+use Timatic\Pagination\JsonApiPaginator;
+use Timatic\Responses\TimaticResponse;
 
 class JsonApiConnectorGenerator extends ConnectorGenerator
 {

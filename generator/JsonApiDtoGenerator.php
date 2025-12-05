@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator;
+namespace Timatic\Generator;
 
 use cebe\openapi\spec\Reference;
 use cebe\openapi\spec\Schema;
@@ -13,9 +13,9 @@ use Crescat\SaloonSdkGenerator\Helpers\Utils;
 use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
-use Timatic\SDK\Hydration\Attributes\DateTime;
-use Timatic\SDK\Hydration\Attributes\Property;
-use Timatic\SDK\Hydration\Model;
+use Timatic\Hydration\Attributes\DateTime;
+use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Model;
 
 class JsonApiDtoGenerator extends Generator
 {

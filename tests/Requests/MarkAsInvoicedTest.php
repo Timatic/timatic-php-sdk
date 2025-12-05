@@ -1,12 +1,14 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\MarkAsInvoiced\PostEntryMarkAsInvoicedRequest;
+use Timatic\Requests\MarkAsInvoiced\PostEntryMarkAsInvoicedRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', function () {
@@ -15,11 +17,12 @@ it('calls the postEntryMarkAsInvoiced method in the MarkAsInvoiced resource', fu
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\MarkAsInvoiced;
-    $dto->ticketId = 'ticket_id-123';
-    $dto->ticketNumber = 'test value';
-    $dto->ticketTitle = 'test value';
-    $dto->ticketType = 'test value';
+    $dto = \Timatic\Dto\MarkAsInvoiced::factory()->state([
+        'ticketId' => 'ticket_id-123',
+        'ticketNumber' => 'test value',
+        'ticketTitle' => 'test value',
+        'ticketType' => 'test value',
+    ])->make();
 
     $request = new PostEntryMarkAsInvoicedRequest(entryId: 'test string', data: $dto);
     $this->timaticConnector->send($request);
