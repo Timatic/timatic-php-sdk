@@ -1,6 +1,8 @@
 <?php
 
-namespace Timatic\SDK\Requests\Budget;
+// auto-generated
+
+namespace Timatic\Requests\Budget;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;

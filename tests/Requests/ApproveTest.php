@@ -1,12 +1,14 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Approve\PostOvertimeApproveRequest;
+use Timatic\Requests\Approve\PostOvertimeApproveRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the postOvertimeApprove method in the Approve resource', function () {
@@ -15,11 +17,12 @@ it('calls the postOvertimeApprove method in the Approve resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Approve;
-    $dto->entryId = 'entry_id-123';
-    $dto->overtimeTypeId = 'overtime_type_id-123';
-    $dto->startedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
-    $dto->endedAt = \Carbon\Carbon::parse('2025-01-15T10:30:00Z');
+    $dto = \Timatic\Dto\Approve::factory()->state([
+        'entryId' => 'entry_id-123',
+        'overtimeTypeId' => 'overtime_type_id-123',
+        'startedAt' => \Carbon\Carbon::parse('2025-01-15T10:30:00Z'),
+        'endedAt' => \Carbon\Carbon::parse('2025-01-15T10:30:00Z'),
+    ])->make();
 
     $request = new PostOvertimeApproveRequest(overtimeId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

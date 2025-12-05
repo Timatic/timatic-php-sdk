@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator\TestGenerators;
+namespace Timatic\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
-use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\ResourceTypeExtractorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
+use Timatic\Generator\TestGenerators\Traits\DtoAssertions;
+use Timatic\Generator\TestGenerators\Traits\DtoHelperTrait;
+use Timatic\Generator\TestGenerators\Traits\ResourceTypeExtractorTrait;
+use Timatic\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class MutationRequestTestGenerator
 {
@@ -94,16 +94,47 @@ class MutationRequestTestGenerator
     }
 
     /**
-     * Generate DTO instantiation code with sample data
+     * Generate DTO instantiation code with sample data using factory
      */
     protected function generateDtoInstantiation(Endpoint $endpoint): string
     {
         $dtoClassName = $this->getDtoClassName($endpoint);
-        $properties = $this->generateDtoProperties($endpoint);
+        $stateArray = $this->generateFactoryStateArray($endpoint);
 
         $lines = [];
-        $lines[] = "    \$dto = new \\Timatic\\SDK\\Dto\\{$dtoClassName};";
-        $lines[] = $properties;
+        $lines[] = "    \$dto = \\Timatic\\Dto\\{$dtoClassName}::factory()->state([";
+        $lines[] = $stateArray;
+        $lines[] = '    ])->make();';
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Generate factory state array with test data
+     */
+    protected function generateFactoryStateArray(Endpoint $endpoint): string
+    {
+        $filteredProperties = $this->getFilteredPropertiesForTest($endpoint);
+
+        $lines = [];
+
+        foreach ($filteredProperties as $propInfo) {
+            $propName = $propInfo['name'];
+
+            if ($propInfo['isDateTime']) {
+                // Generate Carbon::parse() for DateTime fields
+                $dateString = $this->generateValue($propName, $propInfo['type']);
+                $lines[] = "        '{$propName}' => \\Carbon\\Carbon::parse('{$dateString}'),";
+            } else {
+                $value = $this->formatAsCode($this->generateValue($propName, $propInfo['type']));
+                $lines[] = "        '{$propName}' => {$value},";
+            }
+        }
+
+        // Fallback if no properties after filtering
+        if (empty($lines)) {
+            return "        'name' => 'test value',";
+        }
 
         return implode("\n", $lines);
     }

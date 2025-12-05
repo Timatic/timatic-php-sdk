@@ -1,16 +1,18 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\User\DeleteUserRequest;
-use Timatic\SDK\Requests\User\GetUserRequest;
-use Timatic\SDK\Requests\User\GetUsersRequest;
-use Timatic\SDK\Requests\User\PatchUserRequest;
-use Timatic\SDK\Requests\User\PostUsersRequest;
+use Timatic\Requests\User\DeleteUserRequest;
+use Timatic\Requests\User\GetUserRequest;
+use Timatic\Requests\User\GetUsersRequest;
+use Timatic\Requests\User\PatchUserRequest;
+use Timatic\Requests\User\PostUsersRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getUsers method in the User resource', function () {
@@ -68,9 +70,10 @@ it('calls the postUsers method in the User resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\User;
-    $dto->externalId = 'external_id-123';
-    $dto->email = 'test@example.com';
+    $dto = \Timatic\Dto\User::factory()->state([
+        'externalId' => 'external_id-123',
+        'email' => 'test@example.com',
+    ])->make();
 
     $request = new PostUsersRequest($dto);
     $this->timaticConnector->send($request);
@@ -141,9 +144,10 @@ it('calls the patchUser method in the User resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\User;
-    $dto->externalId = 'external_id-123';
-    $dto->email = 'test@example.com';
+    $dto = \Timatic\Dto\User::factory()->state([
+        'externalId' => 'external_id-123',
+        'email' => 'test@example.com',
+    ])->make();
 
     $request = new PatchUserRequest(userId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

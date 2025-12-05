@@ -1,16 +1,18 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Team\DeleteTeamRequest;
-use Timatic\SDK\Requests\Team\GetTeamRequest;
-use Timatic\SDK\Requests\Team\GetTeamsRequest;
-use Timatic\SDK\Requests\Team\PatchTeamRequest;
-use Timatic\SDK\Requests\Team\PostTeamsRequest;
+use Timatic\Requests\Team\DeleteTeamRequest;
+use Timatic\Requests\Team\GetTeamRequest;
+use Timatic\Requests\Team\GetTeamsRequest;
+use Timatic\Requests\Team\PatchTeamRequest;
+use Timatic\Requests\Team\PostTeamsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getTeams method in the Team resource', function () {
@@ -58,9 +60,10 @@ it('calls the postTeams method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Team;
-    $dto->externalId = 'external_id-123';
-    $dto->name = 'test name';
+    $dto = \Timatic\Dto\Team::factory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
+    ])->make();
 
     $request = new PostTeamsRequest($dto);
     $this->timaticConnector->send($request);
@@ -131,9 +134,10 @@ it('calls the patchTeam method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Team;
-    $dto->externalId = 'external_id-123';
-    $dto->name = 'test name';
+    $dto = \Timatic\Dto\Team::factory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
+    ])->make();
 
     $request = new PatchTeamRequest(teamId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

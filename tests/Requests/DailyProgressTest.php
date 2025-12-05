@@ -1,12 +1,14 @@
 <?php
 
+// auto-generated
+
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\DailyProgress\GetDailyProgressesRequest;
+use Timatic\Requests\DailyProgress\GetDailyProgressesRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getDailyProgresses method in the DailyProgress resource', function () {

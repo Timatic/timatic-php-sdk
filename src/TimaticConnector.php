@@ -1,12 +1,12 @@
 <?php
 
-namespace Timatic\SDK;
+namespace Timatic;
 
 use Saloon\Http\Connector;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
-use Timatic\SDK\Pagination\JsonApiPaginator;
-use Timatic\SDK\Responses\TimaticResponse;
+use Timatic\Pagination\JsonApiPaginator;
+use Timatic\Responses\TimaticResponse;
 
 /**
  * timatic-api

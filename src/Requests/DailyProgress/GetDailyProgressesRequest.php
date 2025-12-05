@@ -1,13 +1,15 @@
 <?php
 
-namespace Timatic\SDK\Requests\DailyProgress;
+// auto-generated
+
+namespace Timatic\Requests\DailyProgress;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Dto\DailyProgress;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Dto\DailyProgress;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getDailyProgresses

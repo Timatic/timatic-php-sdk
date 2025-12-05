@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator\TestGenerators;
+namespace Timatic\Generator\TestGenerators;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
-use Timatic\SDK\Generator\TestGenerators\Traits\DtoAssertions;
-use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\MockJsonDataTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\ResourceTypeExtractorTrait;
-use Timatic\SDK\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
+use Timatic\Generator\TestGenerators\Traits\DtoAssertions;
+use Timatic\Generator\TestGenerators\Traits\DtoHelperTrait;
+use Timatic\Generator\TestGenerators\Traits\MockJsonDataTrait;
+use Timatic\Generator\TestGenerators\Traits\ResourceTypeExtractorTrait;
+use Timatic\Generator\TestGenerators\Traits\TestDataGeneratorTrait;
 
 class CollectionRequestTestGenerator
 {

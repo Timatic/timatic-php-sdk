@@ -1,12 +1,14 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\UserCustomerHoursAggregate\GetUserCustomerHoursAggregatesRequest;
+use Timatic\Requests\UserCustomerHoursAggregate\GetUserCustomerHoursAggregatesRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggregate resource', function () {

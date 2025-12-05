@@ -1,14 +1,16 @@
 <?php
 
-namespace Timatic\SDK\Requests\UserCustomerHoursAggregate;
+// auto-generated
+
+namespace Timatic\Requests\UserCustomerHoursAggregate;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Concerns\HasFilters;
-use Timatic\SDK\Dto\UserCustomerHoursAggregate;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Concerns\HasFilters;
+use Timatic\Dto\UserCustomerHoursAggregate;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getUserCustomerHoursAggregates

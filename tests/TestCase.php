@@ -1,11 +1,11 @@
 <?php
 
-namespace Timatic\SDK\Tests;
+namespace Timatic\Tests;
 
 use Dotenv\Dotenv;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Saloon\Laravel\SaloonServiceProvider;
-use Timatic\SDK\Providers\TimaticServiceProvider;
+use Timatic\Providers\TimaticServiceProvider;
 
 class TestCase extends Orchestra
 {

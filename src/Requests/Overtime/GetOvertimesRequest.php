@@ -1,14 +1,16 @@
 <?php
 
-namespace Timatic\SDK\Requests\Overtime;
+// auto-generated
+
+namespace Timatic\Requests\Overtime;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Concerns\HasFilters;
-use Timatic\SDK\Dto\Overtime;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Concerns\HasFilters;
+use Timatic\Dto\Overtime;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getOvertimes

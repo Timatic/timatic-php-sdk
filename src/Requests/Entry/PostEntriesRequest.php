@@ -1,15 +1,17 @@
 <?php
 
-namespace Timatic\SDK\Requests\Entry;
+// auto-generated
+
+namespace Timatic\Requests\Entry;
 
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\SDK\Dto\Entry;
-use Timatic\SDK\Hydration\Facades\Hydrator;
-use Timatic\SDK\Hydration\Model;
+use Timatic\Dto\Entry;
+use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Hydration\Model;
 
 /**
  * postEntries
@@ -37,7 +39,7 @@ class PostEntriesRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|\Timatic\SDK\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected Model|array|null $data = null,
@@ -45,6 +47,6 @@ class PostEntriesRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return $this->data ? $this->data->toJsonApi() : [];
+        return $this->data ? ['data' => $this->data->toJsonApi()] : [];
     }
 }

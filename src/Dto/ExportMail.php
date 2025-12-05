@@ -1,7 +1,9 @@
 <?php
 
-namespace Timatic\SDK\Dto;
+// auto-generated
 
-use Timatic\SDK\Hydration\Model;
+namespace Timatic\Dto;
+
+use Timatic\Hydration\Model;
 
 class ExportMail extends Model {}

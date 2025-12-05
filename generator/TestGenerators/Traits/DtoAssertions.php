@@ -1,6 +1,6 @@
 <?php
 
-namespace Timatic\SDK\Generator\TestGenerators\Traits;
+namespace Timatic\Generator\TestGenerators\Traits;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\GeneratedCode;
 

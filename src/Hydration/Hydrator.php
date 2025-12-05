@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Hydration;
+namespace Timatic\Hydration;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -11,9 +11,9 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionProperty;
-use Timatic\SDK\Hydration\Attributes\DateTime;
-use Timatic\SDK\Hydration\Attributes\Property;
-use Timatic\SDK\Hydration\Attributes\Relationship;
+use Timatic\Hydration\Attributes\DateTime;
+use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Webmozart\Assert\Assert;
 
 use function is_null;

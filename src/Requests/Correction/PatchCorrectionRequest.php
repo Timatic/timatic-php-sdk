@@ -1,15 +1,17 @@
 <?php
 
-namespace Timatic\SDK\Requests\Correction;
+// auto-generated
+
+namespace Timatic\Requests\Correction;
 
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\SDK\Dto\Correction;
-use Timatic\SDK\Hydration\Facades\Hydrator;
-use Timatic\SDK\Hydration\Model;
+use Timatic\Dto\Correction;
+use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Hydration\Model;
 
 /**
  * patchCorrection
@@ -37,7 +39,7 @@ class PatchCorrectionRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|\Timatic\SDK\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected string $correctionId,
@@ -46,6 +48,6 @@ class PatchCorrectionRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return $this->data ? $this->data->toJsonApi() : [];
+        return $this->data ? ['data' => $this->data->toJsonApi()] : [];
     }
 }

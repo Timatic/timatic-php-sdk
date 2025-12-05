@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Generator;
+namespace Timatic\Generator;
 
 use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
@@ -13,10 +13,10 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\SDK\Concerns\HasFilters;
-use Timatic\SDK\Generator\TestGenerators\Traits\DtoHelperTrait;
-use Timatic\SDK\Hydration\Facades\Hydrator;
-use Timatic\SDK\Hydration\Model;
+use Timatic\Concerns\HasFilters;
+use Timatic\Generator\TestGenerators\Traits\DtoHelperTrait;
+use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Hydration\Model;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
@@ -100,7 +100,7 @@ class JsonApiRequestGenerator extends RequestGenerator
         $namespace->addUse(Model::class);
 
         $dataParam = new Parameter(
-            type: '\\Timatic\\SDK\\Hydration\\Model|array|null',
+            type: '\\Timatic\\Hydration\\Model|array|null',
             nullable: true,
             name: 'data',
             description: 'Request data',
@@ -111,7 +111,7 @@ class JsonApiRequestGenerator extends RequestGenerator
         $classType->addMethod('defaultBody')
             ->setProtected()
             ->setReturnType('array')
-            ->addBody('return $this->data ? $this->data->toJsonApi() : [];');
+            ->addBody("return \$this->data ? ['data' => \$this->data->toJsonApi()] : [];");
     }
 
     /**
@@ -192,7 +192,7 @@ class JsonApiRequestGenerator extends RequestGenerator
         // Add imports
         $namespace->addUse(Hydrator::class);
         $namespace->addUse(Response::class);
-        $namespace->addUse("Timatic\\SDK\\Dto\\{$dtoClassName}");
+        $namespace->addUse("Timatic\\Dto\\{$dtoClassName}");
 
         // Add $model property - use the imported class name with ::class
         $classType->addProperty('model')

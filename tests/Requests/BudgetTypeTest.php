@@ -1,11 +1,13 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\BudgetType\GetBudgetTypesRequest;
+use Timatic\Requests\BudgetType\GetBudgetTypesRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getBudgetTypes method in the BudgetType resource', function () {

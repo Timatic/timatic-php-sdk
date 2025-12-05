@@ -1,6 +1,8 @@
 <?php
 
-namespace Timatic\SDK\Requests\EntriesExport;
+// auto-generated
+
+namespace Timatic\Requests\EntriesExport;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;

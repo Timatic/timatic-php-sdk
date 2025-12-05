@@ -1,5 +1,5 @@
 <?php
 
-use Timatic\SDK\Tests\TestCase;
+use Timatic\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

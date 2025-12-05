@@ -1,15 +1,17 @@
 <?php
 
-namespace Timatic\SDK\Requests\Budget;
+// auto-generated
+
+namespace Timatic\Requests\Budget;
 
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\SDK\Dto\Budget;
-use Timatic\SDK\Hydration\Facades\Hydrator;
-use Timatic\SDK\Hydration\Model;
+use Timatic\Dto\Budget;
+use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Hydration\Model;
 
 /**
  * postBudgets
@@ -37,7 +39,7 @@ class PostBudgetsRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|\Timatic\SDK\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected Model|array|null $data = null,
@@ -45,6 +47,6 @@ class PostBudgetsRequest extends Request implements HasBody
 
     protected function defaultBody(): array
     {
-        return $this->data ? $this->data->toJsonApi() : [];
+        return $this->data ? ['data' => $this->data->toJsonApi()] : [];
     }
 }

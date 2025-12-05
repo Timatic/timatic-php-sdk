@@ -1,6 +1,8 @@
 <?php
 
-namespace Timatic\SDK\Requests\EntrySuggestion;
+// auto-generated
+
+namespace Timatic\Requests\EntrySuggestion;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;

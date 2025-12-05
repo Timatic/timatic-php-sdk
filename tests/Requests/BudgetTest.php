@@ -1,17 +1,19 @@
 <?php
 
+// auto-generated
+
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\Budget\DeleteBudgetRequest;
-use Timatic\SDK\Requests\Budget\GetBudgetRequest;
-use Timatic\SDK\Requests\Budget\GetBudgetsRequest;
-use Timatic\SDK\Requests\Budget\PatchBudgetRequest;
-use Timatic\SDK\Requests\Budget\PostBudgetsRequest;
+use Timatic\Requests\Budget\DeleteBudgetRequest;
+use Timatic\Requests\Budget\GetBudgetRequest;
+use Timatic\Requests\Budget\GetBudgetsRequest;
+use Timatic\Requests\Budget\PatchBudgetRequest;
+use Timatic\Requests\Budget\PostBudgetsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getBudgets method in the Budget resource', function () {
@@ -109,11 +111,12 @@ it('calls the postBudgets method in the Budget resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Budget;
-    $dto->budgetTypeId = 'budget_type_id-123';
-    $dto->customerId = 'customer_id-123';
-    $dto->showToCustomer = true;
-    $dto->changeId = 'change_id-123';
+    $dto = \Timatic\Dto\Budget::factory()->state([
+        'budgetTypeId' => 'budget_type_id-123',
+        'customerId' => 'customer_id-123',
+        'showToCustomer' => true,
+        'changeId' => 'change_id-123',
+    ])->make();
 
     $request = new PostBudgetsRequest($dto);
     $this->timaticConnector->send($request);
@@ -210,11 +213,12 @@ it('calls the patchBudget method in the Budget resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = new \Timatic\SDK\Dto\Budget;
-    $dto->budgetTypeId = 'budget_type_id-123';
-    $dto->customerId = 'customer_id-123';
-    $dto->showToCustomer = true;
-    $dto->changeId = 'change_id-123';
+    $dto = \Timatic\Dto\Budget::factory()->state([
+        'budgetTypeId' => 'budget_type_id-123',
+        'customerId' => 'customer_id-123',
+        'showToCustomer' => true,
+        'changeId' => 'change_id-123',
+    ])->make();
 
     $request = new PatchBudgetRequest(budgetId: 'test string', data: $dto);
     $this->timaticConnector->send($request);

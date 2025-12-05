@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Concerns;
+namespace Timatic\Concerns;
 
-use Timatic\SDK\Filtering\Operator;
+use Timatic\Filtering\Operator;
 
 trait HasFilters
 {

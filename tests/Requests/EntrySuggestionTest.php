@@ -1,14 +1,16 @@
 <?php
 
+// auto-generated
+
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\EntrySuggestion\DeleteEntrySuggestionRequest;
-use Timatic\SDK\Requests\EntrySuggestion\GetEntrySuggestionRequest;
-use Timatic\SDK\Requests\EntrySuggestion\GetEntrySuggestionsRequest;
+use Timatic\Requests\EntrySuggestion\DeleteEntrySuggestionRequest;
+use Timatic\Requests\EntrySuggestion\GetEntrySuggestionRequest;
+use Timatic\Requests\EntrySuggestion\GetEntrySuggestionsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getEntrySuggestions method in the EntrySuggestion resource', function () {

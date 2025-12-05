@@ -1,12 +1,14 @@
 <?php
 
-namespace Timatic\SDK\Requests\Team;
+// auto-generated
+
+namespace Timatic\Requests\Team;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Timatic\SDK\Dto\Team;
-use Timatic\SDK\Hydration\Facades\Hydrator;
+use Timatic\Dto\Team;
+use Timatic\Hydration\Facades\Hydrator;
 
 /**
  * getTeam

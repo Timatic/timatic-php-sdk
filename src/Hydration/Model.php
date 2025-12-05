@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Hydration;
+namespace Timatic\Hydration;
 
 use Illuminate\Support\Str;
 use ReflectionClass;
-use Timatic\SDK\Concerns\HasAttributes;
-use Timatic\SDK\Hydration\Attributes\Property;
+use Timatic\Concerns\HasAttributes;
+use Timatic\Hydration\Attributes\Property;
 
 abstract class Model implements ModelInterface
 {
@@ -17,6 +17,21 @@ abstract class Model implements ModelInterface
     public string $id;
 
     protected ?string $type = null;
+
+    /**
+     * Get a new factory instance for the model.
+     */
+    public static function factory(): mixed
+    {
+        $modelClass = static::class;
+        $factoryClass = str_replace('\\Dto\\', '\\Factories\\', $modelClass).'Factory';
+
+        if (class_exists($factoryClass)) {
+            return $factoryClass::new();
+        }
+
+        throw new \RuntimeException("Factory [{$factoryClass}] not found for model [{$modelClass}].");
+    }
 
     /**
      * @param  array<string, mixed>  $attributes
@@ -67,17 +82,23 @@ abstract class Model implements ModelInterface
     }
 
     /**
-     * Convert Model to JSON:API format
+     * Convert Model to JSON:API data object.
+     * Returns the data object without the 'data' wrapper.
      *
      * @return array<string, mixed>
      */
     public function toJsonApi(): array
     {
-        return [
-            'data' => [
-                'type' => $this->type(),
-                'attributes' => $this->attributes(),
-            ],
+        $data = [
+            'type' => $this->type(),
         ];
+
+        if (isset($this->id)) {
+            $data['id'] = $this->id;
+        }
+
+        $data['attributes'] = $this->attributes();
+
+        return $data;
     }
 }

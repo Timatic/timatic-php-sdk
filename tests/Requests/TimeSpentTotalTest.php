@@ -1,13 +1,15 @@
 <?php
 
+// auto-generated
+
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\SDK\Requests\TimeSpentTotal\GetTimeSpentTotalsRequest;
+use Timatic\Requests\TimeSpentTotal\GetTimeSpentTotalsRequest;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\SDK\TimaticConnector;
+    $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
 it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', function () {

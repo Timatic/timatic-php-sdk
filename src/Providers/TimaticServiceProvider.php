@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Timatic\SDK\Providers;
+namespace Timatic\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Timatic\SDK\TimaticConnector;
+use Timatic\TimaticConnector;
 
 class TimaticServiceProvider extends ServiceProvider
 {
