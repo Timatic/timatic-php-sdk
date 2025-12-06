@@ -37,6 +37,7 @@
     ],
     "scripts": {
         "test": "pest",
+        "coverage": "pest --coverage --coverage-clover coverage.xml",
         "format": "pint",
         "analyse": "phpstan analyse --memory-limit=2G",
         "regenerate": [
