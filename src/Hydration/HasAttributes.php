@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Concerns;
+namespace Timatic\Hydration;
 
 use ReflectionClass;
 use Timatic\Hydration\Attributes\Property;
