@@ -8,9 +8,9 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Concerns\HasFilters;
 use Timatic\Dto\UserCustomerHoursAggregate;
 use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Requests\HasFilters;
 
 /**
  * getUserCustomerHoursAggregates

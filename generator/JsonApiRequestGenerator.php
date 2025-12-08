@@ -13,10 +13,10 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Concerns\HasFilters;
 use Timatic\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Hydration\Model;
+use Timatic\Requests\HasFilters;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
