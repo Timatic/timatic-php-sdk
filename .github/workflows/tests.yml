@@ -46,4 +46,10 @@ jobs:
           composer update --prefer-dist --no-interaction
 
       - name: Run Pest tests
-        run: ./vendor/bin/pest
+        run: ./vendor/bin/pest --log-junit junit.xml
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
