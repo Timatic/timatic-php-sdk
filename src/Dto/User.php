@@ -14,4 +14,13 @@ class User extends Model
 
     #[Property]
     public ?string $email;
+
+    #[Property]
+    public ?string $givenName;
+
+    #[Property]
+    public ?string $familyName;
+
+    #[Property]
+    public ?string $teamId;
 }
