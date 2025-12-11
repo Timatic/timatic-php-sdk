@@ -2,24 +2,21 @@
 
 // auto-generated
 
-namespace Timatic\Requests\UserCustomerHoursAggregate;
+namespace Timatic\Requests\Team;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\UserCustomerHoursAggregate;
+use Timatic\Dto\Team;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\HasFilters;
 
 /**
- * getUserCustomerHoursAggregates
+ * getTeams
  */
-class GetUserCustomerHoursAggregatesRequest extends Request implements Paginatable
+class GetTeamsCollectionRequest extends Request implements Paginatable
 {
-    use HasFilters;
-
-    protected $model = UserCustomerHoursAggregate::class;
+    protected $model = Team::class;
 
     protected Method $method = Method::GET;
 
@@ -34,7 +31,7 @@ class GetUserCustomerHoursAggregatesRequest extends Request implements Paginatab
 
     public function resolveEndpoint(): string
     {
-        return '/user-customer-hours-aggregates';
+        return '/teams';
     }
 
     public function __construct() {}

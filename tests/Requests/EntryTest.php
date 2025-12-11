@@ -7,7 +7,7 @@ use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\Entry\DeleteEntryRequest;
-use Timatic\Requests\Entry\GetEntriesRequest;
+use Timatic\Requests\Entry\GetEntriesCollectionRequest;
 use Timatic\Requests\Entry\GetEntryRequest;
 use Timatic\Requests\Entry\PatchEntryRequest;
 use Timatic\Requests\Entry\PostEntriesRequest;
@@ -16,9 +16,9 @@ beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getEntries method in the Entry resource', function () {
+it('calls the getEntriesCollection method in the Entry resource', function () {
     Saloon::fake([
-        GetEntriesRequest::class => MockResponse::make([
+        GetEntriesCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'entries',
@@ -86,14 +86,14 @@ it('calls the getEntries method in the Entry resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetEntriesRequest(include: 'test string'))
+    $request = (new GetEntriesCollectionRequest(include: 'test string'))
         ->filter('userId', 'user_id-123')
         ->filter('budgetId', 'budget_id-123')
         ->filter('startedAt', '2025-01-15T10:30:00Z');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetEntriesRequest::class);
+    Saloon::assertSent(GetEntriesCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {

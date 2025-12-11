@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\Team\DeleteTeamRequest;
 use Timatic\Requests\Team\GetTeamRequest;
-use Timatic\Requests\Team\GetTeamsRequest;
+use Timatic\Requests\Team\GetTeamsCollectionRequest;
 use Timatic\Requests\Team\PatchTeamRequest;
 use Timatic\Requests\Team\PostTeamsRequest;
 
@@ -15,9 +15,9 @@ beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getTeams method in the Team resource', function () {
+it('calls the getTeamsCollection method in the Team resource', function () {
     Saloon::fake([
-        GetTeamsRequest::class => MockResponse::make([
+        GetTeamsCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'teams',
@@ -39,11 +39,11 @@ it('calls the getTeams method in the Team resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetTeamsRequest);
+    $request = (new GetTeamsCollectionRequest);
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetTeamsRequest::class);
+    Saloon::assertSent(GetTeamsCollectionRequest::class);
 
     expect($response->status())->toBe(200);
 

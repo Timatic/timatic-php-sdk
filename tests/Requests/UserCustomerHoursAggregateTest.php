@@ -5,15 +5,15 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\UserCustomerHoursAggregate\GetUserCustomerHoursAggregatesRequest;
+use Timatic\Requests\UserCustomerHoursAggregate\GetUserCustomerHoursAggregatesCollectionRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggregate resource', function () {
+it('calls the getUserCustomerHoursAggregatesCollection method in the UserCustomerHoursAggregate resource', function () {
     Saloon::fake([
-        GetUserCustomerHoursAggregatesRequest::class => MockResponse::make([
+        GetUserCustomerHoursAggregatesCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'userCustomerHoursAggregates',
@@ -41,14 +41,14 @@ it('calls the getUserCustomerHoursAggregates method in the UserCustomerHoursAggr
         ], 200),
     ]);
 
-    $request = (new GetUserCustomerHoursAggregatesRequest)
+    $request = (new GetUserCustomerHoursAggregatesCollectionRequest)
         ->filter('startedAt', '2025-01-15T10:30:00Z')
         ->filter('endedAt', '2025-01-15T10:30:00Z')
         ->filter('teamId', 'team_id-123');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetUserCustomerHoursAggregatesRequest::class);
+    Saloon::assertSent(GetUserCustomerHoursAggregatesCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {

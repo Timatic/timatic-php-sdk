@@ -4,15 +4,15 @@
 
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\BudgetType\GetBudgetTypesRequest;
+use Timatic\Requests\BudgetType\GetBudgetTypesCollectionRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getBudgetTypes method in the BudgetType resource', function () {
+it('calls the getBudgetTypesCollection method in the BudgetType resource', function () {
     Saloon::fake([
-        GetBudgetTypesRequest::class => MockResponse::make([
+        GetBudgetTypesCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'budgetTypes',
@@ -48,11 +48,11 @@ it('calls the getBudgetTypes method in the BudgetType resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetTypesRequest);
+    $request = (new GetBudgetTypesCollectionRequest);
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetTypesRequest::class);
+    Saloon::assertSent(GetBudgetTypesCollectionRequest::class);
 
     expect($response->status())->toBe(200);
 

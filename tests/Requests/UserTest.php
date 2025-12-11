@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\User\DeleteUserRequest;
 use Timatic\Requests\User\GetUserRequest;
-use Timatic\Requests\User\GetUsersRequest;
+use Timatic\Requests\User\GetUsersCollectionRequest;
 use Timatic\Requests\User\PatchUserRequest;
 use Timatic\Requests\User\PostUsersRequest;
 
@@ -15,9 +15,9 @@ beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getUsers method in the User resource', function () {
+it('calls the getUsersCollection method in the User resource', function () {
     Saloon::fake([
-        GetUsersRequest::class => MockResponse::make([
+        GetUsersCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'users',
@@ -39,12 +39,12 @@ it('calls the getUsers method in the User resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetUsersRequest)
+    $request = (new GetUsersCollectionRequest)
         ->filter('externalId', 'external_id-123');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetUsersRequest::class);
+    Saloon::assertSent(GetUsersCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {

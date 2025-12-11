@@ -15,7 +15,7 @@ use Timatic\Requests\HasFilters;
 /**
  * getTimeSpentTotals
  */
-class GetTimeSpentTotalsRequest extends Request implements Paginatable
+class GetTimeSpentTotalsCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
 

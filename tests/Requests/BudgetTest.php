@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\Budget\DeleteBudgetRequest;
 use Timatic\Requests\Budget\GetBudgetRequest;
-use Timatic\Requests\Budget\GetBudgetsRequest;
+use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
 use Timatic\Requests\Budget\PatchBudgetRequest;
 use Timatic\Requests\Budget\PostBudgetsRequest;
 
@@ -16,9 +16,9 @@ beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getBudgets method in the Budget resource', function () {
+it('calls the getBudgetsCollection method in the Budget resource', function () {
     Saloon::fake([
-        GetBudgetsRequest::class => MockResponse::make([
+        GetBudgetsCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'budgets',
@@ -64,14 +64,14 @@ it('calls the getBudgets method in the Budget resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetsRequest(include: 'test string'))
+    $request = (new GetBudgetsCollectionRequest(include: 'test string'))
         ->filter('customerId', 'customer_id-123')
         ->filter('budgetTypeId', 'budget_type_id-123')
         ->filter('isArchived', true);
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetsRequest::class);
+    Saloon::assertSent(GetBudgetsCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {

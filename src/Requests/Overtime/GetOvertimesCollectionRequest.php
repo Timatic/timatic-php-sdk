@@ -2,21 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\ExportMail;
+namespace Timatic\Requests\Overtime;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\ExportMail;
+use Timatic\Dto\Overtime;
 use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Requests\HasFilters;
 
 /**
- * getBudgetsExportMails
+ * getOvertimes
  */
-class GetBudgetsExportMailsRequest extends Request implements Paginatable
+class GetOvertimesCollectionRequest extends Request implements Paginatable
 {
-    protected $model = ExportMail::class;
+    use HasFilters;
+
+    protected $model = Overtime::class;
 
     protected Method $method = Method::GET;
 
@@ -31,7 +34,7 @@ class GetBudgetsExportMailsRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/budgets/export-mail';
+        return '/overtimes';
     }
 
     public function __construct() {}

@@ -166,10 +166,18 @@ class JsonApiPestTestGenerator extends PestTestGenerator
 
     /**
      * Add "Request" suffix to match JsonApiRequestGenerator behavior
+     * For collection requests, add "Collection" before "Request"
      */
     protected function getRequestClassName(Endpoint $endpoint): string
     {
+        // Use inline collection detection (can't access JsonApiRequestGenerator's method)
+        $isCollection = $endpoint->method->isGet() && empty($endpoint->pathParameters);
+
         $className = NameHelper::requestClassName($endpoint->name ?: NameHelper::pathBasedName($endpoint));
+
+        if ($isCollection) {
+            $className .= 'Collection';
+        }
 
         if (! str_ends_with($className, 'Request')) {
             $className .= 'Request';

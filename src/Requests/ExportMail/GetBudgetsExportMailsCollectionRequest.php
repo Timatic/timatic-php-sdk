@@ -2,21 +2,21 @@
 
 // auto-generated
 
-namespace Timatic\Requests\DailyProgress;
+namespace Timatic\Requests\ExportMail;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\DailyProgress;
+use Timatic\Dto\ExportMail;
 use Timatic\Hydration\Facades\Hydrator;
 
 /**
- * getDailyProgresses
+ * getBudgetsExportMails
  */
-class GetDailyProgressesRequest extends Request implements Paginatable
+class GetBudgetsExportMailsCollectionRequest extends Request implements Paginatable
 {
-    protected $model = DailyProgress::class;
+    protected $model = ExportMail::class;
 
     protected Method $method = Method::GET;
 
@@ -31,7 +31,7 @@ class GetDailyProgressesRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/daily-progress';
+        return '/budgets/export-mail';
     }
 
     public function __construct() {}

@@ -41,10 +41,16 @@ class JsonApiRequestGenerator extends RequestGenerator
 
     /**
      * Hook: Add "Request" suffix to class names
+     * For collection requests, add "Collection" before "Request"
      */
     protected function getRequestClassName(Endpoint $endpoint): string
     {
         $className = parent::getRequestClassName($endpoint);
+
+        // For collection requests, add "Collection" suffix
+        if ($this->isCollectionRequest($endpoint)) {
+            $className .= 'Collection';
+        }
 
         if (! str_ends_with($className, 'Request')) {
             $className .= 'Request';

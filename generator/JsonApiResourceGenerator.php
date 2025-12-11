@@ -23,10 +23,18 @@ class JsonApiResourceGenerator extends ResourceGenerator
 
     /**
      * Hook: Add "Request" suffix to request class names
+     * For collection requests, add "Collection" before "Request"
      */
     protected function getRequestClassName(Endpoint $endpoint): string
     {
+        // Use inline collection detection
+        $isCollection = $endpoint->method->isGet() && empty($endpoint->pathParameters);
+
         $className = parent::getRequestClassName($endpoint);
+
+        if ($isCollection) {
+            $className .= 'Collection';
+        }
 
         if (! str_ends_with($className, 'Request')) {
             $className .= 'Request';

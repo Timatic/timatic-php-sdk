@@ -2,21 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\BudgetType;
+namespace Timatic\Requests\UserCustomerHoursAggregate;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\BudgetType;
+use Timatic\Dto\UserCustomerHoursAggregate;
 use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Requests\HasFilters;
 
 /**
- * getBudgetTypes
+ * getUserCustomerHoursAggregates
  */
-class GetBudgetTypesRequest extends Request implements Paginatable
+class GetUserCustomerHoursAggregatesCollectionRequest extends Request implements Paginatable
 {
-    protected $model = BudgetType::class;
+    use HasFilters;
+
+    protected $model = UserCustomerHoursAggregate::class;
 
     protected Method $method = Method::GET;
 
@@ -31,7 +34,7 @@ class GetBudgetTypesRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/budget-types';
+        return '/user-customer-hours-aggregates';
     }
 
     public function __construct() {}

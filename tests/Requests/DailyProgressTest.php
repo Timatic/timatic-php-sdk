@@ -5,15 +5,15 @@
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\DailyProgress\GetDailyProgressesRequest;
+use Timatic\Requests\DailyProgress\GetDailyProgressesCollectionRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getDailyProgresses method in the DailyProgress resource', function () {
+it('calls the getDailyProgressesCollection method in the DailyProgress resource', function () {
     Saloon::fake([
-        GetDailyProgressesRequest::class => MockResponse::make([
+        GetDailyProgressesCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'dailyProgresses',
@@ -37,11 +37,11 @@ it('calls the getDailyProgresses method in the DailyProgress resource', function
         ], 200),
     ]);
 
-    $request = (new GetDailyProgressesRequest);
+    $request = (new GetDailyProgressesCollectionRequest);
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetDailyProgressesRequest::class);
+    Saloon::assertSent(GetDailyProgressesCollectionRequest::class);
 
     expect($response->status())->toBe(200);
 

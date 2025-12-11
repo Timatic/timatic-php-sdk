@@ -2,24 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\BudgetTimeSpentTotal;
+namespace Timatic\Requests\Entry;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\BudgetTimeSpentTotal;
+use Timatic\Dto\Entry;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Requests\HasFilters;
 
 /**
- * getBudgetTimeSpentTotals
+ * getEntries
  */
-class GetBudgetTimeSpentTotalsRequest extends Request implements Paginatable
+class GetEntriesCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
 
-    protected $model = BudgetTimeSpentTotal::class;
+    protected $model = Entry::class;
 
     protected Method $method = Method::GET;
 
@@ -34,8 +34,15 @@ class GetBudgetTimeSpentTotalsRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/budget-time-spent-totals';
+        return '/entries';
     }
 
-    public function __construct() {}
+    public function __construct(
+        protected ?string $include = null,
+    ) {}
+
+    protected function defaultQuery(): array
+    {
+        return array_filter(['include' => $this->include]);
+    }
 }

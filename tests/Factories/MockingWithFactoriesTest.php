@@ -3,7 +3,7 @@
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Timatic\Dto\Budget;
-use Timatic\Requests\Budget\GetBudgetsRequest;
+use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
 use Timatic\Requests\Budget\PostBudgetsRequest;
 use Timatic\TimaticConnector;
 
@@ -14,7 +14,7 @@ test('it can mock a single budget response using factory', function () {
     ])->make();
 
     $mockClient = new MockClient([
-        GetBudgetsRequest::class => MockResponse::make([
+        GetBudgetsCollectionRequest::class => MockResponse::make([
             'data' => [$budget->toJsonApi()],
         ], 200),
     ]);
@@ -22,7 +22,7 @@ test('it can mock a single budget response using factory', function () {
     $connector = new TimaticConnector;
     $connector->withMockClient($mockClient);
 
-    $response = $connector->send(new GetBudgetsRequest);
+    $response = $connector->send(new GetBudgetsCollectionRequest);
     $dtos = $response->dto();
 
     expect($dtos)->toBeInstanceOf(\Illuminate\Support\Collection::class);
@@ -37,7 +37,7 @@ test('it can mock a collection response using factories', function () {
     $budgets = Budget::factory()->withId()->count(3)->make();
 
     $mockClient = new MockClient([
-        GetBudgetsRequest::class => MockResponse::make([
+        GetBudgetsCollectionRequest::class => MockResponse::make([
             'data' => $budgets->map(fn ($budget) => $budget->toJsonApi())->toArray(),
         ], 200),
     ]);
@@ -45,7 +45,7 @@ test('it can mock a collection response using factories', function () {
     $connector = new TimaticConnector;
     $connector->withMockClient($mockClient);
 
-    $response = $connector->send(new GetBudgetsRequest);
+    $response = $connector->send(new GetBudgetsCollectionRequest);
     $dtos = $response->dto();
 
     expect($dtos)->toHaveCount(3);

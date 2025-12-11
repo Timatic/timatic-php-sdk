@@ -6,15 +6,15 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\TimeSpentTotal\GetTimeSpentTotalsRequest;
+use Timatic\Requests\TimeSpentTotal\GetTimeSpentTotalsCollectionRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', function () {
+it('calls the getTimeSpentTotalsCollection method in the TimeSpentTotal resource', function () {
     Saloon::fake([
-        GetTimeSpentTotalsRequest::class => MockResponse::make([
+        GetTimeSpentTotalsCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'timeSpentTotals',
@@ -44,13 +44,13 @@ it('calls the getTimeSpentTotals method in the TimeSpentTotal resource', functio
         ], 200),
     ]);
 
-    $request = (new GetTimeSpentTotalsRequest)
+    $request = (new GetTimeSpentTotalsCollectionRequest)
         ->filter('teamId', 'team_id-123')
         ->filter('userId', 'user_id-123');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetTimeSpentTotalsRequest::class);
+    Saloon::assertSent(GetTimeSpentTotalsCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {

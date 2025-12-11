@@ -2,24 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\Overtime;
+namespace Timatic\Requests\Budget;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\Overtime;
+use Timatic\Dto\Budget;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Requests\HasFilters;
 
 /**
- * getOvertimes
+ * getBudgets
  */
-class GetOvertimesRequest extends Request implements Paginatable
+class GetBudgetsCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
 
-    protected $model = Overtime::class;
+    protected $model = Budget::class;
 
     protected Method $method = Method::GET;
 
@@ -34,8 +34,15 @@ class GetOvertimesRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/overtimes';
+        return '/budgets';
     }
 
-    public function __construct() {}
+    public function __construct(
+        protected ?string $include = null,
+    ) {}
+
+    protected function defaultQuery(): array
+    {
+        return array_filter(['include' => $this->include]);
+    }
 }

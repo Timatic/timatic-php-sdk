@@ -2,22 +2,22 @@
 
 // auto-generated
 
-namespace Timatic\Requests\Change;
+namespace Timatic\Requests\Me;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 
 /**
- * getChanges
+ * getMes
  */
-class GetChangesRequest extends Request implements Paginatable
+class GetMesCollectionRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 
     public function resolveEndpoint(): string
     {
-        return '/changes';
+        return '/me';
     }
 
     public function __construct() {}

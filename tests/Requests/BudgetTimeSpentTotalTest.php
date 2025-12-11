@@ -6,15 +6,15 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\BudgetTimeSpentTotal\GetBudgetTimeSpentTotalsRequest;
+use Timatic\Requests\BudgetTimeSpentTotal\GetBudgetTimeSpentTotalsCollectionRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getBudgetTimeSpentTotals method in the BudgetTimeSpentTotal resource', function () {
+it('calls the getBudgetTimeSpentTotalsCollection method in the BudgetTimeSpentTotal resource', function () {
     Saloon::fake([
-        GetBudgetTimeSpentTotalsRequest::class => MockResponse::make([
+        GetBudgetTimeSpentTotalsCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'budgetTimeSpentTotals',
@@ -42,12 +42,12 @@ it('calls the getBudgetTimeSpentTotals method in the BudgetTimeSpentTotal resour
         ], 200),
     ]);
 
-    $request = (new GetBudgetTimeSpentTotalsRequest)
+    $request = (new GetBudgetTimeSpentTotalsCollectionRequest)
         ->filter('budgetId', 'budget_id-123');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetTimeSpentTotalsRequest::class);
+    Saloon::assertSent(GetBudgetTimeSpentTotalsCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {
