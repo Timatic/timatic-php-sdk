@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\Customer\DeleteCustomerRequest;
 use Timatic\Requests\Customer\GetCustomerRequest;
-use Timatic\Requests\Customer\GetCustomersRequest;
+use Timatic\Requests\Customer\GetCustomersCollectionRequest;
 use Timatic\Requests\Customer\PatchCustomerRequest;
 use Timatic\Requests\Customer\PostCustomersRequest;
 
@@ -15,9 +15,9 @@ beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getCustomers method in the Customer resource', function () {
+it('calls the getCustomersCollection method in the Customer resource', function () {
     Saloon::fake([
-        GetCustomersRequest::class => MockResponse::make([
+        GetCustomersCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'customers',
@@ -43,12 +43,12 @@ it('calls the getCustomers method in the Customer resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetCustomersRequest)
+    $request = (new GetCustomersCollectionRequest)
         ->filter('externalId', 'external_id-123');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetCustomersRequest::class);
+    Saloon::assertSent(GetCustomersCollectionRequest::class);
 
     // Verify filter query parameters are present
     Saloon::assertSent(function (Request $request) {

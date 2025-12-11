@@ -2,24 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\User;
+namespace Timatic\Requests\BudgetTimeSpentTotal;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\User;
+use Timatic\Dto\BudgetTimeSpentTotal;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Requests\HasFilters;
 
 /**
- * getUsers
+ * getBudgetTimeSpentTotals
  */
-class GetUsersRequest extends Request implements Paginatable
+class GetBudgetTimeSpentTotalsCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
 
-    protected $model = User::class;
+    protected $model = BudgetTimeSpentTotal::class;
 
     protected Method $method = Method::GET;
 
@@ -34,7 +34,7 @@ class GetUsersRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/users';
+        return '/budget-time-spent-totals';
     }
 
     public function __construct() {}

@@ -2,24 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\Budget;
+namespace Timatic\Requests\Customer;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\Budget;
+use Timatic\Dto\Customer;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Requests\HasFilters;
 
 /**
- * getBudgets
+ * getCustomers
  */
-class GetBudgetsRequest extends Request implements Paginatable
+class GetCustomersCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
 
-    protected $model = Budget::class;
+    protected $model = Customer::class;
 
     protected Method $method = Method::GET;
 
@@ -34,15 +34,8 @@ class GetBudgetsRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/budgets';
+        return '/customers';
     }
 
-    public function __construct(
-        protected ?string $include = null,
-    ) {}
-
-    protected function defaultQuery(): array
-    {
-        return array_filter(['include' => $this->include]);
-    }
+    public function __construct() {}
 }

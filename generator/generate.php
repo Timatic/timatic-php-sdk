@@ -55,7 +55,7 @@ foreach ($foldersToClean as $folder) {
     );
 
     foreach ($files as $fileinfo) {
-        if (! $fileinfo->isFile() || $fileinfo->getExtension() === 'php') {
+        if (! $fileinfo->isFile() || $fileinfo->getExtension() !== 'php') {
             continue;
         }
 

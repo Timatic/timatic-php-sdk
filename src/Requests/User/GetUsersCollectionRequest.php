@@ -2,24 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\Customer;
+namespace Timatic\Requests\User;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\Customer;
+use Timatic\Dto\User;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Requests\HasFilters;
 
 /**
- * getCustomers
+ * getUsers
  */
-class GetCustomersRequest extends Request implements Paginatable
+class GetUsersCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
 
-    protected $model = Customer::class;
+    protected $model = User::class;
 
     protected Method $method = Method::GET;
 
@@ -34,7 +34,7 @@ class GetCustomersRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/customers';
+        return '/users';
     }
 
     public function __construct() {}

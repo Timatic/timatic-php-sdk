@@ -2,24 +2,21 @@
 
 // auto-generated
 
-namespace Timatic\Requests\EntrySuggestion;
+namespace Timatic\Requests\BudgetType;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\EntrySuggestion;
+use Timatic\Dto\BudgetType;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\HasFilters;
 
 /**
- * getEntrySuggestions
+ * getBudgetTypes
  */
-class GetEntrySuggestionsRequest extends Request implements Paginatable
+class GetBudgetTypesCollectionRequest extends Request implements Paginatable
 {
-    use HasFilters;
-
-    protected $model = EntrySuggestion::class;
+    protected $model = BudgetType::class;
 
     protected Method $method = Method::GET;
 
@@ -34,7 +31,7 @@ class GetEntrySuggestionsRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/entry-suggestions';
+        return '/budget-types';
     }
 
     public function __construct() {}

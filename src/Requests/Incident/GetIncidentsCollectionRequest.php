@@ -11,7 +11,7 @@ use Saloon\PaginationPlugin\Contracts\Paginatable;
 /**
  * getIncidents
  */
-class GetIncidentsRequest extends Request implements Paginatable
+class GetIncidentsCollectionRequest extends Request implements Paginatable
 {
     protected Method $method = Method::GET;
 

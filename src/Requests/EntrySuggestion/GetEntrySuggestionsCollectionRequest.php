@@ -2,21 +2,24 @@
 
 // auto-generated
 
-namespace Timatic\Requests\Team;
+namespace Timatic\Requests\EntrySuggestion;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\Team;
+use Timatic\Dto\EntrySuggestion;
 use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Requests\HasFilters;
 
 /**
- * getTeams
+ * getEntrySuggestions
  */
-class GetTeamsRequest extends Request implements Paginatable
+class GetEntrySuggestionsCollectionRequest extends Request implements Paginatable
 {
-    protected $model = Team::class;
+    use HasFilters;
+
+    protected $model = EntrySuggestion::class;
 
     protected Method $method = Method::GET;
 
@@ -31,7 +34,7 @@ class GetTeamsRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/teams';
+        return '/entry-suggestions';
     }
 
     public function __construct() {}

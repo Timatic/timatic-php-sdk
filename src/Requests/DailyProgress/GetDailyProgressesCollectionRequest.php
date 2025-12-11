@@ -2,24 +2,21 @@
 
 // auto-generated
 
-namespace Timatic\Requests\Entry;
+namespace Timatic\Requests\DailyProgress;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\Entry;
+use Timatic\Dto\DailyProgress;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\HasFilters;
 
 /**
- * getEntries
+ * getDailyProgresses
  */
-class GetEntriesRequest extends Request implements Paginatable
+class GetDailyProgressesCollectionRequest extends Request implements Paginatable
 {
-    use HasFilters;
-
-    protected $model = Entry::class;
+    protected $model = DailyProgress::class;
 
     protected Method $method = Method::GET;
 
@@ -34,15 +31,8 @@ class GetEntriesRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/entries';
+        return '/daily-progress';
     }
 
-    public function __construct(
-        protected ?string $include = null,
-    ) {}
-
-    protected function defaultQuery(): array
-    {
-        return array_filter(['include' => $this->include]);
-    }
+    public function __construct() {}
 }
