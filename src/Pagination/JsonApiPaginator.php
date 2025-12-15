@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace Timatic\Pagination;
 
+use Illuminate\Support\Collection;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Paginator;
 
 class JsonApiPaginator extends Paginator
 {
+    public function dtoCollection(): Collection
+    {
+        return parent::collect()->collect();
+    }
+
     protected function isLastPage(Response $response): bool
     {
         return $response->json('links.next') === null;
@@ -17,8 +23,7 @@ class JsonApiPaginator extends Paginator
 
     protected function getPageItems(Response $response, Request $request): array
     {
-        // Return the 'data' array from JSON:API response
-        return $response->json('data', []);
+        return $response->dto()->toArray();
     }
 
     protected function applyPagination(Request $request): Request
