@@ -42,8 +42,12 @@ TIMATIC_API_TOKEN=your-api-token-here
 The SDK connector is automatically registered in Laravel's service container, making it easy to inject into your controllers, commands, and other classes:
 
 ```php
+use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
+use Timatic\Requests\Budget\GetBudgetRequest;
+use Timatic\Requests\Budget\PostBudgetsRequest;
+use Timatic\Requests\BudgetType\GetBudgetTypesCollectionRequest;
+
 use Timatic\TimaticConnector;
-use Timatic\Requests\BudgetType\GetBudgetTypeCollection;
 
 class BudgetController extends Controller
 {
@@ -53,15 +57,20 @@ class BudgetController extends Controller
 
     public function index()
     {
-        // Using resource methods
-        $budgets = $this->timatic->budget()->getBudgets()->dto();
-
-        // Using direct send() with dtoOrFail() for automatic DTO conversion
+        // fetch one or more items, limited by the default page size from the api
         $budgetTypes = $this->timatic
-            ->send(new GetBudgetTypeCollection())
-            ->dtoOrFail();
+            ->send(new GetBudgetTypesCollectionRequest())
+            ->dto();
+            
+        $defaultBudget = $this->timatic->send(
+            new \Timatic\Requests\Budget\GetBudgetRequest(id: '1337')
+        )->dtoOrFail();
+    
+        // fetch all DTO's
+        $budgets = $this->timatic->paginate(new GetBudgetsCollectionRequest())
+            ->dtoCollection();
 
-        return view('budgets.index', compact('budgets', 'budgetTypes'));
+        return view('budgets.index', compact('budgets', 'budgetTypes', 'defaultBudget'));
     }
 
     public function store(Request $request)
@@ -72,7 +81,7 @@ class BudgetController extends Controller
         ]);
 
         $created = $this->timatic
-            ->send(new \Timatic\Requests\Budget\PostBudgets($budget))
+            ->send(new PostBudgetsRequest($budget))
             ->dtoOrFail();
 
         return redirect()->route('budgets.show', $created->id);
@@ -83,14 +92,17 @@ class BudgetController extends Controller
 **In Console Commands:**
 
 ```php
+use \Timatic\Requests\Budget\GetBudgetsCollectionRequest;
 use Timatic\TimaticConnector;
 
 class SyncBudgetsCommand extends Command
 {
     public function handle(TimaticConnector $timatic): int
     {
-        $budgets = $timatic->budget()->getBudgets()->dto();
-
+        $budgets = $timatic->paginate(
+            new GetBudgetsCollectionRequest()
+        )->dtoCollection()
+        
         foreach ($budgets as $budget) {
             // Process budgets
         }
@@ -111,6 +123,7 @@ use Timatic\TimaticConnector;
 use Timatic\Dto\Budget;
 use Timatic\Dto\BudgetType;
 use Timatic\Requests\Budget\GetBudgetsRequest;
+use Timatic\Requests\Budget\PostBudgetsRequest;
 use Timatic\Requests\BudgetType\GetBudgetTypesRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
@@ -121,7 +134,7 @@ test('it displays budgets and budget types', function () {
     $budgetType = BudgetType::factory()->state(['id' => '1'])->make();
 
     // Create mock responses using factory-generated data
-    $mockClient = new MockClient([
+    $mockClient = MockClient::global([
         GetBudgetsRequest::class => MockResponse::make([
             'data' => [$budget->toJsonApi()],
         ], 200),
@@ -129,11 +142,6 @@ test('it displays budgets and budget types', function () {
             'data' => [$budgetType->toJsonApi()],
         ], 200),
     ]);
-
-    // Bind mock to container
-    $connector = new TimaticConnector();
-    $connector->withMockClient($mockClient);
-    $this->app->instance(TimaticConnector::class, $connector);
 
     // Make request
     $response = $this->get(route('budgets.index'));
@@ -152,15 +160,11 @@ test('it creates a new budget', function () {
         'totalPrice' => '5000.00',
     ])->make();
 
-    $mockClient = new MockClient([
+    $mockClient = MockClient::global([
         PostBudgetsRequest::class => MockResponse::make([
             'data' => $budget->toJsonApi(),
         ], 201),
     ]);
-
-    $connector = new TimaticConnector();
-    $connector->withMockClient($mockClient);
-    $this->app->instance(TimaticConnector::class, $connector);
 
     $response = $this->post(route('budgets.store'), [
         'title' => 'New Budget',
@@ -184,35 +188,22 @@ test('it sends a POST request to create a budget using the SDK', function () {
         'customerId' => 'customer-123',
     ])->make();
 
-    $mockClient = new MockClient([
+    $mockClient = MockClient::global([
         PostBudgetsRequest::class => MockResponse::make([
             'data' => $createdBudget->toJsonApi(),
         ], 201),
     ]);
 
-    $connector = new TimaticConnector();
-    $connector->withMockClient($mockClient);
-
-    $response = $connector->send(new PostBudgetsRequest($budgetToCreate));
+    artisan('sync:budgets')->assertOk();
 
     // Assert the request body was sent correctly
-    $mockClient->assertSent(function (\Saloon\Http\Request $request) {
+    $mockClient->assertSent(function (PostBudgetsRequest $request) {
         $body = $request->body()->all();
 
         return $body['data']['attributes']['title'] === 'New Budget'
             && $body['data']['attributes']['totalPrice'] === '5000.00'
             && $body['data']['attributes']['customerId'] === 'customer-123';
     });
-
-    // Assert response
-    expect($response->status())->toBe(201);
-
-    $dto = $response->dto();
-    expect($dto)
-        ->toBeInstanceOf(Budget::class)
-        ->id->toBe('created-456')
-        ->title->toBe('New Budget')
-        ->totalPrice->toBe('5000.00');
 });
 ```
 
@@ -221,7 +212,7 @@ test('it sends a POST request to create a budget using the SDK', function () {
 Every DTO in the SDK has a corresponding factory class with the following methods:
 
 ```php
-// Create a single model with random data
+// Create a single model with random data, without an ID
 $budget = Budget::factory()->make();
 
 // Create multiple models with unique UUID IDs
@@ -267,7 +258,7 @@ class BudgetController extends Controller
         }
 
         // Or collect all items at once
-        $allBudgets = $paginator->collect();
+        $allBudgets = $paginator->dtoCollection();
     }
 }
 ```
@@ -282,7 +273,7 @@ The paginator:
 All responses are instances of `TimaticResponse` which extends Saloon's Response with JSON:API convenience methods:
 
 ```php
-$response = $timatic->budget()->getBudgets();
+$response = $timatic->send(new GetBudgetsCollectionRequest());
 
 // Get the first item from a collection
 $firstBudget = $response->firstItem();
