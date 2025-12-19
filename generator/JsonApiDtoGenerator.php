@@ -10,19 +10,27 @@ use Crescat\SaloonSdkGenerator\Data\Generator\ApiSpecification;
 use Crescat\SaloonSdkGenerator\Generator;
 use Crescat\SaloonSdkGenerator\Helpers\NameHelper;
 use Crescat\SaloonSdkGenerator\Helpers\Utils;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpFile;
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
 class JsonApiDtoGenerator extends Generator
 {
     protected array $generated = [];
 
+    protected ApiSpecification $specification;
+
     public function generate(ApiSpecification $specification): PhpFile|array
     {
+        $this->specification = $specification;
+
         if ($specification->components) {
             foreach ($specification->components->schemas as $className => $schema) {
                 $this->generateModelClass(NameHelper::safeClassName($className), $schema);
@@ -54,6 +62,9 @@ class JsonApiDtoGenerator extends Generator
         foreach ($properties as $propertyName => $propertySpec) {
             $this->addPropertyToClass($classType, $namespace, $propertyName, $propertySpec);
         }
+
+        // Add relationship properties
+        $this->addRelationshipProperties($classType, $namespace, $schema);
 
         // Add imports
         $namespace->addUse(Model::class);
@@ -176,5 +187,101 @@ class JsonApiDtoGenerator extends Generator
             'array' => 'array',
             'null' => 'null',
         };
+    }
+
+    /**
+     * Add relationship properties to the DTO class
+     */
+    protected function addRelationshipProperties(ClassType $classType, $namespace, Schema $schema): void
+    {
+        // Check if schema has relationships
+        if (! isset($schema->properties['relationships'])) {
+            return;
+        }
+
+        $relationships = $schema->properties['relationships'];
+
+        if (! isset($relationships->properties) || ! is_array($relationships->properties)) {
+            return;
+        }
+
+        // Import required classes
+        $namespace->addUse(Relationship::class);
+        $namespace->addUse(RelationType::class);
+        $namespace->addUse(Collection::class);
+
+        foreach ($relationships->properties as $relationName => $relationSpec) {
+            $relationType = $this->detectRelationType($relationName, $relationSpec);
+            $relatedModel = $this->detectRelatedModel($relationName);
+
+            if (! $relatedModel) {
+                // Skip if we can't determine the related model
+                echo "  ⚠️  Skipping relationship '{$relationName}' - model not found\n";
+
+                continue;
+            }
+
+            // Check if related model schema exists
+            if (! isset($this->specification->components->schemas[$relatedModel])) {
+                echo "  ⚠️  Skipping relationship '{$relationName}' - model '{$relatedModel}' not found in schemas\n";
+
+                continue;
+            }
+
+            // Import related model
+            $namespace->addUse("Timatic\\Dto\\{$relatedModel}");
+
+            // Create property
+            $property = $classType->addProperty($relationName)
+                ->setPublic()
+                ->setNullable(true)
+                ->setValue(null); // Add default value
+
+            // Set type based on relationship type
+            // Use FQN for Collection and related model to avoid backslash prefix
+            if ($relationType === 'Many') {
+                $property->setType('null|\\Illuminate\\Support\\Collection');
+                $property->addComment("@var Collection<int, {$relatedModel}>|null");
+            } else {
+                $property->setType("null|\\Timatic\\Dto\\{$relatedModel}");
+            }
+
+            // Add Relationship attribute (use full class name for attribute)
+            $property->addAttribute(Relationship::class, [
+                new Literal("{$relatedModel}::class"),
+                new Literal("RelationType::{$relationType}"),
+            ]);
+        }
+    }
+
+    /**
+     * Detect relationship type (One or Many) from relationship name
+     */
+    protected function detectRelationType(string $relationName, $relationSpec): string
+    {
+        // Plural relationship names are typically "to-many"
+        if (Str::plural($relationName) === $relationName) {
+            return 'Many';
+        }
+
+        // Singular names are "to-one"
+        return 'One';
+    }
+
+    /**
+     * Detect related model class name from relationship name
+     */
+    protected function detectRelatedModel(string $relationName): ?string
+    {
+        // Convert relationship name to model name
+        // Examples:
+        //   budgetType -> BudgetType
+        //   entries -> Entry
+        //   currentPeriod -> Period
+
+        $singular = Str::singular($relationName);
+        $modelName = NameHelper::dtoClassName($singular);
+
+        return $modelName;
     }
 }

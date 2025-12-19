@@ -6,7 +6,9 @@ namespace Timatic\Dto;
 
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
 class Approve extends Model
 {
@@ -45,4 +47,7 @@ class Approve extends Model
     #[Property]
     #[DateTime]
     public ?\Carbon\Carbon $updatedAt;
+
+    #[Relationship(Entry::class, RelationType::One)]
+    public ?Entry $entry = null;
 }

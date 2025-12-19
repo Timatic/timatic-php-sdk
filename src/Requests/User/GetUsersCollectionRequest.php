@@ -10,7 +10,8 @@ use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\User;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\HasFilters;
+use Timatic\Requests\Concerns\HasFilters;
+use Timatic\Requests\Concerns\HasIncludes;
 
 /**
  * getUsers
@@ -18,6 +19,7 @@ use Timatic\Requests\HasFilters;
 class GetUsersCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
+    use HasIncludes;
 
     protected $model = User::class;
 

@@ -10,7 +10,7 @@ use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\TimeSpentTotal;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\HasFilters;
+use Timatic\Requests\Concerns\HasFilters;
 
 /**
  * getTimeSpentTotals

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Requests;
+namespace Timatic\Requests\Concerns;
 
 use Timatic\Filtering\Operator;
 

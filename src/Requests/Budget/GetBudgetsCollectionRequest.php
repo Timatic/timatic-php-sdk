@@ -10,7 +10,8 @@ use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\Budget;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\HasFilters;
+use Timatic\Requests\Concerns\HasFilters;
+use Timatic\Requests\Concerns\HasIncludes;
 
 /**
  * getBudgets
@@ -18,10 +19,59 @@ use Timatic\Requests\HasFilters;
 class GetBudgetsCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
+    use HasIncludes;
 
     protected $model = Budget::class;
 
     protected Method $method = Method::GET;
+
+    /**
+     * Include the entries relationship in the response
+     */
+    public function includeEntries(): static
+    {
+        return $this->addInclude('entries');
+    }
+
+    /**
+     * Include the budgetType relationship in the response
+     */
+    public function includeBudgetType(): static
+    {
+        return $this->addInclude('budgetType');
+    }
+
+    /**
+     * Include the currentPeriod relationship in the response
+     */
+    public function includeCurrentPeriod(): static
+    {
+        return $this->addInclude('currentPeriod');
+    }
+
+    /**
+     * Include the lastPeriod relationship in the response
+     */
+    public function includeLastPeriod(): static
+    {
+        return $this->addInclude('lastPeriod');
+    }
+
+    /**
+     * Include the customer relationship in the response
+     */
+    public function includeCustomer(): static
+    {
+        return $this->addInclude('customer');
+    }
+
+    /**
+     * Include the allowedUsers relationship in the response
+     */
+    public function includeAllowedUsers(): static
+    {
+        return $this->addInclude('allowedUsers');
+    }
 
     public function createDtoFromResponse(Response $response): mixed
     {
@@ -37,12 +87,5 @@ class GetBudgetsCollectionRequest extends Request implements Paginatable
         return '/budgets';
     }
 
-    public function __construct(
-        protected ?string $include = null,
-    ) {}
-
-    protected function defaultQuery(): array
-    {
-        return array_filter(['include' => $this->include]);
-    }
+    public function __construct() {}
 }

@@ -95,6 +95,20 @@ class JsonApiFactoryGenerator extends Generator
                 continue;
             }
 
+            // Skip relationship properties (they have Relationship attribute)
+            $hasRelationshipAttribute = false;
+            foreach ($property->getAttributes() as $attribute) {
+                $attrName = $attribute->getName();
+                if ($attrName === 'Relationship' || str_ends_with($attrName, '\\Relationship')) {
+                    $hasRelationshipAttribute = true;
+                    break;
+                }
+            }
+
+            if ($hasRelationshipAttribute) {
+                continue;
+            }
+
             // Check if property has DateTime attribute
             $isDateTime = ! empty($property->getAttributes(DateTime::class));
 

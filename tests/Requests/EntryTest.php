@@ -86,7 +86,7 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetEntriesCollectionRequest(include: 'test string'))
+    $request = (new GetEntriesCollectionRequest)
         ->filter('userId', 'user_id-123')
         ->filter('budgetId', 'budget_id-123')
         ->filter('startedAt', '2025-01-15T10:30:00Z');

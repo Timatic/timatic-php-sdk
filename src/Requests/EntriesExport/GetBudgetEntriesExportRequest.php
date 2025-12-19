@@ -21,11 +21,5 @@ class GetBudgetEntriesExportRequest extends Request
 
     public function __construct(
         protected string $budgetId,
-        protected ?string $include = null,
     ) {}
-
-    protected function defaultQuery(): array
-    {
-        return array_filter(['include' => $this->include]);
-    }
 }

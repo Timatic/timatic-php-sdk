@@ -167,7 +167,9 @@ class Hydrator
                 $relationItem = $relationship['data'];
                 $includedItem = $included[$relationItem['id'].'-'.$relationItem['type']] ?? null;
 
-                $model->{$relationshipName} = $this->hydrate($relationModel, $includedItem, $included);
+                if (! is_null($includedItem)) {
+                    $model->{$relationshipName} = $this->hydrate($relationModel, $includedItem, $included);
+                }
             }
         }
     }
