@@ -3,7 +3,6 @@
 // auto-generated
 
 use Saloon\Http\Faking\MockResponse;
-use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\EntrySuggestion\DeleteEntrySuggestionRequest;
 use Timatic\Requests\EntrySuggestion\GetEntrySuggestionRequest;
@@ -54,12 +53,8 @@ it('calls the getEntrySuggestionsCollection method in the EntrySuggestion resour
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetEntrySuggestionsCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetEntrySuggestionsCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[date]', 'test value');
 
         return true;

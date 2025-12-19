@@ -50,12 +50,8 @@ it('calls the getUsersCollection method in the User resource', function () {
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetUsersCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetUsersCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[externalId]', 'external_id-123');
 
         return true;

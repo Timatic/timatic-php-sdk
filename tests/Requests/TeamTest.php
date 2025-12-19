@@ -43,7 +43,11 @@ it('calls the getTeamsCollection method in the Team resource', function () {
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetTeamsCollectionRequest::class);
+    Saloon::assertSent(function (GetTeamsCollectionRequest $request) {
+        $query = $request->query()->all();
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 

@@ -4,7 +4,6 @@
 
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
-use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\BudgetTimeSpentTotal\GetBudgetTimeSpentTotalsCollectionRequest;
 
@@ -47,12 +46,8 @@ it('calls the getBudgetTimeSpentTotalsCollection method in the BudgetTimeSpentTo
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetTimeSpentTotalsCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetBudgetTimeSpentTotalsCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[budgetId]', 'budget_id-123');
 
         return true;

@@ -60,9 +60,33 @@ class CollectionRequestTestGenerator
         // Only include filter assertions block if there are filters
         if (! empty($filterData['assertions'])) {
             $filterAssertionBlock = $this->generateFilterAssertionBlock($filterData['assertions']);
-            $functionStub = str_replace('{{ filterAssertionBlock }}', $filterAssertionBlock, $functionStub);
+            $functionStub = str_replace('{{ filterAssertionBlock }}', $filterAssertionBlock."\n\t\t", $functionStub);
         } else {
             $functionStub = str_replace('{{ filterAssertionBlock }}', '', $functionStub);
+        }
+
+        // Add include chain and assertions
+        $includeData = $this->generateIncludeChainWithData($endpoint);
+
+        // Add newline before include chain if there are filters
+        if (! empty($filterData['chain']) && ! empty($includeData['chain'])) {
+            $functionStub = str_replace('{{ includeChain }}', "\n\t\t".$includeData['chain'], $functionStub);
+        } else {
+            $functionStub = str_replace('{{ includeChain }}', $includeData['chain'], $functionStub);
+        }
+
+        // Only include assertion if there are includes
+        if (! empty($includeData['assertion'])) {
+            $functionStub = str_replace('{{ includeAssertion }}', $includeData['assertion'], $functionStub);
+        } else {
+            $functionStub = str_replace('{{ includeAssertion }}', '', $functionStub);
+        }
+
+        // Add relationship assertions if there are includes
+        if (! empty($includeData['relationshipAssertions'])) {
+            $functionStub = str_replace('{{ relationshipAssertions }}', "\n\t\t".$includeData['relationshipAssertions'], $functionStub);
+        } else {
+            $functionStub = str_replace('{{ relationshipAssertions }}', '', $functionStub);
         }
 
         // Add non-filter query parameters (like 'include')
@@ -110,8 +134,12 @@ class CollectionRequestTestGenerator
 
         $resourceType = $this->getResourceTypeFromEndpoint($endpoint);
 
-        // Generate 2-3 items for collections
-        return [
+        // Get relationships for this endpoint
+        $relationships = $this->getRelationshipsFromSchema($dtoClassName);
+        $includeData = $this->generateIncludeChainWithData($endpoint);
+        $hasIncludes = ! empty($includeData['chain']);
+
+        $data = [
             'data' => [
                 [
                     'type' => $resourceType,
@@ -125,6 +153,56 @@ class CollectionRequestTestGenerator
                 ],
             ],
         ];
+
+        // Add relationships and included data if this endpoint has includes
+        if ($hasIncludes && ! empty($relationships)) {
+            $included = [];
+            $relationshipsData = [];
+
+            foreach ($relationships as $index => $relationName) {
+                $relatedModel = $this->detectRelatedModel($relationName);
+
+                // Skip if the related model doesn't exist in the schema
+                if (! isset($this->specification->components->schemas[$relatedModel])) {
+                    continue;
+                }
+
+                $relationType = strtolower(\Illuminate\Support\Str::plural($relatedModel));
+
+                // Check if this is a "Many" relationship
+                $isMany = \Illuminate\Support\Str::plural($relationName) === $relationName;
+
+                if ($isMany) {
+                    // For "Many" relationships, data should be an array of objects
+                    $relationshipsData[$relationName] = [
+                        'data' => [
+                            ['type' => $relationType, 'id' => "related-{$relationName}-1"],
+                        ],
+                    ];
+                } else {
+                    // For "One" relationships, data is a single object
+                    $relationshipsData[$relationName] = [
+                        'data' => ['type' => $relationType, 'id' => "related-{$relationName}-1"],
+                    ];
+                }
+
+                // Add to included array with minimal attributes
+                $included[] = [
+                    'type' => $relationType,
+                    'id' => "related-{$relationName}-1",
+                    'attributes' => [],
+                ];
+            }
+
+            // Add relationships to both data items
+            $data['data'][0]['relationships'] = $relationshipsData;
+            $data['data'][1]['relationships'] = $relationshipsData;
+
+            // Add included array
+            $data['included'] = $included;
+        }
+
+        return $data;
     }
 
     /**
@@ -132,9 +210,8 @@ class CollectionRequestTestGenerator
      */
     protected function generateFilterAssertionBlock(string $assertions): string
     {
-        $stub = file_get_contents(__DIR__.'/stubs/pest-filter-assertion-block.stub');
-
-        return str_replace('{{ filterAssertions }}', $assertions, $stub);
+        // Just return the assertions with proper indentation, no wrapper needed
+        return $assertions;
     }
 
     /**
@@ -230,5 +307,137 @@ class CollectionRequestTestGenerator
         }
 
         return implode(', ', $params);
+    }
+
+    /**
+     * Check if endpoint has include query parameter
+     */
+    protected function hasIncludeParameter(Endpoint $endpoint): bool
+    {
+        foreach ($endpoint->queryParameters as $param) {
+            if ($param->name === 'include') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get relationships from the DTO schema
+     */
+    protected function getRelationshipsFromSchema(string $dtoClassName): array
+    {
+        if (! isset($this->specification->components->schemas[$dtoClassName])) {
+            return [];
+        }
+
+        $schema = $this->specification->components->schemas[$dtoClassName];
+
+        if (! isset($schema->properties['relationships'])) {
+            return [];
+        }
+
+        $relationships = $schema->properties['relationships'];
+
+        if (! isset($relationships->properties) || ! is_array($relationships->properties)) {
+            return [];
+        }
+
+        return array_keys($relationships->properties);
+    }
+
+    /**
+     * Generate include method chain with data for testing
+     */
+    protected function generateIncludeChainWithData(Endpoint $endpoint): array
+    {
+        if (! $this->hasIncludeParameter($endpoint)) {
+            return [
+                'chain' => '',
+                'assertion' => '',
+                'relationshipAssertions' => '',
+            ];
+        }
+
+        $dtoClassName = $this->getDtoClassName($endpoint);
+        $relationships = $this->getRelationshipsFromSchema($dtoClassName);
+
+        if (empty($relationships)) {
+            return [
+                'chain' => '',
+                'assertion' => '',
+                'relationshipAssertions' => '',
+            ];
+        }
+
+        // Filter out relationships where the model doesn't exist
+        $testRelationships = array_filter($relationships, function ($relationName) {
+            $relatedModel = $this->detectRelatedModel($relationName);
+
+            return isset($this->specification->components->schemas[$relatedModel]);
+        });
+
+        // Generate include method calls
+        $includeCalls = [];
+        foreach ($testRelationships as $relationName) {
+            $methodName = 'include'.\Illuminate\Support\Str::studly($relationName);
+            $includeCalls[] = "->{$methodName}()";
+        }
+
+        $includeChain = implode("\n\t\t", $includeCalls);
+
+        // Generate assertion for include parameter
+        $expectedInclude = implode(',', $testRelationships);
+        $assertion = "expect(\$query)->toHaveKey('include', '{$expectedInclude}');";
+
+        // Generate relationship hydration assertions
+        $relationshipAssertions = $this->generateRelationshipAssertions($testRelationships);
+
+        return [
+            'chain' => $includeChain,
+            'assertion' => $assertion,
+            'relationshipAssertions' => $relationshipAssertions,
+        ];
+    }
+
+    /**
+     * Detect the related model class name from relationship name
+     */
+    protected function detectRelatedModel(string $relationName): string
+    {
+        // Convert to singular studly case (e.g., budgetType -> BudgetType, entries -> Entry)
+        return \Illuminate\Support\Str::studly(\Illuminate\Support\Str::singular($relationName));
+    }
+
+    /**
+     * Generate assertions to verify relationships are hydrated
+     */
+    protected function generateRelationshipAssertions(array $relationships): string
+    {
+        $assertions = [];
+
+        foreach ($relationships as $relationName) {
+            $relatedModel = $this->detectRelatedModel($relationName);
+            $propertyName = \Illuminate\Support\Str::camel($relationName);
+
+            // Skip if the related model doesn't exist in the schema
+            if (! isset($this->specification->components->schemas[$relatedModel])) {
+                continue;
+            }
+
+            // Check if this is likely a "Many" relationship (plural name)
+            $isMany = \Illuminate\Support\Str::plural($relationName) === $relationName;
+
+            if ($isMany) {
+                // For collection relationships, verify it's not null
+                $assertions[] = "->{$propertyName}->not->toBeNull()";
+            } else {
+                // For single relationships, verify it's an instance of the related model
+                $assertions[] = "->{$propertyName}->toBeInstanceOf(\\Timatic\\Dto\\{$relatedModel}::class)";
+            }
+        }
+
+        return implode("\n\t\t", $assertions);
     }
 }
