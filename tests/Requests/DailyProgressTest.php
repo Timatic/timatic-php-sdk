@@ -41,7 +41,11 @@ it('calls the getDailyProgressesCollection method in the DailyProgress resource'
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetDailyProgressesCollectionRequest::class);
+    Saloon::assertSent(function (GetDailyProgressesCollectionRequest $request) {
+        $query = $request->query()->all();
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 

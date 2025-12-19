@@ -39,6 +39,28 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
                         'renewalFrequency' => 'Mock value',
                         'supervisorUserId' => 'mock-id-123',
                     ],
+                    'relationships' => [
+                        'entries' => [
+                            'data' => [
+                                0 => [
+                                    'type' => 'entries',
+                                    'id' => 'related-entries-1',
+                                ],
+                            ],
+                        ],
+                        'budgetType' => [
+                            'data' => [
+                                'type' => 'budgettypes',
+                                'id' => 'related-budgetType-1',
+                            ],
+                        ],
+                        'customer' => [
+                            'data' => [
+                                'type' => 'customers',
+                                'id' => 'related-customer-1',
+                            ],
+                        ],
+                    ],
                 ],
                 1 => [
                     'type' => 'budgets',
@@ -59,6 +81,45 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
                         'renewalFrequency' => 'Mock value',
                         'supervisorUserId' => 'mock-id-123',
                     ],
+                    'relationships' => [
+                        'entries' => [
+                            'data' => [
+                                0 => [
+                                    'type' => 'entries',
+                                    'id' => 'related-entries-1',
+                                ],
+                            ],
+                        ],
+                        'budgetType' => [
+                            'data' => [
+                                'type' => 'budgettypes',
+                                'id' => 'related-budgetType-1',
+                            ],
+                        ],
+                        'customer' => [
+                            'data' => [
+                                'type' => 'customers',
+                                'id' => 'related-customer-1',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                0 => [
+                    'type' => 'entries',
+                    'id' => 'related-entries-1',
+                    'attributes' => [],
+                ],
+                1 => [
+                    'type' => 'budgettypes',
+                    'id' => 'related-budgetType-1',
+                    'attributes' => [],
+                ],
+                2 => [
+                    'type' => 'customers',
+                    'id' => 'related-customer-1',
+                    'attributes' => [],
                 ],
             ],
         ], 200),
@@ -67,19 +128,19 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
     $request = (new GetBudgetsCollectionRequest)
         ->filter('customerId', 'customer_id-123')
         ->filter('budgetTypeId', 'budget_type_id-123')
-        ->filter('isArchived', true);
+        ->filter('isArchived', true)
+        ->includeEntries()
+        ->includeBudgetType()
+        ->includeCustomer();
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetsCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetBudgetsCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[customerId]', 'customer_id-123');
         expect($query)->toHaveKey('filter[budgetTypeId]', 'budget_type_id-123');
         expect($query)->toHaveKey('filter[isArchived]', true);
+        expect($query)->toHaveKey('include', 'entries,budgetType,customer');
 
         return true;
     });
@@ -102,7 +163,10 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
         ->initialMinutes->toBe(42)
         ->isArchived->toBe(true)
         ->renewalFrequency->toBe('Mock value')
-        ->supervisorUserId->toBe('mock-id-123');
+        ->supervisorUserId->toBe('mock-id-123')
+        ->entries->not->toBeNull()
+        ->budgetType->toBeInstanceOf(\Timatic\Dto\BudgetType::class)
+        ->customer->toBeInstanceOf(\Timatic\Dto\Customer::class);
 });
 
 it('calls the postBudgets method in the Budget resource', function () {

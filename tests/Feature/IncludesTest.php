@@ -116,29 +116,6 @@ it('can use generic include method', function () {
     });
 });
 
-it('can chain multiple include methods', function () {
-    Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
-            'data' => [],
-        ], 200),
-    ]);
-
-    $request = (new GetBudgetsCollectionRequest)
-        ->includeBudgetType()
-        ->includeEntries()
-        ->includeCustomer()
-        ->includeCurrentPeriod();
-
-    $this->timaticConnector->send($request);
-
-    Saloon::assertSent(function (GetBudgetsCollectionRequest $request) {
-        $query = $request->query()->all();
-        expect($query)->toHaveKey('include', 'budgetType,entries,customer,currentPeriod');
-
-        return true;
-    });
-});
-
 it('does not send include parameter when no includes are added', function () {
     Saloon::fake([
         GetBudgetsCollectionRequest::class => MockResponse::make([

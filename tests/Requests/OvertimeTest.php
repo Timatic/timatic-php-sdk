@@ -4,7 +4,6 @@
 
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
-use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\Overtime\GetOvertimesCollectionRequest;
 
@@ -55,12 +54,8 @@ it('calls the getOvertimesCollection method in the Overtime resource', function 
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetOvertimesCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetOvertimesCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[startedAt]', '2025-01-15T10:30:00Z');
         expect($query)->toHaveKey('filter[endedAt]', '2025-01-15T10:30:00Z');
         expect($query)->toHaveKey('filter[isApproved]', true);

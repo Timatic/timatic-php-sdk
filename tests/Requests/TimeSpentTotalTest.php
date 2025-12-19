@@ -4,7 +4,6 @@
 
 use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
-use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\TimeSpentTotal\GetTimeSpentTotalsCollectionRequest;
 
@@ -50,12 +49,8 @@ it('calls the getTimeSpentTotalsCollection method in the TimeSpentTotal resource
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetTimeSpentTotalsCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetTimeSpentTotalsCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[teamId]', 'team_id-123');
         expect($query)->toHaveKey('filter[userId]', 'user_id-123');
 

@@ -52,7 +52,11 @@ it('calls the getBudgetTypesCollection method in the BudgetType resource', funct
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetTypesCollectionRequest::class);
+    Saloon::assertSent(function (GetBudgetTypesCollectionRequest $request) {
+        $query = $request->query()->all();
+
+        return true;
+    });
 
     expect($response->status())->toBe(200);
 

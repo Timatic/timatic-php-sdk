@@ -50,6 +50,20 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
                         'isInvoiced' => 'Mock value',
                         'isBasedOnSuggestion' => true,
                     ],
+                    'relationships' => [
+                        'customer' => [
+                            'data' => [
+                                'type' => 'customers',
+                                'id' => 'related-customer-1',
+                            ],
+                        ],
+                        'budget' => [
+                            'data' => [
+                                'type' => 'budgets',
+                                'id' => 'related-budget-1',
+                            ],
+                        ],
+                    ],
                 ],
                 1 => [
                     'type' => 'entries',
@@ -81,6 +95,32 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
                         'isInvoiced' => 'Mock value',
                         'isBasedOnSuggestion' => true,
                     ],
+                    'relationships' => [
+                        'customer' => [
+                            'data' => [
+                                'type' => 'customers',
+                                'id' => 'related-customer-1',
+                            ],
+                        ],
+                        'budget' => [
+                            'data' => [
+                                'type' => 'budgets',
+                                'id' => 'related-budget-1',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                0 => [
+                    'type' => 'customers',
+                    'id' => 'related-customer-1',
+                    'attributes' => [],
+                ],
+                1 => [
+                    'type' => 'budgets',
+                    'id' => 'related-budget-1',
+                    'attributes' => [],
                 ],
             ],
         ], 200),
@@ -89,19 +129,18 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
     $request = (new GetEntriesCollectionRequest)
         ->filter('userId', 'user_id-123')
         ->filter('budgetId', 'budget_id-123')
-        ->filter('startedAt', '2025-01-15T10:30:00Z');
+        ->filter('startedAt', '2025-01-15T10:30:00Z')
+        ->includeCustomer()
+        ->includeBudget();
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetEntriesCollectionRequest::class);
-
-    // Verify filter query parameters are present
-    Saloon::assertSent(function (Request $request) {
+    Saloon::assertSent(function (GetEntriesCollectionRequest $request) {
         $query = $request->query()->all();
-
         expect($query)->toHaveKey('filter[userId]', 'user_id-123');
         expect($query)->toHaveKey('filter[budgetId]', 'budget_id-123');
         expect($query)->toHaveKey('filter[startedAt]', '2025-01-15T10:30:00Z');
+        expect($query)->toHaveKey('include', 'customer,budget');
 
         return true;
     });
@@ -135,7 +174,9 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
         ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
         ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
         ->isInvoiced->toBe('Mock value')
-        ->isBasedOnSuggestion->toBe(true);
+        ->isBasedOnSuggestion->toBe(true)
+        ->customer->toBeInstanceOf(\Timatic\Dto\Customer::class)
+        ->budget->toBeInstanceOf(\Timatic\Dto\Budget::class);
 });
 
 it('calls the postEntries method in the Entry resource', function () {
