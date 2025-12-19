@@ -9,6 +9,7 @@ use Crescat\SaloonSdkGenerator\Data\Generator\Endpoint;
 use Crescat\SaloonSdkGenerator\Data\Generator\Parameter;
 use Crescat\SaloonSdkGenerator\Generators\RequestGenerator;
 use Crescat\SaloonSdkGenerator\Helpers\MethodGeneratorHelper;
+use Illuminate\Support\Str;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Saloon\Http\Response;
@@ -16,7 +17,8 @@ use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Generator\TestGenerators\Traits\DtoHelperTrait;
 use Timatic\Hydration\Facades\Hydrator;
 use Timatic\Hydration\Model;
-use Timatic\Requests\HasFilters;
+use Timatic\Requests\Concerns\HasFilters;
+use Timatic\Requests\Concerns\HasIncludes;
 
 class JsonApiRequestGenerator extends RequestGenerator
 {
@@ -86,6 +88,15 @@ class JsonApiRequestGenerator extends RequestGenerator
                 $namespace->addUse(HasFilters::class);
                 $classType->addTrait(HasFilters::class);
             }
+
+            // Add HasIncludes trait if endpoint has include parameter
+            if ($this->hasIncludeParameter($endpoint)) {
+                $namespace->addUse(HasIncludes::class);
+                $classType->addTrait(HasIncludes::class);
+
+                // Add relationship-specific include methods
+                $this->addIncludeMethods($classType, $namespace, $endpoint);
+            }
         }
 
         // Add hydration support to GET, POST, and PATCH requests
@@ -121,11 +132,21 @@ class JsonApiRequestGenerator extends RequestGenerator
     }
 
     /**
-     * Hook: Filter out filter* query parameters (handled by HasFilters trait)
+     * Hook: Filter out filter* and include query parameters (handled by traits)
      */
     protected function shouldIncludeQueryParameter(string $paramName): bool
     {
-        return ! str_starts_with($paramName, 'filter');
+        // Filter out filter* parameters (handled by HasFilters trait)
+        if (str_starts_with($paramName, 'filter')) {
+            return false;
+        }
+
+        // Filter out include parameter (handled by HasIncludes trait)
+        if ($paramName === 'include') {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -133,12 +154,10 @@ class JsonApiRequestGenerator extends RequestGenerator
      */
     protected function generateDefaultQueryMethod(\Nette\PhpGenerator\ClassType $classType, $namespace, array $queryParams, Endpoint $endpoint): void
     {
-        // If we have any query parameters (likely just 'include'), use array_filter
+
+        // For other cases with query parameters, use parent implementation
         if (! empty($queryParams)) {
-            $classType->addMethod('defaultQuery')
-                ->setProtected()
-                ->setReturnType('array')
-                ->addBody("return array_filter(['include' => \$this->include]);");
+            parent::generateDefaultQueryMethod($classType, $namespace, $queryParams, $endpoint);
         }
     }
 
@@ -161,6 +180,20 @@ class JsonApiRequestGenerator extends RequestGenerator
     {
         foreach ($endpoint->queryParameters as $param) {
             if (str_starts_with($param->name, 'filter')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if endpoint has include query parameter
+     */
+    protected function hasIncludeParameter(Endpoint $endpoint): bool
+    {
+        foreach ($endpoint->queryParameters as $param) {
+            if ($param->name === 'include') {
                 return true;
             }
         }
@@ -227,6 +260,42 @@ class JsonApiRequestGenerator extends RequestGenerator
             $method->addBody('    $response->json(\'data\'),');
             $method->addBody('    $response->json(\'included\')');
             $method->addBody(');');
+        }
+    }
+
+    /**
+     * Add relationship-specific include methods to request class
+     */
+    protected function addIncludeMethods(ClassType $classType, $namespace, Endpoint $endpoint): void
+    {
+        // Get the DTO class name for this endpoint
+        $dtoClassName = $this->getDtoClassName($endpoint);
+
+        // Check if schema exists in specification
+        if (! isset($this->specification->components->schemas[$dtoClassName])) {
+            return;
+        }
+
+        $schema = $this->specification->components->schemas[$dtoClassName];
+
+        // Check if schema has relationships
+        if (! isset($schema->properties['relationships'])) {
+            return;
+        }
+
+        $relationships = $schema->properties['relationships'];
+
+        // Generate include method for each relationship
+        if (isset($relationships->properties) && is_array($relationships->properties)) {
+            foreach ($relationships->properties as $relationName => $relationSpec) {
+                $methodName = 'include'.Str::studly($relationName);
+
+                $classType->addMethod($methodName)
+                    ->setPublic()
+                    ->setReturnType('static')
+                    ->addComment("Include the {$relationName} relationship in the response")
+                    ->addBody("return \$this->addInclude('{$relationName}');");
+            }
         }
     }
 }

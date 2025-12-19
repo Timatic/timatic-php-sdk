@@ -215,7 +215,8 @@ class CollectionRequestTestGenerator
         $params = [];
 
         foreach ($endpoint->queryParameters as $parameter) {
-            if (! str_starts_with($parameter->name, 'filter[')) {
+            // Skip filter parameters and include parameter (handled by HasIncludes trait)
+            if (! str_starts_with($parameter->name, 'filter[') && $parameter->name !== 'include') {
                 $paramName = NameHelper::safeVariableName($parameter->name);
                 $value = match ($parameter->type) {
                     'string' => "'test string'",

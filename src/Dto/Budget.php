@@ -4,9 +4,12 @@
 
 namespace Timatic\Dto;
 
+use Illuminate\Support\Collection;
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
 class Budget extends Model
 {
@@ -61,4 +64,14 @@ class Budget extends Model
 
     #[Property]
     public ?string $supervisorUserId;
+
+    /** @var Collection<int, Entry>|null */
+    #[Relationship(Entry::class, RelationType::Many)]
+    public ?Collection $entries = null;
+
+    #[Relationship(BudgetType::class, RelationType::One)]
+    public ?BudgetType $budgetType = null;
+
+    #[Relationship(Customer::class, RelationType::One)]
+    public ?Customer $customer = null;
 }

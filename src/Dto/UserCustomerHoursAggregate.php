@@ -5,7 +5,9 @@
 namespace Timatic\Dto;
 
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
 class UserCustomerHoursAggregate extends Model
 {
@@ -23,4 +25,10 @@ class UserCustomerHoursAggregate extends Model
 
     #[Property]
     public ?int $paidPerHourMinutes;
+
+    #[Relationship(Customer::class, RelationType::One)]
+    public ?Customer $customer = null;
+
+    #[Relationship(User::class, RelationType::One)]
+    public ?User $user = null;
 }

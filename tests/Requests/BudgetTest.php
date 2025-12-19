@@ -64,7 +64,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetsCollectionRequest(include: 'test string'))
+    $request = (new GetBudgetsCollectionRequest)
         ->filter('customerId', 'customer_id-123')
         ->filter('budgetTypeId', 'budget_type_id-123')
         ->filter('isArchived', true);

@@ -18,21 +18,28 @@ use Timatic\Generator\JsonApiRequestGenerator;
 use Timatic\Generator\JsonApiResourceGenerator;
 
 // Download OpenAPI spec
-echo "📥 Downloading OpenAPI specification...\n";
-$openApiJson = file_get_contents('https://api.app.timatic.test/docs/json', false, stream_context_create([
-    'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false,
-    ],
-]));
+$openApiPath = __DIR__.'/../openapi.json';
 
-if (! $openApiJson) {
-    echo "❌ Failed to download OpenAPI specification\n";
-    exit(1);
+if (file_exists($openApiPath)) {
+    echo "📥 Using existing OpenAPI specification...\n";
+    echo "✅ OpenAPI specification found\n\n";
+} else {
+    echo "📥 Downloading OpenAPI specification...\n";
+    $openApiJson = file_get_contents('https://api.app.timatic.test/docs/json', false, stream_context_create([
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+        ],
+    ]));
+
+    if (! $openApiJson) {
+        echo "❌ Failed to download OpenAPI specification\n";
+        exit(1);
+    }
+
+    file_put_contents($openApiPath, $openApiJson);
+    echo "✅ OpenAPI specification downloaded\n\n";
 }
-
-file_put_contents(__DIR__.'/../openapi.json', $openApiJson);
-echo "✅ OpenAPI specification downloaded\n\n";
 
 // Clean up previously generated folders
 echo "🧹 Cleaning up previously generated files...\n";

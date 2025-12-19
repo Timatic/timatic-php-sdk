@@ -77,6 +77,21 @@ trait DtoAssertions
                 continue;
             }
 
+            // Skip relationship properties (they have Relationship attribute)
+            $hasRelationshipAttribute = false;
+            foreach ($property->getAttributes() as $attribute) {
+                $attrName = $attribute->getName();
+                // Check for both short name and full class name
+                if ($attrName === 'Relationship' || str_ends_with($attrName, '\\Relationship')) {
+                    $hasRelationshipAttribute = true;
+                    break;
+                }
+            }
+
+            if ($hasRelationshipAttribute) {
+                continue;
+            }
+
             $type = $property->getType();
             $typeName = null;
 

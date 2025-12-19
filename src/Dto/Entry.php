@@ -6,7 +6,9 @@ namespace Timatic\Dto;
 
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
 class Entry extends Model
 {
@@ -95,4 +97,10 @@ class Entry extends Model
 
     #[Property]
     public ?bool $isBasedOnSuggestion;
+
+    #[Relationship(Customer::class, RelationType::One)]
+    public ?Customer $customer = null;
+
+    #[Relationship(Budget::class, RelationType::One)]
+    public ?Budget $budget = null;
 }
