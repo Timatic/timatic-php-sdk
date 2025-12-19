@@ -25,6 +25,9 @@ it('calls the getUsersCollection method in the User resource', function () {
                     'attributes' => [
                         'externalId' => 'mock-id-123',
                         'email' => 'test@example.com',
+                        'givenName' => 'Mock value',
+                        'familyName' => 'Mock value',
+                        'teamId' => 'mock-id-123',
                     ],
                 ],
                 1 => [
@@ -33,6 +36,9 @@ it('calls the getUsersCollection method in the User resource', function () {
                     'attributes' => [
                         'externalId' => 'mock-id-123',
                         'email' => 'test@example.com',
+                        'givenName' => 'Mock value',
+                        'familyName' => 'Mock value',
+                        'teamId' => 'mock-id-123',
                     ],
                 ],
             ],
@@ -61,7 +67,10 @@ it('calls the getUsersCollection method in the User resource', function () {
 
     expect($dtoCollection->first())
         ->externalId->toBe('mock-id-123')
-        ->email->toBe('test@example.com');
+        ->email->toBe('test@example.com')
+        ->givenName->toBe('Mock value')
+        ->familyName->toBe('Mock value')
+        ->teamId->toBe('mock-id-123');
 });
 
 it('calls the postUsers method in the User resource', function () {
@@ -73,6 +82,8 @@ it('calls the postUsers method in the User resource', function () {
     $dto = \Timatic\Dto\User::factory()->state([
         'externalId' => 'external_id-123',
         'email' => 'test@example.com',
+        'givenName' => 'test value',
+        'familyName' => 'test value',
     ])->make();
 
     $request = new PostUsersRequest($dto);
@@ -87,6 +98,8 @@ it('calls the postUsers method in the User resource', function () {
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('external_id-123')
             ->email->toBe('test@example.com')
+            ->givenName->toBe('test value')
+            ->familyName->toBe('test value')
             );
 
         return true;
@@ -102,6 +115,9 @@ it('calls the getUser method in the User resource', function () {
                 'attributes' => [
                     'externalId' => 'mock-id-123',
                     'email' => 'test@example.com',
+                    'givenName' => 'Mock value',
+                    'familyName' => 'Mock value',
+                    'teamId' => 'mock-id-123',
                 ],
             ],
         ], 200),
@@ -120,7 +136,10 @@ it('calls the getUser method in the User resource', function () {
 
     expect($dto)
         ->externalId->toBe('mock-id-123')
-        ->email->toBe('test@example.com');
+        ->email->toBe('test@example.com')
+        ->givenName->toBe('Mock value')
+        ->familyName->toBe('Mock value')
+        ->teamId->toBe('mock-id-123');
 });
 
 it('calls the deleteUser method in the User resource', function () {
@@ -147,6 +166,8 @@ it('calls the patchUser method in the User resource', function () {
     $dto = \Timatic\Dto\User::factory()->state([
         'externalId' => 'external_id-123',
         'email' => 'test@example.com',
+        'givenName' => 'test value',
+        'familyName' => 'test value',
     ])->make();
 
     $request = new PatchUserRequest(userId: 'test string', data: $dto);
@@ -161,6 +182,8 @@ it('calls the patchUser method in the User resource', function () {
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('external_id-123')
             ->email->toBe('test@example.com')
+            ->givenName->toBe('test value')
+            ->familyName->toBe('test value')
             );
 
         return true;
