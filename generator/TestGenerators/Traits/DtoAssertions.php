@@ -143,12 +143,27 @@ trait DtoAssertions
         // Normalize type name (remove nullable prefix)
         $typeName = ltrim($typeName, '?');
 
+        // Handle union types (e.g., "string|null", "string|float", "int|null")
+        if (str_contains($typeName, '|')) {
+            $types = explode('|', $typeName);
+            // Filter out 'null' and 'mixed', get the first concrete type
+            $concreteTypes = array_filter($types, fn ($t) => ! in_array(trim($t), ['null', 'mixed']));
+
+            if (! empty($concreteTypes)) {
+                // Use the first concrete type
+                $typeName = trim(reset($concreteTypes));
+            } else {
+                // If all types are null/mixed, default to string
+                $typeName = 'string';
+            }
+        }
+
         // DateTime fields
         if (str_contains($typeName, 'Carbon') || str_contains($typeName, 'DateTime')) {
             return '2025-11-22T10:40:04.065Z';
         }
 
-        // Type-based generation (handle explicit types first)
+        // Type-based generation (type takes precedence over name-based heuristics)
         if ($typeName === 'bool') {
             return true;
         }
@@ -163,6 +178,14 @@ trait DtoAssertions
 
         if ($typeName === 'array') {
             return [];
+        }
+
+        if ($typeName === 'object') {
+            return (object) [];
+        }
+
+        if ($typeName === 'mixed') {
+            return 'Mock value';
         }
 
         // String type - apply name-based heuristics
@@ -180,8 +203,8 @@ trait DtoAssertions
             return 'Mock value';
         }
 
-        // This should never be reached with the current OpenAPI spec
-        throw new \RuntimeException("Unexpected type '{$typeName}' for property '{$propertyName}'");
+        // Fallback for unknown types
+        return 'Mock value';
     }
 
     /**
@@ -200,8 +223,20 @@ trait DtoAssertions
             return "        ->{$key}->toBe({$value})";
         }
 
+        if (is_float($value)) {
+            return "        ->{$key}->toBe({$value})";
+        }
+
         if (is_null($value)) {
             return "        ->{$key}->toBeNull()";
+        }
+
+        if (is_object($value)) {
+            return "        ->{$key}->toBeInstanceOf(stdClass::class)";
+        }
+
+        if (is_array($value)) {
+            return "        ->{$key}->toBeArray()";
         }
 
         // Check if it's a datetime string

@@ -80,7 +80,11 @@ class MutationRequestTestGenerator
             if (! str_ends_with($paramName, 'Id')) {
                 $paramName .= 'Id';
             }
-            $args[] = "{$paramName}: 'test string'";
+
+            // Generate typed value based on parameter type
+            $value = $this->generateValue($paramName, $param->type);
+            $formattedValue = $this->formatAsCode($value);
+            $args[] = "{$paramName}: {$formattedValue}";
         }
 
         // Add $dto parameter last - use named argument if there are path params

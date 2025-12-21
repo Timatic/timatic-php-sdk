@@ -6,19 +6,19 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\Entry\DeleteEntryRequest;
-use Timatic\Requests\Entry\GetEntriesCollectionRequest;
-use Timatic\Requests\Entry\GetEntryRequest;
-use Timatic\Requests\Entry\PatchEntryRequest;
-use Timatic\Requests\Entry\PostEntriesRequest;
+use Timatic\Requests\Entry\EntriesCollectionRequest;
+use Timatic\Requests\Entry\EntriesDestroyRequest;
+use Timatic\Requests\Entry\EntriesShowRequest;
+use Timatic\Requests\Entry\EntriesStoreRequest;
+use Timatic\Requests\Entry\EntryMarkAsInvoicedRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getEntriesCollection method in the Entry resource', function () {
+it('calls the entriesCollection method in the Entry resource', function () {
     Saloon::fake([
-        GetEntriesCollectionRequest::class => MockResponse::make([
+        EntriesCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'entries',
@@ -28,17 +28,17 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
                         'ticketNumber' => 'Mock value',
                         'ticketTitle' => 'Mock value',
                         'ticketType' => 'Mock value',
-                        'customerId' => 'mock-id-123',
+                        'customerId' => 42,
                         'customerName' => 'Mock value',
-                        'hourlyRate' => 'Mock value',
+                        'hourlyRate' => 3.14,
                         'hadEmergencyShift' => true,
-                        'budgetId' => 'mock-id-123',
-                        'isPaidPerHour' => true,
+                        'budgetId' => 42,
+                        'isPaidPerHour' => 'Mock value',
                         'minutesSpent' => 42,
-                        'userId' => 'mock-id-123',
+                        'userId' => 42,
                         'userEmail' => 'test@example.com',
                         'userFullName' => 'Mock value',
-                        'createdByUserId' => 'mock-id-123',
+                        'createdByUserId' => 42,
                         'createdByUserEmail' => 'test@example.com',
                         'createdByUserFullName' => 'Mock value',
                         'entryType' => 'Mock value',
@@ -73,17 +73,17 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
                         'ticketNumber' => 'Mock value',
                         'ticketTitle' => 'Mock value',
                         'ticketType' => 'Mock value',
-                        'customerId' => 'mock-id-123',
+                        'customerId' => 42,
                         'customerName' => 'Mock value',
-                        'hourlyRate' => 'Mock value',
+                        'hourlyRate' => 3.14,
                         'hadEmergencyShift' => true,
-                        'budgetId' => 'mock-id-123',
-                        'isPaidPerHour' => true,
+                        'budgetId' => 42,
+                        'isPaidPerHour' => 'Mock value',
                         'minutesSpent' => 42,
-                        'userId' => 'mock-id-123',
+                        'userId' => 42,
                         'userEmail' => 'test@example.com',
                         'userFullName' => 'Mock value',
-                        'createdByUserId' => 'mock-id-123',
+                        'createdByUserId' => 42,
                         'createdByUserEmail' => 'test@example.com',
                         'createdByUserFullName' => 'Mock value',
                         'entryType' => 'Mock value',
@@ -126,7 +126,7 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetEntriesCollectionRequest)
+    $request = (new EntriesCollectionRequest(sort: 'test string', pagesize: 123, pagenumber: 123))
         ->filter('userId', 'user_id-123')
         ->filter('budgetId', 'budget_id-123')
         ->filter('startedAt', '2025-01-15T10:30:00Z')
@@ -135,7 +135,7 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetEntriesCollectionRequest $request) {
+    Saloon::assertSent(function (EntriesCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('filter[userId]', 'user_id-123');
         expect($query)->toHaveKey('filter[budgetId]', 'budget_id-123');
@@ -154,17 +154,17 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
         ->ticketNumber->toBe('Mock value')
         ->ticketTitle->toBe('Mock value')
         ->ticketType->toBe('Mock value')
-        ->customerId->toBe('mock-id-123')
+        ->customerId->toBe(42)
         ->customerName->toBe('Mock value')
-        ->hourlyRate->toBe('Mock value')
+        ->hourlyRate->toBe(3.14)
         ->hadEmergencyShift->toBe(true)
-        ->budgetId->toBe('mock-id-123')
-        ->isPaidPerHour->toBe(true)
+        ->budgetId->toBe(42)
+        ->isPaidPerHour->toBe('Mock value')
         ->minutesSpent->toBe(42)
-        ->userId->toBe('mock-id-123')
+        ->userId->toBe(42)
         ->userEmail->toBe('test@example.com')
         ->userFullName->toBe('Mock value')
-        ->createdByUserId->toBe('mock-id-123')
+        ->createdByUserId->toBe(42)
         ->createdByUserEmail->toBe('test@example.com')
         ->createdByUserFullName->toBe('Mock value')
         ->entryType->toBe('Mock value')
@@ -179,9 +179,9 @@ it('calls the getEntriesCollection method in the Entry resource', function () {
         ->budget->toBeInstanceOf(\Timatic\Dto\Budget::class);
 });
 
-it('calls the postEntries method in the Entry resource', function () {
+it('calls the entriesStore method in the Entry resource', function () {
     $mockClient = Saloon::fake([
-        PostEntriesRequest::class => MockResponse::make([], 200),
+        EntriesStoreRequest::class => MockResponse::make([], 200),
     ]);
 
     // Create DTO with sample data
@@ -192,10 +192,10 @@ it('calls the postEntries method in the Entry resource', function () {
         'ticketType' => 'test value',
     ])->make();
 
-    $request = new PostEntriesRequest($dto);
+    $request = new EntriesStoreRequest($dto);
     $this->timaticConnector->send($request);
 
-    Saloon::assertSent(PostEntriesRequest::class);
+    Saloon::assertSent(EntriesStoreRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
@@ -212,9 +212,9 @@ it('calls the postEntries method in the Entry resource', function () {
     });
 });
 
-it('calls the getEntry method in the Entry resource', function () {
+it('calls the entriesShow method in the Entry resource', function () {
     Saloon::fake([
-        GetEntryRequest::class => MockResponse::make([
+        EntriesShowRequest::class => MockResponse::make([
             'data' => [
                 'type' => 'entries',
                 'id' => 'mock-id-123',
@@ -223,17 +223,17 @@ it('calls the getEntry method in the Entry resource', function () {
                     'ticketNumber' => 'Mock value',
                     'ticketTitle' => 'Mock value',
                     'ticketType' => 'Mock value',
-                    'customerId' => 'mock-id-123',
+                    'customerId' => 42,
                     'customerName' => 'Mock value',
-                    'hourlyRate' => 'Mock value',
+                    'hourlyRate' => 3.14,
                     'hadEmergencyShift' => true,
-                    'budgetId' => 'mock-id-123',
-                    'isPaidPerHour' => true,
+                    'budgetId' => 42,
+                    'isPaidPerHour' => 'Mock value',
                     'minutesSpent' => 42,
-                    'userId' => 'mock-id-123',
+                    'userId' => 42,
                     'userEmail' => 'test@example.com',
                     'userFullName' => 'Mock value',
-                    'createdByUserId' => 'mock-id-123',
+                    'createdByUserId' => 42,
                     'createdByUserEmail' => 'test@example.com',
                     'createdByUserFullName' => 'Mock value',
                     'entryType' => 'Mock value',
@@ -249,12 +249,12 @@ it('calls the getEntry method in the Entry resource', function () {
         ], 200),
     ]);
 
-    $request = new GetEntryRequest(
-        entryId: 'test string'
+    $request = new EntriesShowRequest(
+        entryId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetEntryRequest::class);
+    Saloon::assertSent(EntriesShowRequest::class);
 
     expect($response->status())->toBe(200);
 
@@ -265,17 +265,17 @@ it('calls the getEntry method in the Entry resource', function () {
         ->ticketNumber->toBe('Mock value')
         ->ticketTitle->toBe('Mock value')
         ->ticketType->toBe('Mock value')
-        ->customerId->toBe('mock-id-123')
+        ->customerId->toBe(42)
         ->customerName->toBe('Mock value')
-        ->hourlyRate->toBe('Mock value')
+        ->hourlyRate->toBe(3.14)
         ->hadEmergencyShift->toBe(true)
-        ->budgetId->toBe('mock-id-123')
-        ->isPaidPerHour->toBe(true)
+        ->budgetId->toBe(42)
+        ->isPaidPerHour->toBe('Mock value')
         ->minutesSpent->toBe(42)
-        ->userId->toBe('mock-id-123')
+        ->userId->toBe(42)
         ->userEmail->toBe('test@example.com')
         ->userFullName->toBe('Mock value')
-        ->createdByUserId->toBe('mock-id-123')
+        ->createdByUserId->toBe(42)
         ->createdByUserEmail->toBe('test@example.com')
         ->createdByUserFullName->toBe('Mock value')
         ->entryType->toBe('Mock value')
@@ -288,24 +288,24 @@ it('calls the getEntry method in the Entry resource', function () {
         ->isBasedOnSuggestion->toBe(true);
 });
 
-it('calls the deleteEntry method in the Entry resource', function () {
+it('calls the entriesDestroy method in the Entry resource', function () {
     Saloon::fake([
-        DeleteEntryRequest::class => MockResponse::make([], 200),
+        EntriesDestroyRequest::class => MockResponse::make([], 200),
     ]);
 
-    $request = new DeleteEntryRequest(
-        entryId: 'test string'
+    $request = new EntriesDestroyRequest(
+        entryId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(DeleteEntryRequest::class);
+    Saloon::assertSent(EntriesDestroyRequest::class);
 
     expect($response->status())->toBe(200);
 });
 
-it('calls the patchEntry method in the Entry resource', function () {
+it('calls the entryMarkAsInvoiced method in the Entry resource', function () {
     $mockClient = Saloon::fake([
-        PatchEntryRequest::class => MockResponse::make([], 200),
+        EntryMarkAsInvoicedRequest::class => MockResponse::make([], 200),
     ]);
 
     // Create DTO with sample data
@@ -316,10 +316,10 @@ it('calls the patchEntry method in the Entry resource', function () {
         'ticketType' => 'test value',
     ])->make();
 
-    $request = new PatchEntryRequest(entryId: 'test string', data: $dto);
+    $request = new EntryMarkAsInvoicedRequest(entryId: 42, data: $dto);
     $this->timaticConnector->send($request);
 
-    Saloon::assertSent(PatchEntryRequest::class);
+    Saloon::assertSent(EntryMarkAsInvoicedRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())

@@ -10,10 +10,13 @@ use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
 use Timatic\Hydration\RelationType;
 
+/**
+ * Overtime
+ */
 class Overtime extends Model
 {
     #[Property]
-    public ?string $entryId;
+    public ?int $entryId;
 
     #[Property]
     public ?string $overtimeTypeId;
@@ -34,7 +37,7 @@ class Overtime extends Model
     public ?\Carbon\Carbon $approvedAt;
 
     #[Property]
-    public ?string $approvedByUserId;
+    public ?int $approvedByUserId;
 
     #[Property]
     #[DateTime]
@@ -47,6 +50,9 @@ class Overtime extends Model
     #[Property]
     #[DateTime]
     public ?\Carbon\Carbon $updatedAt;
+
+    #[Relationship(OvertimeType::class, RelationType::One)]
+    public ?OvertimeType $overtimeType = null;
 
     #[Relationship(Entry::class, RelationType::One)]
     public ?Entry $entry = null;

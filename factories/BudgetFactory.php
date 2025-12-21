@@ -13,7 +13,7 @@ class BudgetFactory extends Factory
     {
         return [
             'budgetTypeId' => $this->faker->uuid(),
-            'customerId' => $this->faker->uuid(),
+            'customerId' => $this->faker->numberBetween(1, 1000),
             'showToCustomer' => $this->faker->boolean(),
             'changeId' => $this->faker->uuid(),
             'contractId' => $this->faker->uuid(),
@@ -27,7 +27,7 @@ class BudgetFactory extends Factory
             'renewalFrequency' => $this->faker->word(),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'supervisorUserId' => $this->faker->uuid(),
+            'supervisorUserId' => $this->faker->numberBetween(1, 1000),
         ];
     }
 

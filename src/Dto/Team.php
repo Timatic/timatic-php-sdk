@@ -8,6 +8,9 @@ use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
 use Timatic\Hydration\Model;
 
+/**
+ * Team
+ */
 class Team extends Model
 {
     #[Property]

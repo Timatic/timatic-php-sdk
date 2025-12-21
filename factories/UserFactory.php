@@ -4,6 +4,7 @@
 
 namespace Timatic\Factories;
 
+use Carbon\Carbon;
 use Timatic\Dto\User;
 
 class UserFactory extends Factory
@@ -15,7 +16,10 @@ class UserFactory extends Factory
             'email' => $this->faker->safeEmail(),
             'givenName' => $this->faker->company(),
             'familyName' => $this->faker->company(),
-            'teamId' => $this->faker->uuid(),
+            'isImpersonated' => $this->faker->boolean(),
+            'impersonatedById' => $this->faker->numberBetween(1, 1000),
+            'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
+            'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
         ];
     }
 

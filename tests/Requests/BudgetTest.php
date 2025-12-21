@@ -6,26 +6,25 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\Budget\DeleteBudgetRequest;
-use Timatic\Requests\Budget\GetBudgetRequest;
-use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
-use Timatic\Requests\Budget\PatchBudgetRequest;
-use Timatic\Requests\Budget\PostBudgetsRequest;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
+use Timatic\Requests\Budget\BudgetsDestroyRequest;
+use Timatic\Requests\Budget\BudgetsShowRequest;
+use Timatic\Requests\Budget\BudgetsStoreRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getBudgetsCollection method in the Budget resource', function () {
+it('calls the budgetsCollection method in the Budget resource', function () {
     Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'budgets',
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'budgetTypeId' => 'mock-id-123',
-                        'customerId' => 'mock-id-123',
+                        'customerId' => 42,
                         'showToCustomer' => true,
                         'changeId' => 'mock-id-123',
                         'contractId' => 'mock-id-123',
@@ -37,7 +36,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
                         'initialMinutes' => 42,
                         'isArchived' => true,
                         'renewalFrequency' => 'Mock value',
-                        'supervisorUserId' => 'mock-id-123',
+                        'supervisorUserId' => 42,
                     ],
                     'relationships' => [
                         'entries' => [
@@ -67,7 +66,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'budgetTypeId' => 'mock-id-123',
-                        'customerId' => 'mock-id-123',
+                        'customerId' => 42,
                         'showToCustomer' => true,
                         'changeId' => 'mock-id-123',
                         'contractId' => 'mock-id-123',
@@ -79,7 +78,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
                         'initialMinutes' => 42,
                         'isArchived' => true,
                         'renewalFrequency' => 'Mock value',
-                        'supervisorUserId' => 'mock-id-123',
+                        'supervisorUserId' => 42,
                     ],
                     'relationships' => [
                         'entries' => [
@@ -125,7 +124,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetsCollectionRequest)
+    $request = (new BudgetsCollectionRequest(pagesize: 123, pagenumber: 123))
         ->filter('customerId', 'customer_id-123')
         ->filter('budgetTypeId', 'budget_type_id-123')
         ->filter('isArchived', true)
@@ -135,7 +134,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetBudgetsCollectionRequest $request) {
+    Saloon::assertSent(function (BudgetsCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('filter[customerId]', 'customer_id-123');
         expect($query)->toHaveKey('filter[budgetTypeId]', 'budget_type_id-123');
@@ -151,7 +150,7 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
 
     expect($dtoCollection->first())
         ->budgetTypeId->toBe('mock-id-123')
-        ->customerId->toBe('mock-id-123')
+        ->customerId->toBe(42)
         ->showToCustomer->toBe(true)
         ->changeId->toBe('mock-id-123')
         ->contractId->toBe('mock-id-123')
@@ -163,29 +162,29 @@ it('calls the getBudgetsCollection method in the Budget resource', function () {
         ->initialMinutes->toBe(42)
         ->isArchived->toBe(true)
         ->renewalFrequency->toBe('Mock value')
-        ->supervisorUserId->toBe('mock-id-123')
+        ->supervisorUserId->toBe(42)
         ->entries->not->toBeNull()
         ->budgetType->toBeInstanceOf(\Timatic\Dto\BudgetType::class)
         ->customer->toBeInstanceOf(\Timatic\Dto\Customer::class);
 });
 
-it('calls the postBudgets method in the Budget resource', function () {
+it('calls the budgetsStore method in the Budget resource', function () {
     $mockClient = Saloon::fake([
-        PostBudgetsRequest::class => MockResponse::make([], 200),
+        BudgetsStoreRequest::class => MockResponse::make([], 200),
     ]);
 
     // Create DTO with sample data
     $dto = \Timatic\Dto\Budget::factory()->state([
         'budgetTypeId' => 'budget_type_id-123',
-        'customerId' => 'customer_id-123',
+        'customerId' => 42,
         'showToCustomer' => true,
         'changeId' => 'change_id-123',
     ])->make();
 
-    $request = new PostBudgetsRequest($dto);
+    $request = new BudgetsStoreRequest($dto);
     $this->timaticConnector->send($request);
 
-    Saloon::assertSent(PostBudgetsRequest::class);
+    Saloon::assertSent(BudgetsStoreRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
@@ -193,7 +192,7 @@ it('calls the postBudgets method in the Budget resource', function () {
             ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->budgetTypeId->toBe('budget_type_id-123')
-            ->customerId->toBe('customer_id-123')
+            ->customerId->toBe(42)
             ->showToCustomer->toBe(true)
             ->changeId->toBe('change_id-123')
             );
@@ -202,15 +201,15 @@ it('calls the postBudgets method in the Budget resource', function () {
     });
 });
 
-it('calls the getBudget method in the Budget resource', function () {
+it('calls the budgetsShow method in the Budget resource', function () {
     Saloon::fake([
-        GetBudgetRequest::class => MockResponse::make([
+        BudgetsShowRequest::class => MockResponse::make([
             'data' => [
                 'type' => 'budgets',
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'budgetTypeId' => 'mock-id-123',
-                    'customerId' => 'mock-id-123',
+                    'customerId' => 42,
                     'showToCustomer' => true,
                     'changeId' => 'mock-id-123',
                     'contractId' => 'mock-id-123',
@@ -222,18 +221,18 @@ it('calls the getBudget method in the Budget resource', function () {
                     'initialMinutes' => 42,
                     'isArchived' => true,
                     'renewalFrequency' => 'Mock value',
-                    'supervisorUserId' => 'mock-id-123',
+                    'supervisorUserId' => 42,
                 ],
             ],
         ], 200),
     ]);
 
-    $request = new GetBudgetRequest(
-        budgetId: 'test string'
+    $request = new BudgetsShowRequest(
+        budgetId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetBudgetRequest::class);
+    Saloon::assertSent(BudgetsShowRequest::class);
 
     expect($response->status())->toBe(200);
 
@@ -241,7 +240,7 @@ it('calls the getBudget method in the Budget resource', function () {
 
     expect($dto)
         ->budgetTypeId->toBe('mock-id-123')
-        ->customerId->toBe('mock-id-123')
+        ->customerId->toBe(42)
         ->showToCustomer->toBe(true)
         ->changeId->toBe('mock-id-123')
         ->contractId->toBe('mock-id-123')
@@ -253,53 +252,20 @@ it('calls the getBudget method in the Budget resource', function () {
         ->initialMinutes->toBe(42)
         ->isArchived->toBe(true)
         ->renewalFrequency->toBe('Mock value')
-        ->supervisorUserId->toBe('mock-id-123');
+        ->supervisorUserId->toBe(42);
 });
 
-it('calls the deleteBudget method in the Budget resource', function () {
+it('calls the budgetsDestroy method in the Budget resource', function () {
     Saloon::fake([
-        DeleteBudgetRequest::class => MockResponse::make([], 200),
+        BudgetsDestroyRequest::class => MockResponse::make([], 200),
     ]);
 
-    $request = new DeleteBudgetRequest(
-        budgetId: 'test string'
+    $request = new BudgetsDestroyRequest(
+        budgetId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(DeleteBudgetRequest::class);
+    Saloon::assertSent(BudgetsDestroyRequest::class);
 
     expect($response->status())->toBe(200);
-});
-
-it('calls the patchBudget method in the Budget resource', function () {
-    $mockClient = Saloon::fake([
-        PatchBudgetRequest::class => MockResponse::make([], 200),
-    ]);
-
-    // Create DTO with sample data
-    $dto = \Timatic\Dto\Budget::factory()->state([
-        'budgetTypeId' => 'budget_type_id-123',
-        'customerId' => 'customer_id-123',
-        'showToCustomer' => true,
-        'changeId' => 'change_id-123',
-    ])->make();
-
-    $request = new PatchBudgetRequest(budgetId: 'test string', data: $dto);
-    $this->timaticConnector->send($request);
-
-    Saloon::assertSent(PatchBudgetRequest::class);
-
-    $mockClient->assertSent(function (Request $request) {
-        expect($request->body()->all())
-            ->toHaveKey('data')
-            ->data->type->toBe('budgets')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->budgetTypeId->toBe('budget_type_id-123')
-            ->customerId->toBe('customer_id-123')
-            ->showToCustomer->toBe(true)
-            ->changeId->toBe('change_id-123')
-            );
-
-        return true;
-    });
 });

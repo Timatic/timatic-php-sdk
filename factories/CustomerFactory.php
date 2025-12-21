@@ -15,7 +15,7 @@ class CustomerFactory extends Factory
             'externalId' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'hourlyRate' => number_format($this->faker->randomFloat(2, 50, 150), 2, '.', ''),
-            'accountManagerUserId' => $this->faker->uuid(),
+            'accountManagerUserId' => $this->faker->numberBetween(1, 1000),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
         ];

@@ -26,27 +26,12 @@ trait TestDataGeneratorTrait
             return $example;
         }
 
-        // DateTime fields (by format or name)
-        if ($format === 'date-time' || str_contains($propertyName, 'At') || str_contains($propertyName, 'Date')) {
-            return '2025-01-15T10:30:00Z';
-        }
-
-        // ID fields
-        if (str_ends_with($propertyName, 'Id')) {
-            return Str::snake($propertyName).'-123';
-        }
-
-        // Email fields
-        if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
-            return 'test@example.com';
-        }
-
         // Boolean fields (by type or name prefix)
         if ($type === 'boolean' || $type === 'bool' || str_starts_with($propertyName, 'is') || str_starts_with($propertyName, 'has')) {
             return true;
         }
 
-        // Numeric fields
+        // Numeric fields (type takes precedence over naming)
         if ($type === 'integer' || $type === 'int') {
             return 42;
         }
@@ -55,9 +40,28 @@ trait TestDataGeneratorTrait
             return 3.14;
         }
 
+        // DateTime fields (by format or name)
+        if ($format === 'date-time' || str_contains($propertyName, 'At') || str_contains($propertyName, 'Date')) {
+            return '2025-01-15T10:30:00Z';
+        }
+
+        // Email fields
+        if (str_contains($propertyName, 'email') || str_contains($propertyName, 'Email')) {
+            return 'test@example.com';
+        }
+
+        // ID fields - only if type is string or null
+        if (str_ends_with($propertyName, 'Id') && ($type === 'string' || $type === null)) {
+            return Str::snake($propertyName).'-123';
+        }
+
         // Array/Object fields
-        if ($type === 'array' || $type === 'object') {
+        if ($type === 'array') {
             return [];
+        }
+
+        if ($type === 'object') {
+            return (object) [];
         }
 
         // Common string property names
@@ -75,8 +79,13 @@ trait TestDataGeneratorTrait
             return 'test value';
         }
 
-        // This should never be reached with the current OpenAPI spec
-        throw new \RuntimeException("Unexpected type '{$type}' for property '{$propertyName}'");
+        // Handle 'mixed' type
+        if ($type === 'mixed') {
+            return 'test value';
+        }
+
+        // Fallback for any unknown types
+        return 'test value';
     }
 
     /**
@@ -103,6 +112,10 @@ trait TestDataGeneratorTrait
 
         if (is_array($value)) {
             return '[]';
+        }
+
+        if (is_object($value)) {
+            return '(object) []';
         }
 
         if (is_null($value)) {
@@ -158,6 +171,21 @@ trait TestDataGeneratorTrait
         if (is_string($typeInfo)) {
             // Normalize type name (remove nullable prefix)
             $normalizedType = ltrim($typeInfo, '?');
+
+            // Handle union types (e.g., "string|null", "string|float", "int|null")
+            if (str_contains($normalizedType, '|')) {
+                $types = explode('|', $normalizedType);
+                // Filter out 'null' and 'mixed', get the first concrete type
+                $concreteTypes = array_filter($types, fn ($t) => ! in_array(trim($t), ['null', 'mixed']));
+
+                if (! empty($concreteTypes)) {
+                    // Use the first concrete type
+                    $normalizedType = trim(reset($concreteTypes));
+                } else {
+                    // If all types are null/mixed, default to string
+                    $normalizedType = 'string';
+                }
+            }
 
             // Check for DateTime type hints
             if (str_contains($normalizedType, 'Carbon') || str_contains($normalizedType, 'DateTime')) {

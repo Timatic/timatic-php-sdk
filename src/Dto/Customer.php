@@ -8,6 +8,9 @@ use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
 use Timatic\Hydration\Model;
 
+/**
+ * Customer
+ */
 class Customer extends Model
 {
     #[Property]
@@ -20,7 +23,7 @@ class Customer extends Model
     public ?string $hourlyRate;
 
     #[Property]
-    public ?string $accountManagerUserId;
+    public ?int $accountManagerUserId;
 
     #[Property]
     #[DateTime]

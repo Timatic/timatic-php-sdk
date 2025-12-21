@@ -4,10 +4,16 @@
 
 namespace Timatic\Dto;
 
+use Illuminate\Support\Collection;
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
+/**
+ * EntrySuggestion
+ */
 class EntrySuggestion extends Model
 {
     #[Property]
@@ -20,7 +26,7 @@ class EntrySuggestion extends Model
     public ?string $customerId;
 
     #[Property]
-    public ?string $userId;
+    public ?int $userId;
 
     #[Property]
     public ?string $date;
@@ -40,5 +46,9 @@ class EntrySuggestion extends Model
     public ?\Carbon\Carbon $updatedAt;
 
     #[Property]
-    public ?string $budgetId;
+    public ?int $budgetId;
+
+    /** @var Collection<int, Activity>|null */
+    #[Relationship(Activity::class, RelationType::Many)]
+    public ?Collection $activities = null;
 }

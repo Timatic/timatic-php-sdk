@@ -33,6 +33,12 @@ class JsonApiDtoGenerator extends Generator
 
         if ($specification->components) {
             foreach ($specification->components->schemas as $className => $schema) {
+                // Skip schemas that aren't useful
+                if (str_ends_with($className, 'Identifier') ||
+                    str_ends_with($className, 'Request')) {
+                    continue;
+                }
+
                 $this->generateModelClass(NameHelper::safeClassName($className), $schema);
             }
         }
@@ -60,6 +66,11 @@ class JsonApiDtoGenerator extends Generator
 
         // Add properties to the class
         foreach ($properties as $propertyName => $propertySpec) {
+            // Skip 'id' and 'type' as they're already defined in the base Model class
+            if (in_array($propertyName, ['id', 'type'])) {
+                continue;
+            }
+
             $this->addPropertyToClass($classType, $namespace, $propertyName, $propertySpec);
         }
 
@@ -166,15 +177,41 @@ class JsonApiDtoGenerator extends Generator
             return Str::afterLast($schema->getReference(), '/');
         }
 
-        if (is_array($schema->type)) {
-            return collect($schema->type)->map(fn ($type) => $this->mapType($type))->implode('|');
+        // Handle anyOf, oneOf, allOf
+        if (isset($schema->anyOf) && is_array($schema->anyOf)) {
+            return $this->handleCompositeType($schema->anyOf);
         }
 
-        return $this->mapType($schema->type, $schema->format);
+        if (isset($schema->oneOf) && is_array($schema->oneOf)) {
+            return $this->handleCompositeType($schema->oneOf);
+        }
+
+        if (isset($schema->allOf) && is_array($schema->allOf)) {
+            return $this->handleCompositeType($schema->allOf);
+        }
+
+        // Handle array union types
+        if (is_array($schema->type)) {
+            return collect($schema->type)
+                ->map(fn ($type) => $this->mapType($type))
+                ->implode('|');
+        }
+
+        // Handle simple types (or null)
+        if ($schema->type !== null) {
+            return $this->mapType($schema->type, $schema->format);
+        }
+
+        // Fallback for schemas without type information
+        return 'mixed';
     }
 
-    protected function mapType(string $type, ?string $format = null): string
+    protected function mapType(?string $type, ?string $format = null): string
     {
+        if ($type === null) {
+            return 'mixed';
+        }
+
         return match ($type) {
             'integer' => 'int',
             'string' => 'string',
@@ -183,10 +220,44 @@ class JsonApiDtoGenerator extends Generator
             'number' => match ($format) {
                 'float' => 'float',
                 'int32', 'int64' => 'int',
+                default => 'float', // Default for number without format
             },
             'array' => 'array',
             'null' => 'null',
+            default => 'mixed', // Fallback for unknown types
         };
+    }
+
+    /**
+     * Handle anyOf, oneOf, allOf composite types
+     * Returns a PHP union type string
+     */
+    protected function handleCompositeType(array $types): string
+    {
+        $phpTypes = [];
+
+        foreach ($types as $typeSchema) {
+            if ($typeSchema instanceof Reference) {
+                $phpTypes[] = Str::afterLast($typeSchema->getReference(), '/');
+            } elseif ($typeSchema instanceof Schema) {
+                if ($typeSchema->type !== null) {
+                    if (is_array($typeSchema->type)) {
+                        // Nested union
+                        foreach ($typeSchema->type as $t) {
+                            $phpTypes[] = $this->mapType($t, $typeSchema->format ?? null);
+                        }
+                    } else {
+                        $phpTypes[] = $this->mapType($typeSchema->type, $typeSchema->format ?? null);
+                    }
+                }
+            }
+        }
+
+        // Remove duplicates and return union
+        return collect($phpTypes)
+            ->unique()
+            ->filter()
+            ->implode('|') ?: 'mixed';
     }
 
     /**

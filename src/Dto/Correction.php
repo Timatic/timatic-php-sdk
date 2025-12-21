@@ -8,6 +8,9 @@ use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
 use Timatic\Hydration\Model;
 
+/**
+ * Correction
+ */
 class Correction extends Model
 {
     #[Property]

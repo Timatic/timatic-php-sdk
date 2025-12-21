@@ -25,7 +25,7 @@ if (file_exists($openApiPath)) {
     echo "✅ OpenAPI specification found\n\n";
 } else {
     echo "📥 Downloading OpenAPI specification...\n";
-    $openApiJson = file_get_contents('https://api.app.timatic.test/docs/json', false, stream_context_create([
+    $openApiJson = file_get_contents('https://api.app.timatic.test/docs/api.json', false, stream_context_create([
         'ssl' => [
             'verify_peer' => false,
             'verify_peer_name' => false,

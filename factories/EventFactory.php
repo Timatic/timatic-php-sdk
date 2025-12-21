@@ -12,8 +12,8 @@ class EventFactory extends Factory
     protected function definition(): array
     {
         return [
-            'userId' => $this->faker->uuid(),
-            'budgetId' => $this->faker->uuid(),
+            'userId' => $this->faker->numberBetween(1, 1000),
+            'budgetId' => $this->faker->numberBetween(1, 1000),
             'ticketId' => $this->faker->uuid(),
             'sourceId' => $this->faker->uuid(),
             'ticketNumber' => $this->faker->word(),
@@ -26,7 +26,7 @@ class EventFactory extends Factory
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'isInternal' => $this->faker->word(),
+            'isInternal' => $this->faker->boolean(),
         ];
     }
 

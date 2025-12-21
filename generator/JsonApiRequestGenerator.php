@@ -52,6 +52,7 @@ class JsonApiRequestGenerator extends RequestGenerator
         // For collection requests, add "Collection" suffix
         if ($this->isCollectionRequest($endpoint)) {
             $className .= 'Collection';
+            $className = str_replace('Index', '', $className);
         }
 
         if (! str_ends_with($className, 'Request')) {

@@ -3,5 +3,6 @@
 composer.lock
 .phpunit.result.cache
 .DS_Store
-openapi.json
+openapi.json.backup
 .claude/settings.local.json
+openapi.json
