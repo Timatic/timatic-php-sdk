@@ -5,6 +5,7 @@ namespace Timatic;
 use Saloon\Http\Connector;
 use Saloon\Http\Request;
 use Saloon\PaginationPlugin\Contracts\HasPagination;
+use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
 use Timatic\Pagination\JsonApiPaginator;
 use Timatic\Responses\TimaticResponse;
 
@@ -13,6 +14,8 @@ use Timatic\Responses\TimaticResponse;
  */
 class TimaticConnector extends Connector implements HasPagination
 {
+    use AlwaysThrowOnErrors;
+
     protected function defaultHeaders(): array
     {
         $headers = [
