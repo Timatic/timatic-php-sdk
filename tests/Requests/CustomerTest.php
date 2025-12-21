@@ -5,19 +5,18 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\Customer\DeleteCustomerRequest;
-use Timatic\Requests\Customer\GetCustomerRequest;
-use Timatic\Requests\Customer\GetCustomersCollectionRequest;
-use Timatic\Requests\Customer\PatchCustomerRequest;
-use Timatic\Requests\Customer\PostCustomersRequest;
+use Timatic\Requests\Customer\CustomersCollectionRequest;
+use Timatic\Requests\Customer\CustomersDestroyRequest;
+use Timatic\Requests\Customer\CustomersShowRequest;
+use Timatic\Requests\Customer\CustomersStoreRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getCustomersCollection method in the Customer resource', function () {
+it('calls the customersCollection method in the Customer resource', function () {
     Saloon::fake([
-        GetCustomersCollectionRequest::class => MockResponse::make([
+        CustomersCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'customers',
@@ -26,7 +25,7 @@ it('calls the getCustomersCollection method in the Customer resource', function 
                         'externalId' => 'mock-id-123',
                         'name' => 'Mock value',
                         'hourlyRate' => 'Mock value',
-                        'accountManagerUserId' => 'mock-id-123',
+                        'accountManagerUserId' => 42,
                     ],
                 ],
                 1 => [
@@ -36,19 +35,19 @@ it('calls the getCustomersCollection method in the Customer resource', function 
                         'externalId' => 'mock-id-123',
                         'name' => 'Mock value',
                         'hourlyRate' => 'Mock value',
-                        'accountManagerUserId' => 'mock-id-123',
+                        'accountManagerUserId' => 42,
                     ],
                 ],
             ],
         ], 200),
     ]);
 
-    $request = (new GetCustomersCollectionRequest)
+    $request = (new CustomersCollectionRequest(pagesize: 123, pagenumber: 123))
         ->filter('externalId', 'external_id-123');
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetCustomersCollectionRequest $request) {
+    Saloon::assertSent(function (CustomersCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('filter[externalId]', 'external_id-123');
 
@@ -63,12 +62,12 @@ it('calls the getCustomersCollection method in the Customer resource', function 
         ->externalId->toBe('mock-id-123')
         ->name->toBe('Mock value')
         ->hourlyRate->toBe('Mock value')
-        ->accountManagerUserId->toBe('mock-id-123');
+        ->accountManagerUserId->toBe(42);
 });
 
-it('calls the postCustomers method in the Customer resource', function () {
+it('calls the customersStore method in the Customer resource', function () {
     $mockClient = Saloon::fake([
-        PostCustomersRequest::class => MockResponse::make([], 200),
+        CustomersStoreRequest::class => MockResponse::make([], 200),
     ]);
 
     // Create DTO with sample data
@@ -76,13 +75,13 @@ it('calls the postCustomers method in the Customer resource', function () {
         'externalId' => 'external_id-123',
         'name' => 'test name',
         'hourlyRate' => 'test value',
-        'accountManagerUserId' => 'account_manager_user_id-123',
+        'accountManagerUserId' => 42,
     ])->make();
 
-    $request = new PostCustomersRequest($dto);
+    $request = new CustomersStoreRequest($dto);
     $this->timaticConnector->send($request);
 
-    Saloon::assertSent(PostCustomersRequest::class);
+    Saloon::assertSent(CustomersStoreRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
@@ -92,16 +91,16 @@ it('calls the postCustomers method in the Customer resource', function () {
             ->externalId->toBe('external_id-123')
             ->name->toBe('test name')
             ->hourlyRate->toBe('test value')
-            ->accountManagerUserId->toBe('account_manager_user_id-123')
+            ->accountManagerUserId->toBe(42)
             );
 
         return true;
     });
 });
 
-it('calls the getCustomer method in the Customer resource', function () {
+it('calls the customersShow method in the Customer resource', function () {
     Saloon::fake([
-        GetCustomerRequest::class => MockResponse::make([
+        CustomersShowRequest::class => MockResponse::make([
             'data' => [
                 'type' => 'customers',
                 'id' => 'mock-id-123',
@@ -109,18 +108,18 @@ it('calls the getCustomer method in the Customer resource', function () {
                     'externalId' => 'mock-id-123',
                     'name' => 'Mock value',
                     'hourlyRate' => 'Mock value',
-                    'accountManagerUserId' => 'mock-id-123',
+                    'accountManagerUserId' => 42,
                 ],
             ],
         ], 200),
     ]);
 
-    $request = new GetCustomerRequest(
-        customerId: 'test string'
+    $request = new CustomersShowRequest(
+        customerId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetCustomerRequest::class);
+    Saloon::assertSent(CustomersShowRequest::class);
 
     expect($response->status())->toBe(200);
 
@@ -130,53 +129,20 @@ it('calls the getCustomer method in the Customer resource', function () {
         ->externalId->toBe('mock-id-123')
         ->name->toBe('Mock value')
         ->hourlyRate->toBe('Mock value')
-        ->accountManagerUserId->toBe('mock-id-123');
+        ->accountManagerUserId->toBe(42);
 });
 
-it('calls the deleteCustomer method in the Customer resource', function () {
+it('calls the customersDestroy method in the Customer resource', function () {
     Saloon::fake([
-        DeleteCustomerRequest::class => MockResponse::make([], 200),
+        CustomersDestroyRequest::class => MockResponse::make([], 200),
     ]);
 
-    $request = new DeleteCustomerRequest(
-        customerId: 'test string'
+    $request = new CustomersDestroyRequest(
+        customerId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(DeleteCustomerRequest::class);
+    Saloon::assertSent(CustomersDestroyRequest::class);
 
     expect($response->status())->toBe(200);
-});
-
-it('calls the patchCustomer method in the Customer resource', function () {
-    $mockClient = Saloon::fake([
-        PatchCustomerRequest::class => MockResponse::make([], 200),
-    ]);
-
-    // Create DTO with sample data
-    $dto = \Timatic\Dto\Customer::factory()->state([
-        'externalId' => 'external_id-123',
-        'name' => 'test name',
-        'hourlyRate' => 'test value',
-        'accountManagerUserId' => 'account_manager_user_id-123',
-    ])->make();
-
-    $request = new PatchCustomerRequest(customerId: 'test string', data: $dto);
-    $this->timaticConnector->send($request);
-
-    Saloon::assertSent(PatchCustomerRequest::class);
-
-    $mockClient->assertSent(function (Request $request) {
-        expect($request->body()->all())
-            ->toHaveKey('data')
-            ->data->type->toBe('customers')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('external_id-123')
-            ->name->toBe('test name')
-            ->hourlyRate->toBe('test value')
-            ->accountManagerUserId->toBe('account_manager_user_id-123')
-            );
-
-        return true;
-    });
 });

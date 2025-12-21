@@ -7,6 +7,9 @@ namespace Timatic\Dto;
 use Timatic\Hydration\Attributes\Property;
 use Timatic\Hydration\Model;
 
+/**
+ * BudgetType
+ */
 class BudgetType extends Model
 {
     #[Property]
@@ -19,7 +22,7 @@ class BudgetType extends Model
     public ?bool $hasChangeTicket;
 
     #[Property]
-    public ?string $renewalFrequencies;
+    public ?array $renewalFrequencies;
 
     #[Property]
     public ?bool $hasSupervisor;

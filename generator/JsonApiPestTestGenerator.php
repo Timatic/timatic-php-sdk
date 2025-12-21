@@ -177,6 +177,7 @@ class JsonApiPestTestGenerator extends PestTestGenerator
 
         if ($isCollection) {
             $className .= 'Collection';
+            $className = str_replace('Index', '', $className);
         }
 
         if (! str_ends_with($className, 'Request')) {

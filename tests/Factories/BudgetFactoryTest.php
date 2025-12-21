@@ -13,7 +13,7 @@ test('it can create a budget using factory', function () {
         ->toBeInstanceOf(Budget::class)
         ->title->toBe('Project Budget')
         ->totalPrice->toBeString()
-        ->customerId->toBeString();
+        ->customerId->toBeInt();
 });
 
 test('it can create multiple budgets using factory', function () {

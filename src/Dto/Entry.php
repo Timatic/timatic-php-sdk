@@ -10,6 +10,9 @@ use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
 use Timatic\Hydration\RelationType;
 
+/**
+ * Entry
+ */
 class Entry extends Model
 {
     #[Property]
@@ -25,28 +28,28 @@ class Entry extends Model
     public ?string $ticketType;
 
     #[Property]
-    public ?string $customerId;
+    public ?int $customerId;
 
     #[Property]
     public ?string $customerName;
 
     #[Property]
-    public ?string $hourlyRate;
+    public ?float $hourlyRate;
 
     #[Property]
     public ?bool $hadEmergencyShift;
 
     #[Property]
-    public ?string $budgetId;
+    public ?int $budgetId;
 
     #[Property]
-    public ?bool $isPaidPerHour;
+    public ?string $isPaidPerHour;
 
     #[Property]
     public ?int $minutesSpent;
 
     #[Property]
-    public ?string $userId;
+    public ?int $userId;
 
     #[Property]
     public ?string $userEmail;
@@ -55,7 +58,7 @@ class Entry extends Model
     public ?string $userFullName;
 
     #[Property]
-    public ?string $createdByUserId;
+    public ?int $createdByUserId;
 
     #[Property]
     public ?string $createdByUserEmail;

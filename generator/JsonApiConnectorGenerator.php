@@ -35,8 +35,16 @@ class JsonApiConnectorGenerator extends ConnectorGenerator
         $namespace->addUse(JsonApiPaginator::class);
         $namespace->addUse(TimaticResponse::class);
 
-        // Keep the empty constructor for test compatibility
-        // (PestTestGenerator needs it)
+        // Remove any constructor parameters added by parent generator
+        // (we handle auth via config in defaultHeaders)
+        if ($classType->hasMethod('__construct')) {
+            $constructor = $classType->getMethod('__construct');
+            // Clear all parameters and body - we don't need constructor auth
+            foreach ($constructor->getParameters() as $param) {
+                $constructor->removeParameter($param->getName());
+            }
+            $constructor->setBody('');
+        }
 
         // Override resolveBaseUrl to use Laravel config
         $resolveBaseUrl = $classType->getMethod('resolveBaseUrl');

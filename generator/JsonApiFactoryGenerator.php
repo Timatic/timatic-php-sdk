@@ -21,6 +21,12 @@ class JsonApiFactoryGenerator extends Generator
     {
         if ($specification->components) {
             foreach ($specification->components->schemas as $className => $schema) {
+                // Skip schemas that aren't useful
+                if (str_ends_with($className, 'Identifier') ||
+                    str_ends_with($className, 'Request')) {
+                    continue;
+                }
+
                 $dtoClassName = NameHelper::dtoClassName(NameHelper::safeClassName($className));
                 $this->generateFactoryClass($dtoClassName);
             }
@@ -166,28 +172,7 @@ class JsonApiFactoryGenerator extends Generator
             return 'Carbon::now()->subDays($this->faker->numberBetween(0, 365))';
         }
 
-        // Handle specific property names (case-insensitive)
-        if (str_contains($lowerName, 'email')) {
-            return '$this->faker->safeEmail()';
-        }
-
-        if (str_ends_with($propertyName, 'Id') || str_ends_with($lowerName, '_id')) {
-            return '$this->faker->uuid()';
-        }
-
-        if ($lowerName === 'hourlyrate' || $lowerName === 'hourly_rate' || str_contains($lowerName, 'rate')) {
-            return "number_format(\$this->faker->randomFloat(2, 50, 150), 2, '.', '')";
-        }
-
-        if (str_contains($lowerName, 'description')) {
-            return '$this->faker->sentence()';
-        }
-
-        if (str_contains($lowerName, 'title')) {
-            return '$this->faker->sentence()';
-        }
-
-        // Handle by property type
+        // Handle by property type FIRST (type takes precedence over naming)
         if ($propertyType) {
             $baseType = ltrim($propertyType, '?\\');
 
@@ -196,6 +181,10 @@ class JsonApiFactoryGenerator extends Generator
             }
 
             if ($baseType === 'int' || $baseType === 'integer') {
+                // For integer IDs, generate a number not a UUID
+                if (str_ends_with($propertyName, 'Id') || str_ends_with($lowerName, '_id')) {
+                    return '$this->faker->numberBetween(1, 1000)';
+                }
                 // Special cases for specific property names
                 if (str_contains($lowerName, 'minute')) {
                     return '$this->faker->numberBetween(15, 480)';
@@ -205,8 +194,39 @@ class JsonApiFactoryGenerator extends Generator
             }
 
             if ($baseType === 'float' || $baseType === 'double') {
-                return '$this->faker->randomFloat(2, 1, 1000)';
+                return '$this->faker->randomFloat(2, 0, 1000)';
             }
+
+            if ($baseType === 'object') {
+                return '(object) []';
+            }
+
+            if ($baseType === 'array') {
+                return '[]';
+            }
+        }
+
+        // Handle specific property names (case-insensitive) - only for string types
+        if (str_contains($lowerName, 'email')) {
+            return '$this->faker->safeEmail()';
+        }
+
+        // ID fields - only generate UUID for string types
+        if ((str_ends_with($propertyName, 'Id') || str_ends_with($lowerName, '_id')) && (! $propertyType || str_contains($propertyType, 'string'))) {
+            return '$this->faker->uuid()';
+        }
+
+        // Rate fields - only for string types (object types handled above)
+        if (($lowerName === 'hourlyrate' || $lowerName === 'hourly_rate' || str_contains($lowerName, 'rate')) && (! $propertyType || str_contains($propertyType, 'string'))) {
+            return "number_format(\$this->faker->randomFloat(2, 50, 150), 2, '.', '')";
+        }
+
+        if (str_contains($lowerName, 'description')) {
+            return '$this->faker->sentence()';
+        }
+
+        if (str_contains($lowerName, 'title')) {
+            return '$this->faker->sentence()';
         }
 
         // Handle by property name patterns

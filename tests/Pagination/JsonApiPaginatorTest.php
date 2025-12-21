@@ -4,7 +4,7 @@ use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Dto\Entry;
-use Timatic\Requests\Entry\GetEntriesCollectionRequest;
+use Timatic\Requests\Entry\EntriesCollectionRequest;
 use Timatic\TimaticConnector;
 
 beforeEach(function () {
@@ -14,7 +14,7 @@ beforeEach(function () {
 it('returns DTOs instead of raw JSON:API fields when paginating', function () {
     // Mock the first page response with pagination links
     Saloon::fake([
-        GetEntriesCollectionRequest::class => MockResponse::make([
+        EntriesCollectionRequest::class => MockResponse::make([
             'data' => [
                 [
                     'type' => 'entries',
@@ -49,7 +49,7 @@ it('returns DTOs instead of raw JSON:API fields when paginating', function () {
         ], 200),
     ]);
 
-    $request = new GetEntriesCollectionRequest;
+    $request = new EntriesCollectionRequest;
     $paginator = $this->timaticConnector->paginate($request);
 
     // Get items from first page (convert Generator to array)
@@ -123,7 +123,7 @@ it('correctly follows pagination using links.next URL', function () {
 
     ]);
 
-    $request = new GetEntriesCollectionRequest;
+    $request = new EntriesCollectionRequest;
     $paginator = $this->timaticConnector->paginate($request);
 
     // Collect all items across all pages using items() method
@@ -140,20 +140,20 @@ it('correctly follows pagination using links.next URL', function () {
 
 it('applies pagination query parameters correctly', function () {
     Saloon::fake([
-        GetEntriesCollectionRequest::class => MockResponse::make([
+        EntriesCollectionRequest::class => MockResponse::make([
             'data' => [],
             'links' => ['next' => null],
         ], 200),
     ]);
 
     $paginator = $this->timaticConnector
-        ->paginate(new GetEntriesCollectionRequest)
+        ->paginate(new EntriesCollectionRequest)
         ->setPerPageLimit(123);
 
     $paginator->dtoCollection();
 
     // Verify the request had the correct query parameters
-    Saloon::assertSent(function (GetEntriesCollectionRequest $request) {
+    Saloon::assertSent(function (EntriesCollectionRequest $request) {
         $query = $request->query()->all();
 
         expect($query)->toHaveKey('page[number]', 1);

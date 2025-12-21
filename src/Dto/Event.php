@@ -6,15 +6,20 @@ namespace Timatic\Dto;
 
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
+/**
+ * Event
+ */
 class Event extends Model
 {
     #[Property]
-    public ?string $userId;
+    public ?int $userId;
 
     #[Property]
-    public ?string $budgetId;
+    public ?int $budgetId;
 
     #[Property]
     public ?string $ticketId;
@@ -57,5 +62,8 @@ class Event extends Model
     public ?\Carbon\Carbon $updatedAt;
 
     #[Property]
-    public ?string $isInternal;
+    public ?bool $isInternal;
+
+    #[Relationship(Source::class, RelationType::One)]
+    public ?Source $source = null;
 }

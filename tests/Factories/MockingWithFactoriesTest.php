@@ -3,8 +3,8 @@
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Timatic\Dto\Budget;
-use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
-use Timatic\Requests\Budget\PostBudgetsRequest;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
+use Timatic\Requests\Budget\BudgetsStoreRequest;
 use Timatic\TimaticConnector;
 
 test('it can mock a single budget response using factory', function () {
@@ -14,7 +14,7 @@ test('it can mock a single budget response using factory', function () {
     ])->make();
 
     $mockClient = new MockClient([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [$budget->toJsonApi()],
         ], 200),
     ]);
@@ -22,7 +22,7 @@ test('it can mock a single budget response using factory', function () {
     $connector = new TimaticConnector;
     $connector->withMockClient($mockClient);
 
-    $response = $connector->send(new GetBudgetsCollectionRequest);
+    $response = $connector->send(new BudgetsCollectionRequest);
     $dtos = $response->dto();
 
     expect($dtos)->toBeInstanceOf(\Illuminate\Support\Collection::class);
@@ -37,7 +37,7 @@ test('it can mock a collection response using factories', function () {
     $budgets = Budget::factory()->withId()->count(3)->make();
 
     $mockClient = new MockClient([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => $budgets->map(fn ($budget) => $budget->toJsonApi())->toArray(),
         ], 200),
     ]);
@@ -45,7 +45,7 @@ test('it can mock a collection response using factories', function () {
     $connector = new TimaticConnector;
     $connector->withMockClient($mockClient);
 
-    $response = $connector->send(new GetBudgetsCollectionRequest);
+    $response = $connector->send(new BudgetsCollectionRequest);
     $dtos = $response->dto();
 
     expect($dtos)->toHaveCount(3);
@@ -57,7 +57,7 @@ test('it can mock a POST request to create a budget using factory', function () 
     $budgetToCreate = Budget::factory()->state([
         'title' => 'New Budget',
         'totalPrice' => '5000.00',
-        'customerId' => 'customer-123',
+        'customerId' => 123,
     ])->make();
 
     // Mock the response with an ID
@@ -65,11 +65,11 @@ test('it can mock a POST request to create a budget using factory', function () 
         'id' => 'created-456',
         'title' => 'New Budget',
         'totalPrice' => '5000.00',
-        'customerId' => 'customer-123',
+        'customerId' => 123,
     ])->make();
 
     $mockClient = new MockClient([
-        PostBudgetsRequest::class => MockResponse::make([
+        BudgetsStoreRequest::class => MockResponse::make([
             'data' => $createdBudget->toJsonApi(),
         ], 201),
     ]);
@@ -78,7 +78,7 @@ test('it can mock a POST request to create a budget using factory', function () 
     $connector->withMockClient($mockClient);
 
     // Send POST request
-    $response = $connector->send(new PostBudgetsRequest($budgetToCreate));
+    $response = $connector->send(new BudgetsStoreRequest($budgetToCreate));
 
     // Assert the request body was sent correctly
     $mockClient->assertSent(function (\Saloon\Http\Request $request) {
@@ -87,7 +87,7 @@ test('it can mock a POST request to create a budget using factory', function () 
         return $body['data']['type'] === 'budgets'
             && $body['data']['attributes']['title'] === 'New Budget'
             && $body['data']['attributes']['totalPrice'] === '5000.00'
-            && $body['data']['attributes']['customerId'] === 'customer-123';
+            && $body['data']['attributes']['customerId'] === 123;
     });
 
     // Assert response
@@ -100,7 +100,7 @@ test('it can mock a POST request to create a budget using factory', function () 
         ->id->toBe('created-456')
         ->title->toBe('New Budget')
         ->totalPrice->toBe('5000.00')
-        ->customerId->toBe('customer-123');
+        ->customerId->toBe(123);
 });
 
 test('it preserves all factory-generated attributes in json api format', function () {
@@ -108,7 +108,7 @@ test('it preserves all factory-generated attributes in json api format', functio
         'id' => '123',
         'title' => 'Full Budget',
         'totalPrice' => '5000.00',
-        'customerId' => 'customer-456',
+        'customerId' => 456,
         'budgetTypeId' => 'type-789',
         'showToCustomer' => true,
         'isArchived' => false,
@@ -119,7 +119,7 @@ test('it preserves all factory-generated attributes in json api format', functio
     expect($jsonApi)
         ->attributes->toHaveKey('title', 'Full Budget')
         ->toHaveKey('totalPrice', '5000.00')
-        ->toHaveKey('customerId', 'customer-456')
+        ->toHaveKey('customerId', 456)
         ->toHaveKey('budgetTypeId', 'type-789')
         ->toHaveKey('showToCustomer', true)
         ->toHaveKey('isArchived', false);

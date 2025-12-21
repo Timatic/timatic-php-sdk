@@ -4,15 +4,15 @@
 
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\BudgetType\GetBudgetTypesCollectionRequest;
+use Timatic\Requests\BudgetType\BudgetTypesCollectionRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getBudgetTypesCollection method in the BudgetType resource', function () {
+it('calls the budgetTypesCollection method in the BudgetType resource', function () {
     Saloon::fake([
-        GetBudgetTypesCollectionRequest::class => MockResponse::make([
+        BudgetTypesCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'budgetTypes',
@@ -21,7 +21,7 @@ it('calls the getBudgetTypesCollection method in the BudgetType resource', funct
                         'title' => 'Mock value',
                         'isArchived' => true,
                         'hasChangeTicket' => true,
-                        'renewalFrequencies' => 'Mock value',
+                        'renewalFrequencies' => [],
                         'hasSupervisor' => true,
                         'hasContractId' => true,
                         'hasTotalPrice' => true,
@@ -36,7 +36,7 @@ it('calls the getBudgetTypesCollection method in the BudgetType resource', funct
                         'title' => 'Mock value',
                         'isArchived' => true,
                         'hasChangeTicket' => true,
-                        'renewalFrequencies' => 'Mock value',
+                        'renewalFrequencies' => [],
                         'hasSupervisor' => true,
                         'hasContractId' => true,
                         'hasTotalPrice' => true,
@@ -48,11 +48,11 @@ it('calls the getBudgetTypesCollection method in the BudgetType resource', funct
         ], 200),
     ]);
 
-    $request = (new GetBudgetTypesCollectionRequest);
+    $request = (new BudgetTypesCollectionRequest);
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetBudgetTypesCollectionRequest $request) {
+    Saloon::assertSent(function (BudgetTypesCollectionRequest $request) {
         $query = $request->query()->all();
 
         return true;
@@ -66,7 +66,6 @@ it('calls the getBudgetTypesCollection method in the BudgetType resource', funct
         ->title->toBe('Mock value')
         ->isArchived->toBe(true)
         ->hasChangeTicket->toBe(true)
-        ->renewalFrequencies->toBe('Mock value')
         ->hasSupervisor->toBe(true)
         ->hasContractId->toBe(true)
         ->hasTotalPrice->toBe(true)

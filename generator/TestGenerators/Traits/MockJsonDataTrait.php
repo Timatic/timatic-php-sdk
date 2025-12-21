@@ -16,6 +16,8 @@ trait MockJsonDataTrait
 
             if (is_array($value)) {
                 $lines[] = "$keyStr => ".$this->formatArrayAsPhp($value).',';
+            } elseif (is_object($value)) {
+                $lines[] = "$keyStr => (object) [],";
             } elseif (is_string($value)) {
                 $escapedValue = addslashes($value);
                 $lines[] = "$keyStr => '$escapedValue',";

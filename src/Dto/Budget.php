@@ -11,13 +11,16 @@ use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
 use Timatic\Hydration\RelationType;
 
+/**
+ * Budget
+ */
 class Budget extends Model
 {
     #[Property]
     public ?string $budgetTypeId;
 
     #[Property]
-    public ?string $customerId;
+    public ?int $customerId;
 
     #[Property]
     public ?bool $showToCustomer;
@@ -63,7 +66,7 @@ class Budget extends Model
     public ?\Carbon\Carbon $updatedAt;
 
     #[Property]
-    public ?string $supervisorUserId;
+    public ?int $supervisorUserId;
 
     /** @var Collection<int, Entry>|null */
     #[Relationship(Entry::class, RelationType::Many)]

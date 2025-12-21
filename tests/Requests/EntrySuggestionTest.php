@@ -4,17 +4,17 @@
 
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Requests\EntrySuggestion\DeleteEntrySuggestionRequest;
-use Timatic\Requests\EntrySuggestion\GetEntrySuggestionRequest;
-use Timatic\Requests\EntrySuggestion\GetEntrySuggestionsCollectionRequest;
+use Timatic\Requests\EntrySuggestion\EntrySuggestionsCollectionRequest;
+use Timatic\Requests\EntrySuggestion\EntrySuggestionsDestroyRequest;
+use Timatic\Requests\EntrySuggestion\EntrySuggestionsShowRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
 });
 
-it('calls the getEntrySuggestionsCollection method in the EntrySuggestion resource', function () {
+it('calls the entrySuggestionsCollection method in the EntrySuggestion resource', function () {
     Saloon::fake([
-        GetEntrySuggestionsCollectionRequest::class => MockResponse::make([
+        EntrySuggestionsCollectionRequest::class => MockResponse::make([
             'data' => [
                 0 => [
                     'type' => 'entrySuggestions',
@@ -23,11 +23,21 @@ it('calls the getEntrySuggestionsCollection method in the EntrySuggestion resour
                         'ticketId' => 'mock-id-123',
                         'ticketNumber' => 'Mock value',
                         'customerId' => 'mock-id-123',
-                        'userId' => 'mock-id-123',
+                        'userId' => 42,
                         'date' => 'Mock value',
                         'ticketTitle' => 'Mock value',
                         'ticketType' => 'Mock value',
-                        'budgetId' => 'mock-id-123',
+                        'budgetId' => 42,
+                    ],
+                    'relationships' => [
+                        'activities' => [
+                            'data' => [
+                                0 => [
+                                    'type' => 'activities',
+                                    'id' => 'related-activities-1',
+                                ],
+                            ],
+                        ],
                     ],
                 ],
                 1 => [
@@ -37,25 +47,44 @@ it('calls the getEntrySuggestionsCollection method in the EntrySuggestion resour
                         'ticketId' => 'mock-id-123',
                         'ticketNumber' => 'Mock value',
                         'customerId' => 'mock-id-123',
-                        'userId' => 'mock-id-123',
+                        'userId' => 42,
                         'date' => 'Mock value',
                         'ticketTitle' => 'Mock value',
                         'ticketType' => 'Mock value',
-                        'budgetId' => 'mock-id-123',
+                        'budgetId' => 42,
                     ],
+                    'relationships' => [
+                        'activities' => [
+                            'data' => [
+                                0 => [
+                                    'type' => 'activities',
+                                    'id' => 'related-activities-1',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                0 => [
+                    'type' => 'activities',
+                    'id' => 'related-activities-1',
+                    'attributes' => [],
                 ],
             ],
         ], 200),
     ]);
 
-    $request = (new GetEntrySuggestionsCollectionRequest)
-        ->filter('date', 'test value');
+    $request = (new EntrySuggestionsCollectionRequest(pagesize: 123, pagenumber: 123))
+        ->filter('date', 'test value')
+        ->includeActivities();
 
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetEntrySuggestionsCollectionRequest $request) {
+    Saloon::assertSent(function (EntrySuggestionsCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('filter[date]', 'test value');
+        expect($query)->toHaveKey('include', 'activities');
 
         return true;
     });
@@ -68,16 +97,17 @@ it('calls the getEntrySuggestionsCollection method in the EntrySuggestion resour
         ->ticketId->toBe('mock-id-123')
         ->ticketNumber->toBe('Mock value')
         ->customerId->toBe('mock-id-123')
-        ->userId->toBe('mock-id-123')
+        ->userId->toBe(42)
         ->date->toBe('Mock value')
         ->ticketTitle->toBe('Mock value')
         ->ticketType->toBe('Mock value')
-        ->budgetId->toBe('mock-id-123');
+        ->budgetId->toBe(42)
+        ->activities->not->toBeNull();
 });
 
-it('calls the getEntrySuggestion method in the EntrySuggestion resource', function () {
+it('calls the entrySuggestionsShow method in the EntrySuggestion resource', function () {
     Saloon::fake([
-        GetEntrySuggestionRequest::class => MockResponse::make([
+        EntrySuggestionsShowRequest::class => MockResponse::make([
             'data' => [
                 'type' => 'entrySuggestions',
                 'id' => 'mock-id-123',
@@ -85,22 +115,22 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
                     'ticketId' => 'mock-id-123',
                     'ticketNumber' => 'Mock value',
                     'customerId' => 'mock-id-123',
-                    'userId' => 'mock-id-123',
+                    'userId' => 42,
                     'date' => 'Mock value',
                     'ticketTitle' => 'Mock value',
                     'ticketType' => 'Mock value',
-                    'budgetId' => 'mock-id-123',
+                    'budgetId' => 42,
                 ],
             ],
         ], 200),
     ]);
 
-    $request = new GetEntrySuggestionRequest(
-        entrySuggestionId: 'test string'
+    $request = new EntrySuggestionsShowRequest(
+        entrySuggestionId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(GetEntrySuggestionRequest::class);
+    Saloon::assertSent(EntrySuggestionsShowRequest::class);
 
     expect($response->status())->toBe(200);
 
@@ -110,24 +140,24 @@ it('calls the getEntrySuggestion method in the EntrySuggestion resource', functi
         ->ticketId->toBe('mock-id-123')
         ->ticketNumber->toBe('Mock value')
         ->customerId->toBe('mock-id-123')
-        ->userId->toBe('mock-id-123')
+        ->userId->toBe(42)
         ->date->toBe('Mock value')
         ->ticketTitle->toBe('Mock value')
         ->ticketType->toBe('Mock value')
-        ->budgetId->toBe('mock-id-123');
+        ->budgetId->toBe(42);
 });
 
-it('calls the deleteEntrySuggestion method in the EntrySuggestion resource', function () {
+it('calls the entrySuggestionsDestroy method in the EntrySuggestion resource', function () {
     Saloon::fake([
-        DeleteEntrySuggestionRequest::class => MockResponse::make([], 200),
+        EntrySuggestionsDestroyRequest::class => MockResponse::make([], 200),
     ]);
 
-    $request = new DeleteEntrySuggestionRequest(
-        entrySuggestionId: 'test string'
+    $request = new EntrySuggestionsDestroyRequest(
+        entrySuggestionId: 123
     );
     $response = $this->timaticConnector->send($request);
 
-    Saloon::assertSent(DeleteEntrySuggestionRequest::class);
+    Saloon::assertSent(EntrySuggestionsDestroyRequest::class);
 
     expect($response->status())->toBe(200);
 });

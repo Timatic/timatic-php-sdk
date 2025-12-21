@@ -6,7 +6,7 @@ use Timatic\Dto\Budget;
 use Timatic\Dto\BudgetType;
 use Timatic\Dto\Customer;
 use Timatic\Dto\Entry;
-use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\TimaticConnector;
 
 beforeEach(function () {
@@ -15,7 +15,7 @@ beforeEach(function () {
 
 it('can include relationships using fluent API', function () {
     Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [
                 [
                     'type' => 'budgets',
@@ -23,7 +23,7 @@ it('can include relationships using fluent API', function () {
                     'attributes' => [
                         'title' => 'Test Budget',
                         'budgetTypeId' => 'type-1',
-                        'customerId' => 'customer-1',
+                        'customerId' => 1,
                     ],
                     'relationships' => [
                         'budgetType' => [
@@ -66,7 +66,7 @@ it('can include relationships using fluent API', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetsCollectionRequest)
+    $request = (new BudgetsCollectionRequest)
         ->includeBudgetType()
         ->includeCustomer()
         ->includeEntries();
@@ -74,7 +74,7 @@ it('can include relationships using fluent API', function () {
     $response = $this->timaticConnector->send($request);
 
     // Verify include parameter was sent
-    Saloon::assertSent(function (GetBudgetsCollectionRequest $request) {
+    Saloon::assertSent(function (BudgetsCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('include', 'budgetType,customer,entries');
 
@@ -98,17 +98,17 @@ it('can include relationships using fluent API', function () {
 
 it('can use generic include method', function () {
     Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [],
         ], 200),
     ]);
 
-    $request = (new GetBudgetsCollectionRequest)
+    $request = (new BudgetsCollectionRequest)
         ->include('budgetType', 'customer', 'entries');
 
     $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetBudgetsCollectionRequest $request) {
+    Saloon::assertSent(function (BudgetsCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('include', 'budgetType,customer,entries');
 
@@ -118,16 +118,16 @@ it('can use generic include method', function () {
 
 it('does not send include parameter when no includes are added', function () {
     Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [],
         ], 200),
     ]);
 
-    $request = new GetBudgetsCollectionRequest;
+    $request = new BudgetsCollectionRequest;
 
     $this->timaticConnector->send($request);
 
-    Saloon::assertSent(function (GetBudgetsCollectionRequest $request) {
+    Saloon::assertSent(function (BudgetsCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->not->toHaveKey('include');
 
@@ -137,7 +137,7 @@ it('does not send include parameter when no includes are added', function () {
 
 it('handles missing included data gracefully', function () {
     Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [
                 [
                     'type' => 'budgets',
@@ -156,7 +156,7 @@ it('handles missing included data gracefully', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetsCollectionRequest)
+    $request = (new BudgetsCollectionRequest)
         ->includeBudgetType();
 
     $response = $this->timaticConnector->send($request);
@@ -169,7 +169,7 @@ it('handles missing included data gracefully', function () {
 
 it('handles many relationships correctly', function () {
     Saloon::fake([
-        GetBudgetsCollectionRequest::class => MockResponse::make([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [
                 [
                     'type' => 'budgets',
@@ -208,7 +208,7 @@ it('handles many relationships correctly', function () {
         ], 200),
     ]);
 
-    $request = (new GetBudgetsCollectionRequest)
+    $request = (new BudgetsCollectionRequest)
         ->includeEntries();
 
     $response = $this->timaticConnector->send($request);
