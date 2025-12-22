@@ -6,7 +6,9 @@ namespace Timatic\Dto;
 
 use Timatic\Hydration\Attributes\DateTime;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 use Timatic\Hydration\Model;
+use Timatic\Hydration\RelationType;
 
 /**
  * Customer
@@ -32,4 +34,7 @@ class Customer extends Model
     #[Property]
     #[DateTime]
     public ?\Carbon\Carbon $updatedAt;
+
+    #[Relationship(User::class, RelationType::One)]
+    public ?User $accountManager = null;
 }

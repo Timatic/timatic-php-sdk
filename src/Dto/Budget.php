@@ -75,6 +75,12 @@ class Budget extends Model
     #[Relationship(BudgetType::class, RelationType::One)]
     public ?BudgetType $budgetType = null;
 
+    #[Relationship(Period::class, RelationType::One)]
+    public ?Period $currentPeriod = null;
+
+    #[Relationship(Period::class, RelationType::One)]
+    public ?Period $lastPeriod = null;
+
     #[Relationship(Customer::class, RelationType::One)]
     public ?Customer $customer = null;
 }

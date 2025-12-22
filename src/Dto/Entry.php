@@ -101,6 +101,21 @@ class Entry extends Model
     #[Property]
     public ?bool $isBasedOnSuggestion;
 
+    #[Relationship(Overtime::class, RelationType::One)]
+    public ?Overtime $personalOvertime = null;
+
+    #[Relationship(Overtime::class, RelationType::One)]
+    public ?Overtime $customerOvertime = null;
+
+    #[Relationship(Correction::class, RelationType::One)]
+    public ?Correction $correctionEntryCorrection = null;
+
+    #[Relationship(Correction::class, RelationType::One)]
+    public ?Correction $correctedEntryCorrection = null;
+
+    #[Relationship(Correction::class, RelationType::One)]
+    public ?Correction $newEntryCorrection = null;
+
     #[Relationship(Customer::class, RelationType::One)]
     public ?Customer $customer = null;
 

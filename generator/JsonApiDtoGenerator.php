@@ -283,7 +283,7 @@ class JsonApiDtoGenerator extends Generator
 
         foreach ($relationships->properties as $relationName => $relationSpec) {
             $relationType = $this->detectRelationType($relationName, $relationSpec);
-            $relatedModel = $this->detectRelatedModel($relationName);
+            $relatedModel = $this->detectRelatedModel($relationName, $relationSpec);
 
             if (! $relatedModel) {
                 // Skip if we can't determine the related model
@@ -340,16 +340,56 @@ class JsonApiDtoGenerator extends Generator
     }
 
     /**
-     * Detect related model class name from relationship name
+     * Detect related model class name from relationship schema
      */
-    protected function detectRelatedModel(string $relationName): ?string
+    protected function detectRelatedModel(string $relationName, Schema|Reference $relationSpec): ?string
     {
-        // Convert relationship name to model name
-        // Examples:
-        //   budgetType -> BudgetType
-        //   entries -> Entry
-        //   currentPeriod -> Period
+        // Look at relationship.properties.data.anyOf to find the schema reference
+        // Example: for budget.currentPeriod, we find PeriodIdentifier in anyOf
+        // Then we strip "Identifier" to get "Period"
 
+        if ($relationSpec instanceof Reference) {
+            $relationSpec = $relationSpec->resolve();
+        }
+
+        // Navigate to properties.data.anyOf
+        if (! isset($relationSpec->properties['data'])) {
+            return null;
+        }
+
+        $dataSpec = $relationSpec->properties['data'];
+
+        if ($dataSpec instanceof Reference) {
+            $dataSpec = $dataSpec->resolve();
+        }
+
+        // Check for anyOf (union types)
+        if (isset($dataSpec->anyOf) && is_array($dataSpec->anyOf)) {
+            foreach ($dataSpec->anyOf as $typeSchema) {
+                if ($typeSchema instanceof Reference) {
+                    // Extract schema name from reference
+                    // e.g., #/components/schemas/PeriodIdentifier -> PeriodIdentifier
+                    $schemaName = Str::afterLast($typeSchema->getReference(), '/');
+
+                    // Skip null types
+                    if ($schemaName === 'null') {
+                        continue;
+                    }
+
+                    // Strip "Identifier" suffix to get the DTO name
+                    if (Str::endsWith($schemaName, 'Identifier')) {
+                        $modelName = Str::beforeLast($schemaName, 'Identifier');
+
+                        return $modelName;
+                    }
+
+                    // If no "Identifier" suffix, use as-is
+                    return $schemaName;
+                }
+            }
+        }
+
+        // Fallback: convert relationship name to model name
         $singular = Str::singular($relationName);
         $modelName = NameHelper::dtoClassName($singular);
 
