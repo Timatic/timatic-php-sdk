@@ -9,6 +9,7 @@ use Timatic\Requests\Team\TeamsCollectionRequest;
 use Timatic\Requests\Team\TeamsDestroyRequest;
 use Timatic\Requests\Team\TeamsShowRequest;
 use Timatic\Requests\Team\TeamsStoreRequest;
+use Timatic\Requests\Team\TeamsUpdateRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
@@ -129,4 +130,33 @@ it('calls the teamsDestroy method in the Team resource', function () {
     Saloon::assertSent(TeamsDestroyRequest::class);
 
     expect($response->status())->toBe(200);
+});
+
+it('calls the teamsUpdate method in the Team resource', function () {
+    $mockClient = Saloon::fake([
+        TeamsUpdateRequest::class => MockResponse::make([], 200),
+    ]);
+
+    // Create DTO with sample data
+    $dto = \Timatic\Dto\Team::factory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
+    ])->make();
+
+    $request = new TeamsUpdateRequest(teamId: 42, data: $dto);
+    $this->timaticConnector->send($request);
+
+    Saloon::assertSent(TeamsUpdateRequest::class);
+
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('teams')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
+            );
+
+        return true;
+    });
 });

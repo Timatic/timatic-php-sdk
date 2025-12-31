@@ -9,6 +9,7 @@ use Timatic\Requests\User\UsersCollectionRequest;
 use Timatic\Requests\User\UsersDestroyRequest;
 use Timatic\Requests\User\UsersShowRequest;
 use Timatic\Requests\User\UsersStoreRequest;
+use Timatic\Requests\User\UsersUpdateRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
@@ -204,4 +205,37 @@ it('calls the usersDestroy method in the User resource', function () {
     Saloon::assertSent(UsersDestroyRequest::class);
 
     expect($response->status())->toBe(200);
+});
+
+it('calls the usersUpdate method in the User resource', function () {
+    $mockClient = Saloon::fake([
+        UsersUpdateRequest::class => MockResponse::make([], 200),
+    ]);
+
+    // Create DTO with sample data
+    $dto = \Timatic\Dto\User::factory()->state([
+        'externalId' => 'external_id-123',
+        'email' => 'test@example.com',
+        'givenName' => 'test value',
+        'familyName' => 'test value',
+    ])->make();
+
+    $request = new UsersUpdateRequest(userId: 42, data: $dto);
+    $this->timaticConnector->send($request);
+
+    Saloon::assertSent(UsersUpdateRequest::class);
+
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('users')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('external_id-123')
+            ->email->toBe('test@example.com')
+            ->givenName->toBe('test value')
+            ->familyName->toBe('test value')
+            );
+
+        return true;
+    });
 });

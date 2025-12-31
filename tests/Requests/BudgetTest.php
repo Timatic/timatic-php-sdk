@@ -10,6 +10,7 @@ use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsDestroyRequest;
 use Timatic\Requests\Budget\BudgetsShowRequest;
 use Timatic\Requests\Budget\BudgetsStoreRequest;
+use Timatic\Requests\Budget\BudgetsUpdateRequest;
 
 beforeEach(function () {
     $this->timaticConnector = new Timatic\TimaticConnector;
@@ -268,4 +269,37 @@ it('calls the budgetsDestroy method in the Budget resource', function () {
     Saloon::assertSent(BudgetsDestroyRequest::class);
 
     expect($response->status())->toBe(200);
+});
+
+it('calls the budgetsUpdate method in the Budget resource', function () {
+    $mockClient = Saloon::fake([
+        BudgetsUpdateRequest::class => MockResponse::make([], 200),
+    ]);
+
+    // Create DTO with sample data
+    $dto = \Timatic\Dto\Budget::factory()->state([
+        'budgetTypeId' => 'budget_type_id-123',
+        'customerId' => 42,
+        'showToCustomer' => true,
+        'changeId' => 'change_id-123',
+    ])->make();
+
+    $request = new BudgetsUpdateRequest(budgetId: 42, data: $dto);
+    $this->timaticConnector->send($request);
+
+    Saloon::assertSent(BudgetsUpdateRequest::class);
+
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('budgets')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->budgetTypeId->toBe('budget_type_id-123')
+            ->customerId->toBe(42)
+            ->showToCustomer->toBe(true)
+            ->changeId->toBe('change_id-123')
+            );
+
+        return true;
+    });
 });

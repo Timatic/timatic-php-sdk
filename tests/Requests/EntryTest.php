@@ -10,6 +10,7 @@ use Timatic\Requests\Entry\EntriesCollectionRequest;
 use Timatic\Requests\Entry\EntriesDestroyRequest;
 use Timatic\Requests\Entry\EntriesShowRequest;
 use Timatic\Requests\Entry\EntriesStoreRequest;
+use Timatic\Requests\Entry\EntriesUpdateRequest;
 use Timatic\Requests\Entry\EntryMarkAsInvoicedRequest;
 
 beforeEach(function () {
@@ -301,6 +302,39 @@ it('calls the entriesDestroy method in the Entry resource', function () {
     Saloon::assertSent(EntriesDestroyRequest::class);
 
     expect($response->status())->toBe(200);
+});
+
+it('calls the entriesUpdate method in the Entry resource', function () {
+    $mockClient = Saloon::fake([
+        EntriesUpdateRequest::class => MockResponse::make([], 200),
+    ]);
+
+    // Create DTO with sample data
+    $dto = \Timatic\Dto\Entry::factory()->state([
+        'ticketId' => 'ticket_id-123',
+        'ticketNumber' => 'test value',
+        'ticketTitle' => 'test value',
+        'ticketType' => 'test value',
+    ])->make();
+
+    $request = new EntriesUpdateRequest(entryId: 42, data: $dto);
+    $this->timaticConnector->send($request);
+
+    Saloon::assertSent(EntriesUpdateRequest::class);
+
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('entries')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->ticketId->toBe('ticket_id-123')
+            ->ticketNumber->toBe('test value')
+            ->ticketTitle->toBe('test value')
+            ->ticketType->toBe('test value')
+            );
+
+        return true;
+    });
 });
 
 it('calls the entryMarkAsInvoiced method in the Entry resource', function () {

@@ -20,25 +20,23 @@ use Timatic\Generator\JsonApiResourceGenerator;
 // Download OpenAPI spec
 $openApiPath = __DIR__.'/../openapi.json';
 
-if (file_exists($openApiPath)) {
-    echo "📥 Using existing OpenAPI specification...\n";
-    echo "✅ OpenAPI specification found\n\n";
-} else {
-    echo "📥 Downloading OpenAPI specification...\n";
-    $openApiJson = file_get_contents('https://api.app.timatic.test/docs/api.json', false, stream_context_create([
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-        ],
-    ]));
+echo "📥 Downloading latest OpenAPI specification...\n";
+$openApiJson = @file_get_contents('https://api.app.timatic.test/api.json', false, stream_context_create([
+    'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false,
+    ],
+]));
 
-    if (! $openApiJson) {
-        echo "❌ Failed to download OpenAPI specification\n";
-        exit(1);
-    }
-
+if ($openApiJson) {
     file_put_contents($openApiPath, $openApiJson);
     echo "✅ OpenAPI specification downloaded\n\n";
+} elseif (file_exists($openApiPath)) {
+    echo "⚠️  Failed to download, using existing cached specification\n";
+    echo "✅ Using cached OpenAPI specification\n\n";
+} else {
+    echo "❌ Failed to download OpenAPI specification and no cached version found\n";
+    exit(1);
 }
 
 // Clean up previously generated folders
@@ -81,7 +79,7 @@ echo "✅ Cleanup completed\n\n";
 
 // Parse the specification
 echo "🔨 Parsing OpenAPI specification...\n";
-$specification = Factory::parse('openapi', __DIR__.'/../openapi.json');
+$specification = Factory::parse('openapi', $openApiPath);
 echo "✅ Specification parsed\n\n";
 
 // Create config
