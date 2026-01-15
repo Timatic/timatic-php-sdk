@@ -2,52 +2,23 @@
 
 // auto-generated
 
-namespace Timatic\Requests\User;
+namespace Timatic\Requests\Permission;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\User;
+use Timatic\Dto\Permission;
 use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\Concerns\HasFilters;
-use Timatic\Requests\Concerns\HasIncludes;
 
 /**
- * users.index
+ * permissions.index
  */
-class UsersCollectionRequest extends Request implements Paginatable
+class PermissionsCollectionRequest extends Request implements Paginatable
 {
-    use HasFilters;
-    use HasIncludes;
-
-    protected $model = User::class;
+    protected $model = Permission::class;
 
     protected Method $method = Method::GET;
-
-    /**
-     * Include the roles relationship in the response
-     */
-    public function includeRoles(): static
-    {
-        return $this->addInclude('roles');
-    }
-
-    /**
-     * Include the permissions relationship in the response
-     */
-    public function includePermissions(): static
-    {
-        return $this->addInclude('permissions');
-    }
-
-    /**
-     * Include the team relationship in the response
-     */
-    public function includeTeam(): static
-    {
-        return $this->addInclude('team');
-    }
 
     public function createDtoFromResponse(Response $response): mixed
     {
@@ -60,7 +31,7 @@ class UsersCollectionRequest extends Request implements Paginatable
 
     public function resolveEndpoint(): string
     {
-        return '/users';
+        return '/permissions';
     }
 
     /**

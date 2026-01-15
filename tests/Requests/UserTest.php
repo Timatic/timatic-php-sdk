@@ -31,6 +31,14 @@ it('calls the usersCollection method in the User resource', function () {
                         'impersonatedById' => 42,
                     ],
                     'relationships' => [
+                        'roles' => [
+                            'data' => [
+                                0 => [
+                                    'type' => 'roles',
+                                    'id' => 'related-roles-1',
+                                ],
+                            ],
+                        ],
                         'permissions' => [
                             'data' => [
                                 0 => [
@@ -59,6 +67,14 @@ it('calls the usersCollection method in the User resource', function () {
                         'impersonatedById' => 42,
                     ],
                     'relationships' => [
+                        'roles' => [
+                            'data' => [
+                                0 => [
+                                    'type' => 'roles',
+                                    'id' => 'related-roles-1',
+                                ],
+                            ],
+                        ],
                         'permissions' => [
                             'data' => [
                                 0 => [
@@ -78,11 +94,16 @@ it('calls the usersCollection method in the User resource', function () {
             ],
             'included' => [
                 0 => [
+                    'type' => 'roles',
+                    'id' => 'related-roles-1',
+                    'attributes' => [],
+                ],
+                1 => [
                     'type' => 'permissions',
                     'id' => 'related-permissions-1',
                     'attributes' => [],
                 ],
-                1 => [
+                2 => [
                     'type' => 'teams',
                     'id' => 'related-team-1',
                     'attributes' => [],
@@ -93,6 +114,7 @@ it('calls the usersCollection method in the User resource', function () {
 
     $request = (new UsersCollectionRequest(pagesize: 123, pagenumber: 123))
         ->filter('externalId', 'external_id-123')
+        ->includeRoles()
         ->includePermissions()
         ->includeTeam();
 
@@ -101,7 +123,7 @@ it('calls the usersCollection method in the User resource', function () {
     Saloon::assertSent(function (UsersCollectionRequest $request) {
         $query = $request->query()->all();
         expect($query)->toHaveKey('filter[externalId]', 'external_id-123');
-        expect($query)->toHaveKey('include', 'permissions,team');
+        expect($query)->toHaveKey('include', 'roles,permissions,team');
 
         return true;
     });
@@ -117,6 +139,7 @@ it('calls the usersCollection method in the User resource', function () {
         ->familyName->toBe('Mock value')
         ->isImpersonated->toBe(true)
         ->impersonatedById->toBe(42)
+        ->roles->not->toBeNull()
         ->permissions->not->toBeNull()
         ->team->toBeInstanceOf(\Timatic\Dto\Team::class);
 });

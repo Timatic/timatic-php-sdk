@@ -11,7 +11,6 @@ class PermissionFactory extends Factory
     protected function definition(): array
     {
         return [
-            'values' => [],
         ];
     }
 
