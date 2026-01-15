@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Timatic\Hydration;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use Timatic\Hydration\Attributes\Property;
+use Timatic\Hydration\Attributes\Relationship;
 
 abstract class Model implements ModelInterface
 {
@@ -81,6 +83,66 @@ abstract class Model implements ModelInterface
     }
 
     /**
+     * Get all relationships as an array for serialization
+     *
+     * @return array<string, mixed>
+     */
+    public function relationships(): array
+    {
+        $reflectionClass = new ReflectionClass($this);
+        $properties = $reflectionClass->getProperties();
+        $relationships = [];
+
+        foreach ($properties as $property) {
+            $relationshipAttributes = $property->getAttributes(Relationship::class);
+
+            if (count($relationshipAttributes) > 0) {
+                $propertyName = $property->getName();
+
+                // Skip if property is not initialized
+                if (! $property->isInitialized($this)) {
+                    continue;
+                }
+
+                $value = $property->getValue($this);
+
+                // Skip null values
+                if ($value === null) {
+                    continue;
+                }
+
+                /** @var Relationship $attr */
+                $attr = $relationshipAttributes[0]->newInstance();
+
+                // Serialize based on relationship type
+                if ($attr->type === RelationType::Many) {
+                    // For Many relationships, expect a Collection
+                    if ($value instanceof Collection) {
+                        $relationships[$propertyName] = [
+                            'data' => $value->map(fn (Model $model) => [
+                                'type' => $model->type(),
+                                'id' => $model->id,
+                            ])->all(),
+                        ];
+                    }
+                } elseif ($attr->type === RelationType::One) {
+                    // For One relationships, expect a Model instance
+                    if ($value instanceof Model) {
+                        $relationships[$propertyName] = [
+                            'data' => [
+                                'type' => $value->type(),
+                                'id' => $value->id,
+                            ],
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $relationships;
+    }
+
+    /**
      * Convert Model to JSON:API data object.
      * Returns the data object without the 'data' wrapper.
      *
@@ -97,6 +159,11 @@ abstract class Model implements ModelInterface
         }
 
         $data['attributes'] = $this->attributes();
+
+        $relationships = $this->relationships();
+        if (! empty($relationships)) {
+            $data['relationships'] = $relationships;
+        }
 
         return $data;
     }
