@@ -7,6 +7,26 @@
 
 A Laravel package for the Timatic API, built with [Saloon](https://docs.saloon.dev/) and automatically generated from OpenAPI specifications.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [Using Dependency Injection](#using-dependency-injection)
+  - [Testing](#testing)
+  - [Pagination](#pagination)
+  - [Custom Response Methods](#custom-response-methods)
+- [HTTP Methods](#http-methods)
+- [Available Resources](#available-resources)
+- [JSON:API Support](#jsonapi-support)
+  - [Model Features](#model-features)
+  - [Working with Relationships](#working-with-relationships)
+- [Regenerating the SDK](#regenerating-the-sdk)
+- [Development](#development)
+- [License](#license)
+- [Credits](#credits)
+
 ## Requirements
 
 - PHP 8.2 or higher
@@ -350,6 +370,91 @@ $budget->startedAt; // Carbon instance for datetime fields
 - **DateTime handling** with Carbon instances
 - **Type safety** with PHP 8.1+ type hints
 - **HasAttributes trait** for easy attribute manipulation
+- **Relationship support** with automatic hydration and serialization
+
+### Working with Relationships
+
+The SDK automatically handles JSON:API relationships, providing seamless access to related models with full type safety.
+
+#### Accessing Relationships
+
+When you fetch a model with included relationships, they're automatically hydrated into typed properties:
+
+```php
+use Timatic\Requests\User\GetUserRequest;
+
+// Fetch a user with their team included
+$request = new GetUserRequest(id: '123');
+$request->query()->add('include', 'team');
+
+$user = $timatic->send($request)->dtoOrFail();
+
+// Access the relationship - it's already a Team object!
+$team = $user->team; // Team instance
+echo $team->name; // "Engineering"
+```
+
+#### Serializing Relationships
+
+When creating or updating resources with relationships, the SDK automatically serializes them to JSON:API format:
+
+```php
+use Timatic\Dto\User;
+use Timatic\Dto\Team;
+use Timatic\Requests\User\PatchUserRequest;
+
+// Fetch existing models
+$user = $timatic->send(new GetUserRequest(id: '123'))->dtoOrFail();
+$team = $timatic->send(new GetTeamRequest(id: '456'))->dtoOrFail();
+
+// Update the relationship
+$user->team = $team;
+
+// Send the update - relationships are automatically serialized
+$updated = $timatic->send(new PatchUserRequest(id: $user->id, data: $user))->dtoOrFail();
+```
+
+The `toJsonApi()` method automatically converts relationships to the correct JSON:API format:
+
+```php
+$user->toJsonApi();
+// Returns:
+// [
+//     'type' => 'users',
+//     'id' => '123',
+//     'attributes' => [
+//         'email' => 'john@example.com',
+//         'givenName' => 'John',
+//         // ...
+//     ],
+//     'relationships' => [
+//         'team' => [
+//             'data' => ['type' => 'teams', 'id' => '456']
+//         ]
+//     ]
+// ]
+```
+
+
+#### Included Resources
+
+To fetch relationships, use the `include` query parameter:
+
+```php
+// Include a single relationship
+$request = new GetUserRequest(id: '123');
+$request->query()->add('include', 'team');
+
+// Include multiple relationships
+$request->query()->add('include', 'team,permissions');
+
+// Include nested relationships
+$request->query()->add('include', 'team.users');
+
+$user = $timatic->send($request)->dtoOrFail();
+```
+
+The SDK automatically hydrates all included resources into their respective relationship properties.
 
 ## Regenerating the SDK
 
