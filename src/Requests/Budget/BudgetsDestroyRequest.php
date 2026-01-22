@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Budget;
 
 use Saloon\Enums\Method;

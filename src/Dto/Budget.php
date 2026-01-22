@@ -1,15 +1,13 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Dto;
 
 use Illuminate\Support\Collection;
-use Timatic\Hydration\Attributes\DateTime;
-use Timatic\Hydration\Attributes\Property;
-use Timatic\Hydration\Attributes\Relationship;
-use Timatic\Hydration\Model;
-use Timatic\Hydration\RelationType;
+use Timatic\Foundation\Hydration\Attributes\DateTime;
+use Timatic\Foundation\Hydration\Attributes\Property;
+use Timatic\Foundation\Hydration\Attributes\Relationship;
+use Timatic\Foundation\Hydration\Model;
+use Timatic\Foundation\Hydration\RelationType;
 
 /**
  * Budget

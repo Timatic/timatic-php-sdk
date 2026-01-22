@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Pagination;
+namespace Timatic\Foundation\Pagination;
 
 use Illuminate\Support\Collection;
 use Saloon\Http\Request;

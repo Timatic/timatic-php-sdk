@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Requests\Concerns;
+namespace Timatic\Foundation\Requests\Concerns;
 
 trait HasIncludes
 {

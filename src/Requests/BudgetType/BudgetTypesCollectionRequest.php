@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\BudgetType;
 
 use Saloon\Enums\Method;
@@ -9,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\BudgetType;
-use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
 
 /**
  * budget-types.index

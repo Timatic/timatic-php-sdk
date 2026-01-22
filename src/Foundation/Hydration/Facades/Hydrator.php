@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Hydration\Facades;
+namespace Timatic\Foundation\Hydration\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * @method static Collection<int, Model> hydrateCollection(string $model, array<int, mixed> $data, array<int|string, mixed>|null $included = null)
@@ -16,6 +16,6 @@ class Hydrator extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Timatic\Hydration\Hydrator::class;
+        return \Timatic\Foundation\Hydration\Hydrator::class;
     }
 }

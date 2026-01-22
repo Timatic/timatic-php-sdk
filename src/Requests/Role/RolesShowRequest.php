@@ -1,14 +1,12 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Role;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Timatic\Dto\Role;
-use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
 
 /**
  * roles.show

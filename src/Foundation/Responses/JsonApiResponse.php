@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Responses;
+namespace Timatic\Foundation\Responses;
 
 use Saloon\Http\Response;
 
-class TimaticResponse extends Response
+class JsonApiResponse extends Response
 {
     /**
      * Get the first item from a JSON:API collection response

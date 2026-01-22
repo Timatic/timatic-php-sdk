@@ -1,11 +1,10 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
 use Timatic\Dto\Budget;
+use Timatic\Foundation\Factories\Factory;
 
 class BudgetFactory extends Factory
 {
@@ -27,7 +26,7 @@ class BudgetFactory extends Factory
             'renewalFrequency' => $this->faker->word(),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'supervisorUserId' => $this->faker->numberBetween(1, 1000),
+            'supervisorUserId' => $this->faker->word(),
         ];
     }
 

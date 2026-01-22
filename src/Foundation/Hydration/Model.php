@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Hydration;
+namespace Timatic\Foundation\Hydration;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use ReflectionClass;
-use Timatic\Hydration\Attributes\Property;
-use Timatic\Hydration\Attributes\Relationship;
+use Timatic\Foundation\Hydration\Attributes\Property;
+use Timatic\Foundation\Hydration\Attributes\Relationship;
 
 abstract class Model implements ModelInterface
 {

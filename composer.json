@@ -1,35 +1,24 @@
 {
     "name": "timatic/php-sdk",
     "description": "PHP SDK for Timatic API built with Saloon",
-    "type": "library",
     "license": "Elastic-2.0",
-    "autoload": {
-        "psr-4": {
-            "Timatic\\": "src/",
-            "Timatic\\Generator\\": "generator/",
-            "Timatic\\Factories\\": "factories/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Timatic\\Tests\\": "tests/"
-        }
-    },
+    "type": "library",
     "require": {
         "php": "^8.2",
-        "saloonphp/saloon": "^3.0",
         "nesbot/carbon": "^2.0|^3.0",
-        "saloonphp/pagination-plugin": "^2.0"
+        "saloonphp/laravel-plugin": "^3.0",
+        "saloonphp/pagination-plugin": "^2.0",
+        "saloonphp/saloon": "^3.0"
     },
     "require-dev": {
+        "ergebnis/composer-normalize": "*",
         "fakerphp/faker": "^1.23",
-        "laravel/boost": "^1.8",
-        "phpunit/phpunit": "^10.0|^11.0",
-        "pestphp/pest": "^2.0|^3.0",
-        "laravel/pint": "^1.0",
         "larastan/larastan": "^3.0",
+        "laravel/boost": "^1.8",
+        "laravel/pint": "^1.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "crescat-io/saloon-sdk-generator": "dev-add-hooks-to-pest-generator"
+        "pestphp/pest": "^2.0|^3.0",
+        "phpunit/phpunit": "^10.0|^11.0"
     },
     "repositories": [
         {
@@ -37,32 +26,45 @@
             "url": "https://github.com/tomasvanrijsse/saloon-sdk-generator"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Timatic\\": "src/",
+            "Timatic\\Factories\\": "factories/",
+            "Timatic\\Generator\\": "generator/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Timatic\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Timatic": "Timatic\\Facades\\Timatic"
+            },
+            "providers": [
+                "Timatic\\Providers\\TimaticServiceProvider"
+            ]
+        }
+    },
     "scripts": {
-        "test": "pest",
+        "analyse": "phpstan analyse --memory-limit=2G",
         "coverage": "pest --coverage --coverage-clover coverage.xml",
         "format": "pint",
-        "analyse": "phpstan analyse --memory-limit=2G",
         "regenerate": [
             "php generator/generate.php",
             "@composer dump-autoload",
             "@format"
-        ]
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Timatic\\Providers\\TimaticServiceProvider"
-            ],
-            "aliases": {
-                "Timatic": "Timatic\\Facades\\Timatic"
-            }
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        ],
+        "test": "pest"
     }
 }

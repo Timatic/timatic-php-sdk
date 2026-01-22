@@ -1,10 +1,9 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Timatic\Dto\Source;
+use Timatic\Foundation\Factories\Factory;
 
 class SourceFactory extends Factory
 {

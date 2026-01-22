@@ -1,11 +1,10 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
 use Timatic\Dto\EntrySuggestion;
+use Timatic\Foundation\Factories\Factory;
 
 class EntrySuggestionFactory extends Factory
 {
@@ -21,7 +20,7 @@ class EntrySuggestionFactory extends Factory
             'ticketType' => $this->faker->word(),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'budgetId' => $this->faker->numberBetween(1, 1000),
+            'budgetId' => $this->faker->word(),
         ];
     }
 

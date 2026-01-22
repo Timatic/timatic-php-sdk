@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Hydration\Attributes;
+namespace Timatic\Foundation\Hydration\Attributes;
 
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class DateTime
+class Property
 {
     public function __construct(
-        public string $format = 'Y-m-d\TH:i:sP'
+        public bool $isReadOnly = false
     ) {}
 }

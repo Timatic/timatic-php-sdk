@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Entry;
 
 use Saloon\Enums\Method;

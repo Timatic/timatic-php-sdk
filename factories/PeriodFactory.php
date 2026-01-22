@@ -1,10 +1,9 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Timatic\Dto\Period;
+use Timatic\Foundation\Factories\Factory;
 
 class PeriodFactory extends Factory
 {

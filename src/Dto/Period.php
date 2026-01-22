@@ -1,10 +1,8 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Dto;
 
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * Period

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Timatic\Tests;
 
 use Dotenv\Dotenv;
@@ -25,7 +27,7 @@ class TestCase extends Orchestra
         }
 
         // Set config values for testing
-        $app['config']->set('timatic.base_url', env('TIMATIC_BASE_URL', 'https://api.app.timatic.test'));
+        $app['config']->set('timatic.base_url', env('TIMATIC_BASE_URL', 'https://api.tenant.timatic.app'));
         $app['config']->set('timatic.api_token', env('TIMATIC_API_TOKEN'));
     }
 }

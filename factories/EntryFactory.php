@@ -1,11 +1,10 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
 use Timatic\Dto\Entry;
+use Timatic\Foundation\Factories\Factory;
 
 class EntryFactory extends Factory
 {
@@ -16,17 +15,17 @@ class EntryFactory extends Factory
             'ticketNumber' => $this->faker->word(),
             'ticketTitle' => $this->faker->sentence(),
             'ticketType' => $this->faker->word(),
-            'customerId' => $this->faker->numberBetween(1, 1000),
+            'customerId' => $this->faker->word(),
             'customerName' => $this->faker->company(),
             'hourlyRate' => $this->faker->randomFloat(2, 0, 1000),
             'hadEmergencyShift' => $this->faker->boolean(),
-            'budgetId' => $this->faker->numberBetween(1, 1000),
+            'budgetId' => $this->faker->word(),
             'isPaidPerHour' => $this->faker->word(),
             'minutesSpent' => $this->faker->numberBetween(15, 480),
-            'userId' => $this->faker->numberBetween(1, 1000),
+            'userId' => $this->faker->word(),
             'userEmail' => $this->faker->safeEmail(),
             'userFullName' => $this->faker->name(),
-            'createdByUserId' => $this->faker->numberBetween(1, 1000),
+            'createdByUserId' => $this->faker->word(),
             'createdByUserEmail' => $this->faker->safeEmail(),
             'createdByUserFullName' => $this->faker->company(),
             'entryType' => $this->faker->word(),

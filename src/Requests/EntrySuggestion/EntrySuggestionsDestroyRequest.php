@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\EntrySuggestion;
 
 use Saloon\Enums\Method;

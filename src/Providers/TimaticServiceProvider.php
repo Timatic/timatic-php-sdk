@@ -21,7 +21,9 @@ class TimaticServiceProvider extends ServiceProvider
         );
 
         // Register TimaticConnector as singleton
-        $this->app->singleton(TimaticConnector::class);
+        $this->app->singleton(TimaticConnector::class, fn () => new TimaticConnector(
+            config('timatic.api_token'),
+        ));
 
         // Register alias
         $this->app->alias(TimaticConnector::class, 'timatic');

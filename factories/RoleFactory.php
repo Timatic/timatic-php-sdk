@@ -1,11 +1,10 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
 use Timatic\Dto\Role;
+use Timatic\Foundation\Factories\Factory;
 
 class RoleFactory extends Factory
 {

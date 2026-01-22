@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\EntrySuggestion;
 
 use Saloon\Enums\Method;
@@ -9,9 +7,9 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\EntrySuggestion;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\Concerns\HasFilters;
-use Timatic\Requests\Concerns\HasIncludes;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Requests\Concerns\HasFilters;
+use Timatic\Foundation\Requests\Concerns\HasIncludes;
 
 /**
  * entry-suggestions.index

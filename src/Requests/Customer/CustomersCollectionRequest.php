@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Customer;
 
 use Saloon\Enums\Method;
@@ -9,8 +7,8 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\Customer;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\Concerns\HasFilters;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Requests\Concerns\HasFilters;
 
 /**
  * customers.index
