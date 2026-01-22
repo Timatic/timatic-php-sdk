@@ -1,11 +1,11 @@
 <?php
 
-namespace Timatic\Factories;
+namespace Timatic\Foundation\Factories;
 
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 use Illuminate\Support\Collection;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Model;
 
 abstract class Factory
 {
@@ -24,6 +24,7 @@ abstract class Factory
 
     public static function new(): static
     {
+        /** @phpstan-ignore-next-line new.static */
         return new static;
     }
 

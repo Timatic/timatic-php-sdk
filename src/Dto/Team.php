@@ -1,12 +1,10 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Dto;
 
-use Timatic\Hydration\Attributes\DateTime;
-use Timatic\Hydration\Attributes\Property;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Attributes\DateTime;
+use Timatic\Foundation\Hydration\Attributes\Property;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * Team

@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Overtime;
 
 use Saloon\Contracts\Body\HasBody;
@@ -10,8 +8,8 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Overtime;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * overtime.approve
@@ -40,7 +38,7 @@ class OvertimeApproveRequest extends Request implements HasBody
 
     /**
      * @param  int  $overtimeId  The overtime ID
-     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Foundation\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected int $overtimeId,

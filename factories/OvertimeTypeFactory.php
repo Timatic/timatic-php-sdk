@@ -1,10 +1,9 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Timatic\Dto\OvertimeType;
+use Timatic\Foundation\Factories\Factory;
 
 class OvertimeTypeFactory extends Factory
 {

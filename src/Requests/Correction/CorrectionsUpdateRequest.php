@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Correction;
 
 use Saloon\Contracts\Body\HasBody;
@@ -10,8 +8,8 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Correction;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * corrections.update
@@ -40,7 +38,7 @@ class CorrectionsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $correctionId  The correction ID
-     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Foundation\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected int $correctionId,

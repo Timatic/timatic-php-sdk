@@ -1,11 +1,10 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
 use Timatic\Dto\User;
+use Timatic\Foundation\Factories\Factory;
 
 class UserFactory extends Factory
 {
@@ -17,7 +16,7 @@ class UserFactory extends Factory
             'givenName' => $this->faker->company(),
             'familyName' => $this->faker->company(),
             'isImpersonated' => $this->faker->boolean(),
-            'impersonatedById' => $this->faker->numberBetween(1, 1000),
+            'impersonatedById' => $this->faker->word(),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
         ];

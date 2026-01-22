@@ -1,19 +1,18 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
 use Timatic\Dto\Event;
+use Timatic\Foundation\Factories\Factory;
 
 class EventFactory extends Factory
 {
     protected function definition(): array
     {
         return [
-            'userId' => $this->faker->numberBetween(1, 1000),
-            'budgetId' => $this->faker->numberBetween(1, 1000),
+            'userId' => $this->faker->word(),
+            'budgetId' => $this->faker->word(),
             'ticketId' => $this->faker->uuid(),
             'sourceId' => $this->faker->uuid(),
             'ticketNumber' => $this->faker->word(),
@@ -26,7 +25,7 @@ class EventFactory extends Factory
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'isInternal' => $this->faker->boolean(),
+            'isInternal' => $this->faker->word(),
         ];
     }
 

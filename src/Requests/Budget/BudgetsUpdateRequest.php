@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Budget;
 
 use Saloon\Contracts\Body\HasBody;
@@ -10,8 +8,8 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Budget;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * budgets.update
@@ -40,7 +38,7 @@ class BudgetsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $budgetId  The budget ID
-     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Foundation\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected int $budgetId,

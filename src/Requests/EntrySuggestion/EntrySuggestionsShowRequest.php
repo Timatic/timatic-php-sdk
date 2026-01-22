@@ -1,14 +1,12 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\EntrySuggestion;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Timatic\Dto\EntrySuggestion;
-use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
 
 /**
  * entry-suggestions.show

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Filtering;
+namespace Timatic\Foundation\Filtering;
 
 enum Operator: string
 {

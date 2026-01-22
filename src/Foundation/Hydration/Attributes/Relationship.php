@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Timatic\Hydration\Attributes;
+namespace Timatic\Foundation\Hydration\Attributes;
 
 use Attribute;
-use Timatic\Hydration\Model;
-use Timatic\Hydration\RelationType;
+use Timatic\Foundation\Hydration\Model;
+use Timatic\Foundation\Hydration\RelationType;
 
 #[Attribute]
 readonly class Relationship

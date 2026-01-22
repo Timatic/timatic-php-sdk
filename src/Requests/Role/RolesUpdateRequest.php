@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Role;
 
 use Saloon\Contracts\Body\HasBody;
@@ -10,8 +8,8 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Role;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * roles.update
@@ -40,7 +38,7 @@ class RolesUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $roleId  The role ID
-     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
+     * @param  null|\Timatic\Foundation\Hydration\Model|array|null  $data  Request data
      */
     public function __construct(
         protected int $roleId,

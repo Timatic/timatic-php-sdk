@@ -1,11 +1,9 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Dto;
 
-use Timatic\Hydration\Attributes\Property;
-use Timatic\Hydration\Model;
+use Timatic\Foundation\Hydration\Attributes\Property;
+use Timatic\Foundation\Hydration\Model;
 
 /**
  * OvertimeType
