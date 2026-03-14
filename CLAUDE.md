@@ -35,7 +35,7 @@ namespace Timatic\Dto;
 
 ### ❌ Files You CANNOT Edit:
 - Any file **with** the `// auto-generated` marker
-- These are typically in: `src/Dto/`, `src/Requests/`, `src/Resource/`, `src/TimaticConnector.php`, `tests/*Test.php`, `factories/`
+- These are typically in: `src/Dto/`, `src/Requests/`, `src/Resource/`, `src/TimaticConnector.php`, `tests/*Test.php`, `Factories/`
 - To change these files, modify the appropriate generator instead (see below)
 
 ## SDK Regeneration Commands

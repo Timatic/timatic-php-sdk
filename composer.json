@@ -31,8 +31,7 @@
     "autoload": {
         "psr-4": {
             "Timatic\\": "src/",
-            "Timatic\\Factories\\": "factories/",
-            "Timatic\\Generator\\": "generator/"
+            "Timatic\\Factories\\": "Factories/",
         }
     },
     "autoload-dev": {
