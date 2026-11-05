@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Spatie\LaravelData\Data;
 use Timatic\Dto\Budget;
+use Timatic\Dto\BudgetUpdateRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -37,11 +37,11 @@ class BudgetsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $budgetId  The budget ID
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|BudgetUpdateRequest  $data  Request data
      */
     public function __construct(
         protected int $budgetId,
-        protected Data|array|null $data = null,
+        protected ?BudgetUpdateRequest $data = null,
     ) {}
 
     protected function defaultBody(): array

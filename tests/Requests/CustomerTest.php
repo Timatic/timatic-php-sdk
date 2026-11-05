@@ -5,7 +5,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Customer;
+use Timatic\Dto\CustomerRequest;
 use Timatic\Requests\Customer\CustomersCollectionRequest;
 use Timatic\Requests\Customer\CustomersDestroyRequest;
 use Timatic\Requests\Customer\CustomersShowRequest;
@@ -72,8 +72,9 @@ it('calls the customersStore method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Customer::testFactory()->state([
-        'hourlyRate' => 'test value',
+    $dto = CustomerRequest::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
         'isOwnOrganization' => true,
     ])->make();
 
@@ -87,7 +88,8 @@ it('calls the customersStore method in the Customer resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->hourlyRate->toBe('test value')
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
             ->isOwnOrganization->toBe(true)
             );
 
@@ -150,8 +152,9 @@ it('calls the customersUpdate method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Customer::testFactory()->state([
-        'hourlyRate' => 'test value',
+    $dto = CustomerRequest::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
         'isOwnOrganization' => true,
     ])->make();
 
@@ -165,7 +168,8 @@ it('calls the customersUpdate method in the Customer resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->hourlyRate->toBe('test value')
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
             ->isOwnOrganization->toBe(true)
             );
 

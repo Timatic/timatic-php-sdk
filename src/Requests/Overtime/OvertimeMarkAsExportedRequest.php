@@ -37,11 +37,11 @@ class OvertimeMarkAsExportedRequest extends Request implements HasBody
 
     /**
      * @param  int  $overtimeId  The overtime ID
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|Data  $data  Request data
      */
     public function __construct(
         protected int $overtimeId,
-        protected Data|array|null $data = null,
+        protected ?Data $data = null,
     ) {}
 
     protected function defaultBody(): array

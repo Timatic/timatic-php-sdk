@@ -30,7 +30,7 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
                         'overtimeTypeId' => 'mock-id-123',
                         'startedAt' => '2025-11-22T10:40:04+00:00',
                         'endedAt' => '2025-11-22T10:40:04+00:00',
-                        'percentages' => (object) [],
+                        'percentages' => [],
                         'approvedAt' => '2025-11-22T10:40:04+00:00',
                         'approvedByUserId' => 42,
                         'exportedAt' => '2025-11-22T10:40:04+00:00',
@@ -58,7 +58,7 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
                         'overtimeTypeId' => 'mock-id-123',
                         'startedAt' => '2025-11-22T10:40:04+00:00',
                         'endedAt' => '2025-11-22T10:40:04+00:00',
-                        'percentages' => (object) [],
+                        'percentages' => [],
                         'approvedAt' => '2025-11-22T10:40:04+00:00',
                         'approvedByUserId' => 42,
                         'exportedAt' => '2025-11-22T10:40:04+00:00',
@@ -120,7 +120,6 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
         ->overtimeTypeId->toBe('mock-id-123')
         ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
         ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
-        ->percentages->toBeInstanceOf(stdClass::class)
         ->approvedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
         ->approvedByUserId->toBe(42)
         ->exportedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))

@@ -4,6 +4,7 @@ namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\SourceFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
@@ -12,6 +13,7 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  *
  * @method static \Timatic\Factories\SourceFactory testFactory()
  */
+#[JsonApiType('sources')]
 class Source extends SpatieData
 {
     /** @use HasTestFactory<SourceFactory> */

@@ -5,7 +5,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Team;
+use Timatic\Dto\TeamRequest;
 use Timatic\Requests\Team\TeamsCollectionRequest;
 use Timatic\Requests\Team\TeamsDestroyRequest;
 use Timatic\Requests\Team\TeamsShowRequest;
@@ -64,8 +64,9 @@ it('calls the teamsStore method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Team::testFactory()->state([
-        'name' => 'test value',
+    $dto = TeamRequest::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
     ])->make();
 
     $request = new TeamsStoreRequest($dto);
@@ -76,7 +77,11 @@ it('calls the teamsStore method in the Team resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('teams');
+            ->data->type->toBe('teams')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
+            );
 
         return true;
     });
@@ -133,8 +138,9 @@ it('calls the teamsUpdate method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Team::testFactory()->state([
-        'name' => 'test value',
+    $dto = TeamRequest::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'name' => 'test name',
     ])->make();
 
     $request = new TeamsUpdateRequest(teamId: 'test value', data: $dto);
@@ -145,7 +151,11 @@ it('calls the teamsUpdate method in the Team resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('teams');
+            ->data->type->toBe('teams')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('external_id-123')
+            ->name->toBe('test name')
+            );
 
         return true;
     });

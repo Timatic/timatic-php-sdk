@@ -4,6 +4,7 @@ namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\ProjectMappingFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
@@ -12,6 +13,7 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  *
  * @method static \Timatic\Factories\ProjectMappingFactory testFactory()
  */
+#[JsonApiType('jira-project-mappings')]
 class ProjectMapping extends SpatieData
 {
     /** @use HasTestFactory<ProjectMappingFactory> */

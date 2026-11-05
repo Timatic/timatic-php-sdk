@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\UserFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 use Timatic\Foundation\JsonApi\RelationType;
 
@@ -16,6 +17,7 @@ use Timatic\Foundation\JsonApi\RelationType;
  *
  * @method static \Timatic\Factories\UserFactory testFactory()
  */
+#[JsonApiType('users')]
 class User extends SpatieData
 {
     /** @use HasTestFactory<UserFactory> */

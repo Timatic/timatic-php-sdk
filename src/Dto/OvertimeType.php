@@ -4,6 +4,7 @@ namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\OvertimeTypeFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
@@ -12,6 +13,7 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  *
  * @method static \Timatic\Factories\OvertimeTypeFactory testFactory()
  */
+#[JsonApiType('overtimeTypes')]
 class OvertimeType extends SpatieData
 {
     /** @use HasTestFactory<OvertimeTypeFactory> */

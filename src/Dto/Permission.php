@@ -19,6 +19,6 @@ class Permission extends SpatieData
 
     public function __construct(
         public ?string $id = null,
-        public ?object $values = null,
+        public ?array $values = null,
     ) {}
 }

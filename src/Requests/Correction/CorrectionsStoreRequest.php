@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Spatie\LaravelData\Data;
 use Timatic\Dto\Correction;
+use Timatic\Dto\CorrectionCreateRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -36,10 +36,10 @@ class CorrectionsStoreRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|CorrectionCreateRequest  $data  Request data
      */
     public function __construct(
-        protected Data|array|null $data = null,
+        protected ?CorrectionCreateRequest $data = null,
     ) {}
 
     protected function defaultBody(): array

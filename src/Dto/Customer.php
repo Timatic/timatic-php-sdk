@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\CustomerFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 use Timatic\Foundation\JsonApi\RelationType;
 
@@ -15,6 +16,7 @@ use Timatic\Foundation\JsonApi\RelationType;
  *
  * @method static \Timatic\Factories\CustomerFactory testFactory()
  */
+#[JsonApiType('customers')]
 class Customer extends SpatieData
 {
     /** @use HasTestFactory<CustomerFactory> */

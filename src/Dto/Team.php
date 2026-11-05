@@ -5,6 +5,7 @@ namespace Timatic\Dto;
 use Carbon\Carbon;
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\TeamFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
@@ -13,6 +14,7 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  *
  * @method static \Timatic\Factories\TeamFactory testFactory()
  */
+#[JsonApiType('teams')]
 class Team extends SpatieData
 {
     /** @use HasTestFactory<TeamFactory> */

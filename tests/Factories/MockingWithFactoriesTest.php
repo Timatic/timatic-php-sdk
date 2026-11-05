@@ -5,6 +5,7 @@ use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Timatic\Dto\Budget;
+use Timatic\Dto\BudgetCreateRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsStoreRequest;
@@ -57,10 +58,10 @@ test('it can mock a collection response using factories', function () {
 
 test('it can mock a POST request to create a budget using factory', function () {
     // Create a budget to send
-    $budgetToCreate = Budget::testFactory()->state([
+    $budgetToCreate = BudgetCreateRequest::testFactory()->state([
         'title' => 'New Budget',
-        'totalPrice' => '5000.00',
-        'customerId' => '123',
+        'totalPrice' => 5000,
+        'customerId' => 123,
     ])->make();
 
     // Mock the response with an ID
@@ -89,8 +90,8 @@ test('it can mock a POST request to create a budget using factory', function () 
 
         return $body['data']['type'] === 'budgets'
             && $body['data']['attributes']['title'] === 'New Budget'
-            && $body['data']['attributes']['totalPrice'] === '5000.00'
-            && $body['data']['attributes']['customerId'] === '123';
+            && $body['data']['attributes']['totalPrice'] === 5000
+            && $body['data']['attributes']['customerId'] === 123;
     });
 
     // Assert response

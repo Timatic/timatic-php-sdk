@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Spatie\LaravelData\Data;
 use Timatic\Dto\Team;
+use Timatic\Dto\TeamRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -36,10 +36,10 @@ class TeamsStoreRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|TeamRequest  $data  Request data
      */
     public function __construct(
-        protected Data|array|null $data = null,
+        protected ?TeamRequest $data = null,
     ) {}
 
     protected function defaultBody(): array

@@ -37,11 +37,11 @@ class EntryMarkAsInvoicedRequest extends Request implements HasBody
 
     /**
      * @param  int  $entryId  The entry ID
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|Data  $data  Request data
      */
     public function __construct(
         protected int $entryId,
-        protected Data|array|null $data = null,
+        protected ?Data $data = null,
     ) {}
 
     protected function defaultBody(): array

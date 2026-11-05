@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Timatic\Foundation\JsonApi;
 
+/**
+ * @template TFactory
+ */
 trait HasTestFactory
 {
+    /**
+     * @return TFactory
+     */
     public static function testFactory(): mixed
     {
         $factoryClass = str_replace('\\Dto\\', '\\Factories\\', static::class).'Factory';

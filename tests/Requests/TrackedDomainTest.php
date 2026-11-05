@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Dto\Budget;
 use Timatic\Dto\Customer;
-use Timatic\Dto\TrackedDomain;
+use Timatic\Dto\TrackedDomainCreateRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsCollectionRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsDestroyRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsStoreRequest;
@@ -130,10 +130,11 @@ it('calls the trackedDomainsStore method in the TrackedDomain resource', functio
     ]);
 
     // Create DTO with sample data
-    $dto = TrackedDomain::testFactory()->state([
+    $dto = TrackedDomainCreateRequest::testFactory()->state([
         'domain' => 'test value',
         'customerId' => 42,
         'isInternal' => true,
+        'userId' => 42,
     ])->make();
 
     $request = new TrackedDomainsStoreRequest($dto);
@@ -144,11 +145,12 @@ it('calls the trackedDomainsStore method in the TrackedDomain resource', functio
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('trackedDomains')
+            ->data->type->toBe('tracked-domains')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->domain->toBe('test value')
             ->customerId->toBe(42)
             ->isInternal->toBe(true)
+            ->userId->toBe(42)
             );
 
         return true;

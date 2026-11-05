@@ -18,7 +18,7 @@ class OvertimeFactory extends Factory
             'overtimeTypeId' => $this->faker->uuid(),
             'startedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'percentages' => (object) [],
+            'percentages' => [],
             'approvedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'approvedByUserId' => null,
             'exportedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),

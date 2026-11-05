@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Spatie\LaravelData\Data;
 use Timatic\Dto\Entry;
+use Timatic\Dto\EntryUpdateRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -37,11 +37,11 @@ class EntriesUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $entryId  The entry ID
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|EntryUpdateRequest  $data  Request data
      */
     public function __construct(
         protected int $entryId,
-        protected Data|array|null $data = null,
+        protected ?EntryUpdateRequest $data = null,
     ) {}
 
     protected function defaultBody(): array

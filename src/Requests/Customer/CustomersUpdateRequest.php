@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Spatie\LaravelData\Data;
 use Timatic\Dto\Customer;
+use Timatic\Dto\CustomerRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -37,11 +37,11 @@ class CustomersUpdateRequest extends Request implements HasBody
 
     /**
      * @param  mixed  $customerId  The customer ID
-     * @param  null|Data|array|null  $data  Request data
+     * @param  null|CustomerRequest  $data  Request data
      */
     public function __construct(
         protected mixed $customerId,
-        protected Data|array|null $data = null,
+        protected ?CustomerRequest $data = null,
     ) {}
 
     protected function defaultBody(): array

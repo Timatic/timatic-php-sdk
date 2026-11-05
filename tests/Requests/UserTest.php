@@ -6,7 +6,7 @@ use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Dto\Team;
-use Timatic\Dto\User;
+use Timatic\Dto\UserRequest;
 use Timatic\Requests\User\UsersCollectionRequest;
 use Timatic\Requests\User\UsersDestroyRequest;
 use Timatic\Requests\User\UsersShowRequest;
@@ -128,8 +128,9 @@ it('calls the usersStore method in the User resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = User::testFactory()->state([
-        'isImpersonated' => true,
+    $dto = UserRequest::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'email' => 'test@example.com',
     ])->make();
 
     $request = new UsersStoreRequest($dto);
@@ -142,7 +143,8 @@ it('calls the usersStore method in the User resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->isImpersonated->toBe(true)
+            ->externalId->toBe('external_id-123')
+            ->email->toBe('test@example.com')
             );
 
         return true;
@@ -208,8 +210,9 @@ it('calls the usersUpdate method in the User resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = User::testFactory()->state([
-        'isImpersonated' => true,
+    $dto = UserRequest::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'email' => 'test@example.com',
     ])->make();
 
     $request = new UsersUpdateRequest(userId: 'test value', data: $dto);
@@ -222,7 +225,8 @@ it('calls the usersUpdate method in the User resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('users')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->isImpersonated->toBe(true)
+            ->externalId->toBe('external_id-123')
+            ->email->toBe('test@example.com')
             );
 
         return true;

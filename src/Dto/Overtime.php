@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Spatie\LaravelData\Data as SpatieData;
 use Timatic\Factories\OvertimeFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 use Timatic\Foundation\JsonApi\RelationType;
 
@@ -15,6 +16,7 @@ use Timatic\Foundation\JsonApi\RelationType;
  *
  * @method static \Timatic\Factories\OvertimeFactory testFactory()
  */
+#[JsonApiType('overtimes')]
 class Overtime extends SpatieData
 {
     /** @use HasTestFactory<OvertimeFactory> */
@@ -26,7 +28,7 @@ class Overtime extends SpatieData
         public ?string $overtimeTypeId = null,
         public ?Carbon $startedAt = null,
         public ?Carbon $endedAt = null,
-        public ?object $percentages = null,
+        public ?array $percentages = null,
         public ?Carbon $approvedAt = null,
         public ?int $approvedByUserId = null,
         public ?Carbon $exportedAt = null,

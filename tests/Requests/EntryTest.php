@@ -9,6 +9,8 @@ use Saloon\Laravel\Facades\Saloon;
 use Timatic\Dto\Budget;
 use Timatic\Dto\Customer;
 use Timatic\Dto\Entry;
+use Timatic\Dto\EntryCreateRequest;
+use Timatic\Dto\EntryUpdateRequest;
 use Timatic\Requests\Entry\EntriesCollectionRequest;
 use Timatic\Requests\Entry\EntriesDestroyRequest;
 use Timatic\Requests\Entry\EntriesShowRequest;
@@ -188,10 +190,10 @@ it('calls the entriesStore method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Entry::testFactory()->state([
+    $dto = EntryCreateRequest::testFactory()->state([
+        'isPaidPerHour' => true,
+        'entrySuggestionId' => 42,
         'ticketId' => 'ticket_id-123',
-        'ticketNumber' => 'test value',
-        'ticketTitle' => 'test value',
         'ticketType' => 'test value',
     ])->make();
 
@@ -205,9 +207,9 @@ it('calls the entriesStore method in the Entry resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->isPaidPerHour->toBe(true)
+            ->entrySuggestionId->toBe(42)
             ->ticketId->toBe('ticket_id-123')
-            ->ticketNumber->toBe('test value')
-            ->ticketTitle->toBe('test value')
             ->ticketType->toBe('test value')
             );
 
@@ -312,10 +314,10 @@ it('calls the entriesUpdate method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Entry::testFactory()->state([
+    $dto = EntryUpdateRequest::testFactory()->state([
+        'isPaidPerHour' => true,
+        'entrySuggestionId' => 42,
         'ticketId' => 'ticket_id-123',
-        'ticketNumber' => 'test value',
-        'ticketTitle' => 'test value',
         'ticketType' => 'test value',
     ])->make();
 
@@ -329,9 +331,9 @@ it('calls the entriesUpdate method in the Entry resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('entries')
             ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->isPaidPerHour->toBe(true)
+            ->entrySuggestionId->toBe(42)
             ->ticketId->toBe('ticket_id-123')
-            ->ticketNumber->toBe('test value')
-            ->ticketTitle->toBe('test value')
             ->ticketType->toBe('test value')
             );
 

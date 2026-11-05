@@ -6,8 +6,9 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Budget;
+use Timatic\Dto\BudgetCreateRequest;
 use Timatic\Dto\BudgetType;
+use Timatic\Dto\BudgetUpdateRequest;
 use Timatic\Dto\Customer;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsDestroyRequest;
@@ -174,11 +175,11 @@ it('calls the budgetsStore method in the Budget resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Budget::testFactory()->state([
-        'budgetTypeId' => 'budget_type_id-123',
-        'customerId' => 'customer_id-123',
-        'showToCustomer' => true,
+    $dto = BudgetCreateRequest::testFactory()->state([
         'title' => 'test title',
+        'changeId' => 'change_id-123',
+        'contractId' => 'contract_id-123',
+        'description' => 'test description',
     ])->make();
 
     $request = new BudgetsStoreRequest($dto);
@@ -191,10 +192,10 @@ it('calls the budgetsStore method in the Budget resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->budgetTypeId->toBe('budget_type_id-123')
-            ->customerId->toBe('customer_id-123')
-            ->showToCustomer->toBe(true)
             ->title->toBe('test title')
+            ->changeId->toBe('change_id-123')
+            ->contractId->toBe('contract_id-123')
+            ->description->toBe('test description')
             );
 
         return true;
@@ -274,11 +275,11 @@ it('calls the budgetsUpdate method in the Budget resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = Budget::testFactory()->state([
-        'budgetTypeId' => 'budget_type_id-123',
-        'customerId' => 'customer_id-123',
-        'showToCustomer' => true,
+    $dto = BudgetUpdateRequest::testFactory()->state([
         'title' => 'test title',
+        'changeId' => 'change_id-123',
+        'contractId' => 'contract_id-123',
+        'description' => 'test description',
     ])->make();
 
     $request = new BudgetsUpdateRequest(budgetId: 42, data: $dto);
@@ -291,10 +292,10 @@ it('calls the budgetsUpdate method in the Budget resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('budgets')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->budgetTypeId->toBe('budget_type_id-123')
-            ->customerId->toBe('customer_id-123')
-            ->showToCustomer->toBe(true)
             ->title->toBe('test title')
+            ->changeId->toBe('change_id-123')
+            ->contractId->toBe('contract_id-123')
+            ->description->toBe('test description')
             );
 
         return true;
