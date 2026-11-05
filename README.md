@@ -30,7 +30,7 @@ A Laravel package for the Timatic API, built with [Saloon](https://docs.saloon.d
 ## Requirements
 
 - PHP 8.2 or higher
-- Laravel 10.x or higher
+- Laravel 11.x or higher
 
 ## Installation
 
@@ -150,16 +150,16 @@ use Saloon\Http\Faking\MockResponse;
 
 test('it displays budgets and budget types', function () {
     // Generate test data using factories
-    $budget = Budget::factory()->state(['id' => '1'])->make();
-    $budgetType = BudgetType::factory()->state(['id' => '1'])->make();
+    $budget = Budget::testFactory()->state(['id' => '1'])->make();
+    $budgetType = BudgetType::testFactory()->state(['id' => '1'])->make();
 
     // Create mock responses using factory-generated data
     $mockClient = MockClient::global([
         GetBudgetsRequest::class => MockResponse::make([
-            'data' => [$budget->toJsonApi()],
+            'data' => [JsonApiSerializer::toJsonApi($budget)],
         ], 200),
         GetBudgetTypesRequest::class => MockResponse::make([
-            'data' => [$budgetType->toJsonApi()],
+            'data' => [JsonApiSerializer::toJsonApi($budgetType)],
         ], 200),
     ]);
 
@@ -174,7 +174,7 @@ test('it displays budgets and budget types', function () {
 
 test('it creates a new budget', function () {
     // Generate test data with specific attributes
-    $budget = Budget::factory()->state([
+    $budget = Budget::testFactory()->state([
         'id' => '2',
         'title' => 'New Budget',
         'totalPrice' => '5000.00',
@@ -182,7 +182,7 @@ test('it creates a new budget', function () {
 
     $mockClient = MockClient::global([
         PostBudgetsRequest::class => MockResponse::make([
-            'data' => $budget->toJsonApi(),
+            'data' => JsonApiSerializer::toJsonApi($budget),
         ], 201),
     ]);
 
@@ -195,13 +195,13 @@ test('it creates a new budget', function () {
 });
 
 test('it sends a POST request to create a budget using the SDK', function () {
-    $budgetToCreate = Budget::factory()->state([
+    $budgetToCreate = Budget::testFactory()->state([
         'title' => 'New Budget',
         'totalPrice' => '5000.00',
         'customerId' => 'customer-123',
     ])->make();
 
-    $createdBudget = Budget::factory()->state([
+    $createdBudget = Budget::testFactory()->state([
         'id' => 'created-456',
         'title' => 'New Budget',
         'totalPrice' => '5000.00',
@@ -210,7 +210,7 @@ test('it sends a POST request to create a budget using the SDK', function () {
 
     $mockClient = MockClient::global([
         PostBudgetsRequest::class => MockResponse::make([
-            'data' => $createdBudget->toJsonApi(),
+            'data' => JsonApiSerializer::toJsonApi($createdBudget),
         ], 201),
     ]);
 
@@ -233,19 +233,19 @@ Every DTO in the SDK has a corresponding factory class with the following method
 
 ```php
 // Create a single model with random data, without an ID
-$budget = Budget::factory()->make();
+$budget = Budget::testFactory()->make();
 
 // Create multiple models with unique UUID IDs
-$budgets = Budget::factory()->withId()->count(3)->make(); // Returns Collection
+$budgets = Budget::testFactory()->withId()->count(3)->make(); // Returns Collection
 
 // Override specific attributes
-$budget = Budget::factory()->state([
+$budget = Budget::testFactory()->state([
     'title' => 'Q1 Budget',
     'totalPrice' => '10000.00',
 ])->make();
 
 // Chain state calls for complex scenarios
-$budget = Budget::factory()
+$budget = Budget::testFactory()
     ->state(['customerId' => $customerId])
     ->state(['budgetTypeId' => $budgetTypeId])
     ->make();
@@ -417,7 +417,7 @@ $updated = $timatic->send(new PatchUserRequest(id: $user->id, data: $user))->dto
 The `toJsonApi()` method automatically converts relationships to the correct JSON:API format:
 
 ```php
-$user->toJsonApi();
+JsonApiSerializer::toJsonApi($user);
 // Returns:
 // [
 //     'type' => 'users',
@@ -458,26 +458,22 @@ The SDK automatically hydrates all included resources into their respective rela
 
 ## Regenerating the SDK
 
-This SDK is automatically generated from the Timatic API OpenAPI specification using a custom JSON:API generator. To regenerate the SDK with the latest API changes:
+The SDK is generated from the Timatic OpenAPI spec by a companion [LaravelZero](https://laravel-zero.com/) app in `generator/`, which wraps [timatic/jsonapi-sdk-generator](https://github.com/Timatic/json-api-php-sdk-generator).
+
+First-time setup:
 
 ```bash
+cd generator && composer install
+```
+
+Export the spec from a local `timatic-backend` checkout to `openapi.json` (gitignored) and regenerate:
+
+```bash
+(cd ../timatic-backend && docker compose exec -T app php artisan scramble:export --path=storage/api.json && mv storage/api.json ../timatic-php-sdk/openapi.json)
 composer regenerate
 ```
 
-This will:
-1. Download the latest OpenAPI specification from the API
-2. Generate Models with flattened JSON:API attributes
-3. Update the autoloader
-4. Format the code with Laravel Pint
-
-### How It Works
-
-The SDK uses a custom `JsonApiDtoGenerator` that:
-1. Detects JSON:API schemas in the OpenAPI specification
-2. Extracts properties from the `attributes` object
-3. Generates proper Model classes with specific properties
-4. Adds `#[Property]` and `#[DateTime]` attributes
-5. Uses Carbon for datetime fields
+`composer regenerate` rewrites `src/Dto`, `src/Requests`, `Factories` and `tests/Requests`. To also rewrite `src/Foundation`, the connector, service provider and config, run the generator with `--foundation --connector-name=TimaticConnector --base-url=https://api.tenant.timatic.app` and revert the `composer.json` changes it makes.
 
 ## Development
 
