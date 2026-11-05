@@ -2,37 +2,33 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Carbon\Carbon;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\CustomerFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * Customer
+ *
+ *
+ * @method static \Timatic\Factories\CustomerFactory testFactory()
  */
-class Customer extends Model
+class Customer extends SpatieData
 {
-    #[Property]
-    public ?string $externalId;
+    /** @use HasTestFactory<CustomerFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?string $name;
-
-    #[Property]
-    public ?string $hourlyRate;
-
-    #[Property]
-    public ?int $accountManagerUserId;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Relationship(User::class, RelationType::One)]
-    public ?User $accountManager = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $externalId = null,
+        public ?string $name = null,
+        public ?string $hourlyRate = null,
+        public ?bool $isOwnOrganization = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        #[JsonApiRelationship(User::class, RelationType::One)]
+        public ?User $accountManager = null,
+    ) {}
 }

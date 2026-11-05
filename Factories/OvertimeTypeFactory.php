@@ -5,6 +5,9 @@ namespace Timatic\Factories;
 use Timatic\Dto\OvertimeType;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<OvertimeType>
+ */
 class OvertimeTypeFactory extends Factory
 {
     protected function definition(): array

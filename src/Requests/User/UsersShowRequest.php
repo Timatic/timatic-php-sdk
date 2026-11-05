@@ -6,24 +6,22 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Timatic\Dto\User;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**
  * users.show
  */
 class UsersShowRequest extends Request
 {
-    protected $model = User::class;
-
     protected Method $method = Method::GET;
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Hydrator::hydrate(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
+        return User::from(JsonApiTransformer::flatten(
+            User::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        ));
     }
 
     public function resolveEndpoint(): string
@@ -32,9 +30,9 @@ class UsersShowRequest extends Request
     }
 
     /**
-     * @param  int  $userId  The user ID
+     * @param  mixed  $userId  The user ID
      */
     public function __construct(
-        protected int $userId,
+        protected mixed $userId,
     ) {}
 }

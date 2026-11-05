@@ -29,8 +29,12 @@ class TimaticConnector extends Connector implements HasPagination
         return config('timatic.base_url');
     }
 
-    public function defaultAuth(): Authenticator
+    public function defaultAuth(): ?Authenticator
     {
+        if ($this->bearerToken === null) {
+            return null;
+        }
+
         return new TokenAuthenticator($this->bearerToken, 'Bearer');
     }
 

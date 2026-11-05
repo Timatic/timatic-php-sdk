@@ -7,8 +7,9 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\Customer;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 use Timatic\Foundation\Requests\Concerns\HasFilters;
+use Timatic\Foundation\Requests\Concerns\HasIncludes;
 
 /**
  * customers.index
@@ -16,18 +17,27 @@ use Timatic\Foundation\Requests\Concerns\HasFilters;
 class CustomersCollectionRequest extends Request implements Paginatable
 {
     use HasFilters;
-
-    protected $model = Customer::class;
+    use HasIncludes;
 
     protected Method $method = Method::GET;
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Hydrator::hydrateCollection(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
+        $flattened = JsonApiTransformer::flattenCollection(
+            Customer::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
         );
+
+        return collect($flattened)->map(fn (array $flat) => Customer::from($flat));
+    }
+
+    /**
+     * Include the accountManager relationship in the response
+     */
+    public function includeAccountManager(): static
+    {
+        return $this->addInclude('accountManager');
     }
 
     public function resolveEndpoint(): string

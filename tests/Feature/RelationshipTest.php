@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Collection;
+use Timatic\Dto\Permission;
 use Timatic\Dto\Team;
 use Timatic\Dto\User;
-use Timatic\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiSerializer;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 it('hydrates a single relationship (to-one)', function () {
     $jsonApiResponse = [
@@ -37,7 +39,7 @@ it('hydrates a single relationship (to-one)', function () {
         ],
     ];
 
-    $user = Hydrator::hydrate(User::class, $jsonApiResponse['data'], $jsonApiResponse['included']);
+    $user = User::from(JsonApiTransformer::flatten(User::class, $jsonApiResponse['data'], $jsonApiResponse['included']));
 
     expect($user)->toBeInstanceOf(User::class)
         ->and($user->id)->toBe('1')
@@ -48,20 +50,12 @@ it('hydrates a single relationship (to-one)', function () {
 });
 
 it('serializes a single relationship (to-one) to JSON:API format', function () {
-    $team = new Team([
-        'name' => 'Engineering',
-    ]);
-    $team->id = '10';
+    $team = new Team(id: '10', name: 'Engineering');
 
-    $user = new User([
-        'email' => 'john@example.com',
-        'givenName' => 'John',
-        'familyName' => 'Doe',
-    ]);
-    $user->id = '1';
+    $user = new User(id: '1', email: 'john@example.com', givenName: 'John', familyName: 'Doe');
     $user->team = $team;
 
-    $jsonApi = $user->toJsonApi();
+    $jsonApi = JsonApiSerializer::toJsonApi($user);
 
     expect($jsonApi)->toHaveKey('relationships')
         ->and($jsonApi['relationships'])->toHaveKey('team')
@@ -74,23 +68,15 @@ it('serializes a single relationship (to-one) to JSON:API format', function () {
 });
 
 it('serializes multiple relationships (to-many) to JSON:API format', function () {
-    // Create a user with multiple permissions
-    $user = new User([
-        'email' => 'john@example.com',
-        'givenName' => 'John',
-        'familyName' => 'Doe',
-    ]);
-    $user->id = '1';
+    $user = new User(id: '1', email: 'john@example.com', givenName: 'John', familyName: 'Doe');
 
-    $permission1 = new \Timatic\Dto\Permission;
-    $permission1->id = 'p1';
+    $permission1 = new Permission(id: 'p1');
 
-    $permission2 = new \Timatic\Dto\Permission;
-    $permission2->id = 'p2';
+    $permission2 = new Permission(id: 'p2');
 
     $user->permissions = new Collection([$permission1, $permission2]);
 
-    $jsonApi = $user->toJsonApi();
+    $jsonApi = JsonApiSerializer::toJsonApi($user);
 
     expect($jsonApi)->toHaveKey('relationships')
         ->and($jsonApi['relationships'])->toHaveKey('permissions')
@@ -108,30 +94,10 @@ it('serializes multiple relationships (to-many) to JSON:API format', function ()
         ]);
 });
 
-it('does not serialize uninitialized relationships', function () {
-    $user = new User([
-        'email' => 'john@example.com',
-        'givenName' => 'John',
-        'familyName' => 'Doe',
-    ]);
-    $user->id = '1';
-
-    $jsonApi = $user->toJsonApi();
-
-    expect($jsonApi)->not->toHaveKey('relationships');
-});
-
 it('does not serialize null relationships', function () {
-    $user = new User([
-        'email' => 'john@example.com',
-        'givenName' => 'John',
-        'familyName' => 'Doe',
-    ]);
-    $user->id = '1';
-    $user->team = null;
-    $user->permissions = null;
+    $user = new User(id: '1', email: 'john@example.com', givenName: 'John', familyName: 'Doe');
 
-    $jsonApi = $user->toJsonApi();
+    $jsonApi = JsonApiSerializer::toJsonApi($user);
 
     expect($jsonApi)->not->toHaveKey('relationships');
 });

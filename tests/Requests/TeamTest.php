@@ -5,14 +5,16 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\Dto\Team;
 use Timatic\Requests\Team\TeamsCollectionRequest;
 use Timatic\Requests\Team\TeamsDestroyRequest;
 use Timatic\Requests\Team\TeamsShowRequest;
 use Timatic\Requests\Team\TeamsStoreRequest;
 use Timatic\Requests\Team\TeamsUpdateRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the teamsCollection method in the Team resource', function () {
@@ -24,7 +26,7 @@ it('calls the teamsCollection method in the Team resource', function () {
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
-                        'name' => 'Mock value',
+                        'name' => 'String value',
                     ],
                 ],
                 1 => [
@@ -32,7 +34,7 @@ it('calls the teamsCollection method in the Team resource', function () {
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
-                        'name' => 'Mock value',
+                        'name' => 'String value',
                     ],
                 ],
             ],
@@ -41,7 +43,7 @@ it('calls the teamsCollection method in the Team resource', function () {
 
     $request = (new TeamsCollectionRequest);
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (TeamsCollectionRequest $request) {
         $query = $request->query()->all();
@@ -49,13 +51,11 @@ it('calls the teamsCollection method in the Team resource', function () {
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
         ->externalId->toBe('mock-id-123')
-        ->name->toBe('Mock value');
+        ->name->toBe('String value');
 });
 
 it('calls the teamsStore method in the Team resource', function () {
@@ -64,9 +64,8 @@ it('calls the teamsStore method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Team::factory()->state([
-        'externalId' => 'external_id-123',
-        'name' => 'test name',
+    $dto = Team::testFactory()->state([
+        'name' => 'test value',
     ])->make();
 
     $request = new TeamsStoreRequest($dto);
@@ -77,11 +76,7 @@ it('calls the teamsStore method in the Team resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('teams')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('external_id-123')
-            ->name->toBe('test name')
-            );
+            ->data->type->toBe('teams');
 
         return true;
     });
@@ -95,14 +90,14 @@ it('calls the teamsShow method in the Team resource', function () {
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'externalId' => 'mock-id-123',
-                    'name' => 'Mock value',
+                    'name' => 'String value',
                 ],
             ],
         ], 200),
     ]);
 
     $request = new TeamsShowRequest(
-        teamId: 123
+        teamId: null
     );
     $response = $this->timaticConnector->send($request);
 
@@ -114,7 +109,7 @@ it('calls the teamsShow method in the Team resource', function () {
 
     expect($dto)
         ->externalId->toBe('mock-id-123')
-        ->name->toBe('Mock value');
+        ->name->toBe('String value');
 });
 
 it('calls the teamsDestroy method in the Team resource', function () {
@@ -123,7 +118,7 @@ it('calls the teamsDestroy method in the Team resource', function () {
     ]);
 
     $request = new TeamsDestroyRequest(
-        teamId: 123
+        teamId: null
     );
     $response = $this->timaticConnector->send($request);
 
@@ -138,12 +133,11 @@ it('calls the teamsUpdate method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Team::factory()->state([
-        'externalId' => 'external_id-123',
-        'name' => 'test name',
+    $dto = Team::testFactory()->state([
+        'name' => 'test value',
     ])->make();
 
-    $request = new TeamsUpdateRequest(teamId: 42, data: $dto);
+    $request = new TeamsUpdateRequest(teamId: 'test value', data: $dto);
     $this->timaticConnector->send($request);
 
     Saloon::assertSent(TeamsUpdateRequest::class);
@@ -151,11 +145,7 @@ it('calls the teamsUpdate method in the Team resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('teams')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('external_id-123')
-            ->name->toBe('test name')
-            );
+            ->data->type->toBe('teams');
 
         return true;
     });

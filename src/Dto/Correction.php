@@ -2,31 +2,33 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Carbon\Carbon;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\CorrectionFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * Correction
+ *
+ *
+ * @method static \Timatic\Factories\CorrectionFactory testFactory()
  */
-class Correction extends Model
+class Correction extends SpatieData
 {
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
+    /** @use HasTestFactory<CorrectionFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Relationship(Entry::class, RelationType::One)]
-    public ?Entry $correctedEntry = null;
-
-    #[Relationship(Entry::class, RelationType::One)]
-    public ?Entry $correctionEntry = null;
-
-    #[Relationship(Entry::class, RelationType::One)]
-    public ?Entry $newEntry = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        #[JsonApiRelationship(Entry::class, RelationType::One)]
+        public ?Entry $correctedEntry = null,
+        #[JsonApiRelationship(Entry::class, RelationType::One)]
+        public ?Entry $correctionEntry = null,
+        #[JsonApiRelationship(Entry::class, RelationType::One)]
+        public ?Entry $newEntry = null,
+    ) {}
 }

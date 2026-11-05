@@ -6,15 +6,19 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\Dto\Budget;
+use Timatic\Dto\Customer;
+use Timatic\Dto\Entry;
 use Timatic\Requests\Entry\EntriesCollectionRequest;
 use Timatic\Requests\Entry\EntriesDestroyRequest;
 use Timatic\Requests\Entry\EntriesShowRequest;
 use Timatic\Requests\Entry\EntriesStoreRequest;
 use Timatic\Requests\Entry\EntriesUpdateRequest;
 use Timatic\Requests\Entry\EntryMarkAsInvoicedRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the entriesCollection method in the Entry resource', function () {
@@ -26,29 +30,29 @@ it('calls the entriesCollection method in the Entry resource', function () {
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
-                        'ticketNumber' => 'Mock value',
-                        'ticketTitle' => 'Mock value',
-                        'ticketType' => 'Mock value',
-                        'customerId' => 42,
-                        'customerName' => 'Mock value',
-                        'hourlyRate' => 3.14,
+                        'ticketNumber' => 'String value',
+                        'ticketTitle' => 'String value',
+                        'ticketType' => 'String value',
+                        'customerId' => 'mock-id-123',
+                        'customerName' => 'String value',
+                        'hourlyRate' => 42,
                         'hadEmergencyShift' => true,
                         'budgetId' => 42,
-                        'isPaidPerHour' => 'Mock value',
+                        'isPaidPerHour' => 'String value',
                         'minutesSpent' => 42,
-                        'userId' => 42,
+                        'userId' => 'mock-id-123',
                         'userEmail' => 'test@example.com',
-                        'userFullName' => 'Mock value',
+                        'userFullName' => 'String value',
                         'createdByUserId' => 42,
                         'createdByUserEmail' => 'test@example.com',
-                        'createdByUserFullName' => 'Mock value',
-                        'entryType' => 'Mock value',
-                        'description' => 'Mock value',
+                        'createdByUserFullName' => 'String value',
+                        'entryType' => 'String value',
+                        'description' => 'String value',
                         'isInternal' => true,
-                        'startedAt' => '2025-11-22T10:40:04.065Z',
-                        'endedAt' => '2025-11-22T10:40:04.065Z',
-                        'invoicedAt' => '2025-11-22T10:40:04.065Z',
-                        'isInvoiced' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04+00:00',
+                        'endedAt' => '2025-11-22T10:40:04+00:00',
+                        'invoicedAt' => '2025-11-22T10:40:04+00:00',
+                        'isInvoiced' => true,
                         'isBasedOnSuggestion' => true,
                     ],
                     'relationships' => [
@@ -71,29 +75,29 @@ it('calls the entriesCollection method in the Entry resource', function () {
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
-                        'ticketNumber' => 'Mock value',
-                        'ticketTitle' => 'Mock value',
-                        'ticketType' => 'Mock value',
-                        'customerId' => 42,
-                        'customerName' => 'Mock value',
-                        'hourlyRate' => 3.14,
+                        'ticketNumber' => 'String value',
+                        'ticketTitle' => 'String value',
+                        'ticketType' => 'String value',
+                        'customerId' => 'mock-id-123',
+                        'customerName' => 'String value',
+                        'hourlyRate' => 42,
                         'hadEmergencyShift' => true,
                         'budgetId' => 42,
-                        'isPaidPerHour' => 'Mock value',
+                        'isPaidPerHour' => 'String value',
                         'minutesSpent' => 42,
-                        'userId' => 42,
+                        'userId' => 'mock-id-123',
                         'userEmail' => 'test@example.com',
-                        'userFullName' => 'Mock value',
+                        'userFullName' => 'String value',
                         'createdByUserId' => 42,
                         'createdByUserEmail' => 'test@example.com',
-                        'createdByUserFullName' => 'Mock value',
-                        'entryType' => 'Mock value',
-                        'description' => 'Mock value',
+                        'createdByUserFullName' => 'String value',
+                        'entryType' => 'String value',
+                        'description' => 'String value',
                         'isInternal' => true,
-                        'startedAt' => '2025-11-22T10:40:04.065Z',
-                        'endedAt' => '2025-11-22T10:40:04.065Z',
-                        'invoicedAt' => '2025-11-22T10:40:04.065Z',
-                        'isInvoiced' => 'Mock value',
+                        'startedAt' => '2025-11-22T10:40:04+00:00',
+                        'endedAt' => '2025-11-22T10:40:04+00:00',
+                        'invoicedAt' => '2025-11-22T10:40:04+00:00',
+                        'isInvoiced' => true,
                         'isBasedOnSuggestion' => true,
                     ],
                     'relationships' => [
@@ -134,7 +138,7 @@ it('calls the entriesCollection method in the Entry resource', function () {
         ->includeCustomer()
         ->includeBudget();
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (EntriesCollectionRequest $request) {
         $query = $request->query()->all();
@@ -146,38 +150,36 @@ it('calls the entriesCollection method in the Entry resource', function () {
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
         ->ticketId->toBe('mock-id-123')
-        ->ticketNumber->toBe('Mock value')
-        ->ticketTitle->toBe('Mock value')
-        ->ticketType->toBe('Mock value')
-        ->customerId->toBe(42)
-        ->customerName->toBe('Mock value')
-        ->hourlyRate->toBe(3.14)
+        ->ticketNumber->toBe('String value')
+        ->ticketTitle->toBe('String value')
+        ->ticketType->toBe('String value')
+        ->customerId->toBe('mock-id-123')
+        ->customerName->toBe('String value')
+        ->hourlyRate->toBe(42)
         ->hadEmergencyShift->toBe(true)
         ->budgetId->toBe(42)
-        ->isPaidPerHour->toBe('Mock value')
+        ->isPaidPerHour->toBe('String value')
         ->minutesSpent->toBe(42)
-        ->userId->toBe(42)
+        ->userId->toBe('mock-id-123')
         ->userEmail->toBe('test@example.com')
-        ->userFullName->toBe('Mock value')
+        ->userFullName->toBe('String value')
         ->createdByUserId->toBe(42)
         ->createdByUserEmail->toBe('test@example.com')
-        ->createdByUserFullName->toBe('Mock value')
-        ->entryType->toBe('Mock value')
-        ->description->toBe('Mock value')
+        ->createdByUserFullName->toBe('String value')
+        ->entryType->toBe('String value')
+        ->description->toBe('String value')
         ->isInternal->toBe(true)
-        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->isInvoiced->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->isInvoiced->toBe(true)
         ->isBasedOnSuggestion->toBe(true)
-        ->customer->toBeInstanceOf(\Timatic\Dto\Customer::class)
-        ->budget->toBeInstanceOf(\Timatic\Dto\Budget::class);
+        ->customer->toBeInstanceOf(Customer::class)
+        ->budget->toBeInstanceOf(Budget::class);
 });
 
 it('calls the entriesStore method in the Entry resource', function () {
@@ -186,7 +188,7 @@ it('calls the entriesStore method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Entry::factory()->state([
+    $dto = Entry::testFactory()->state([
         'ticketId' => 'ticket_id-123',
         'ticketNumber' => 'test value',
         'ticketTitle' => 'test value',
@@ -221,29 +223,29 @@ it('calls the entriesShow method in the Entry resource', function () {
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'ticketId' => 'mock-id-123',
-                    'ticketNumber' => 'Mock value',
-                    'ticketTitle' => 'Mock value',
-                    'ticketType' => 'Mock value',
-                    'customerId' => 42,
-                    'customerName' => 'Mock value',
-                    'hourlyRate' => 3.14,
+                    'ticketNumber' => 'String value',
+                    'ticketTitle' => 'String value',
+                    'ticketType' => 'String value',
+                    'customerId' => 'mock-id-123',
+                    'customerName' => 'String value',
+                    'hourlyRate' => 42,
                     'hadEmergencyShift' => true,
                     'budgetId' => 42,
-                    'isPaidPerHour' => 'Mock value',
+                    'isPaidPerHour' => 'String value',
                     'minutesSpent' => 42,
-                    'userId' => 42,
+                    'userId' => 'mock-id-123',
                     'userEmail' => 'test@example.com',
-                    'userFullName' => 'Mock value',
+                    'userFullName' => 'String value',
                     'createdByUserId' => 42,
                     'createdByUserEmail' => 'test@example.com',
-                    'createdByUserFullName' => 'Mock value',
-                    'entryType' => 'Mock value',
-                    'description' => 'Mock value',
+                    'createdByUserFullName' => 'String value',
+                    'entryType' => 'String value',
+                    'description' => 'String value',
                     'isInternal' => true,
-                    'startedAt' => '2025-11-22T10:40:04.065Z',
-                    'endedAt' => '2025-11-22T10:40:04.065Z',
-                    'invoicedAt' => '2025-11-22T10:40:04.065Z',
-                    'isInvoiced' => 'Mock value',
+                    'startedAt' => '2025-11-22T10:40:04+00:00',
+                    'endedAt' => '2025-11-22T10:40:04+00:00',
+                    'invoicedAt' => '2025-11-22T10:40:04+00:00',
+                    'isInvoiced' => true,
                     'isBasedOnSuggestion' => true,
                 ],
             ],
@@ -263,29 +265,29 @@ it('calls the entriesShow method in the Entry resource', function () {
 
     expect($dto)
         ->ticketId->toBe('mock-id-123')
-        ->ticketNumber->toBe('Mock value')
-        ->ticketTitle->toBe('Mock value')
-        ->ticketType->toBe('Mock value')
-        ->customerId->toBe(42)
-        ->customerName->toBe('Mock value')
-        ->hourlyRate->toBe(3.14)
+        ->ticketNumber->toBe('String value')
+        ->ticketTitle->toBe('String value')
+        ->ticketType->toBe('String value')
+        ->customerId->toBe('mock-id-123')
+        ->customerName->toBe('String value')
+        ->hourlyRate->toBe(42)
         ->hadEmergencyShift->toBe(true)
         ->budgetId->toBe(42)
-        ->isPaidPerHour->toBe('Mock value')
+        ->isPaidPerHour->toBe('String value')
         ->minutesSpent->toBe(42)
-        ->userId->toBe(42)
+        ->userId->toBe('mock-id-123')
         ->userEmail->toBe('test@example.com')
-        ->userFullName->toBe('Mock value')
+        ->userFullName->toBe('String value')
         ->createdByUserId->toBe(42)
         ->createdByUserEmail->toBe('test@example.com')
-        ->createdByUserFullName->toBe('Mock value')
-        ->entryType->toBe('Mock value')
-        ->description->toBe('Mock value')
+        ->createdByUserFullName->toBe('String value')
+        ->entryType->toBe('String value')
+        ->description->toBe('String value')
         ->isInternal->toBe(true)
-        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->isInvoiced->toBe('Mock value')
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->invoicedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->isInvoiced->toBe(true)
         ->isBasedOnSuggestion->toBe(true);
 });
 
@@ -310,7 +312,7 @@ it('calls the entriesUpdate method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Entry::factory()->state([
+    $dto = Entry::testFactory()->state([
         'ticketId' => 'ticket_id-123',
         'ticketNumber' => 'test value',
         'ticketTitle' => 'test value',
@@ -343,7 +345,7 @@ it('calls the entryMarkAsInvoiced method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Entry::factory()->state([
+    $dto = Entry::testFactory()->state([
         'ticketId' => 'ticket_id-123',
         'ticketNumber' => 'test value',
         'ticketTitle' => 'test value',

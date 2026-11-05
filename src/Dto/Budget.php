@@ -2,83 +2,50 @@
 
 namespace Timatic\Dto;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\BudgetFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * Budget
+ *
+ *
+ * @method static \Timatic\Factories\BudgetFactory testFactory()
  */
-class Budget extends Model
+class Budget extends SpatieData
 {
-    #[Property]
-    public ?string $budgetTypeId;
+    /** @use HasTestFactory<BudgetFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?int $customerId;
-
-    #[Property]
-    public ?bool $showToCustomer;
-
-    #[Property]
-    public ?string $changeId;
-
-    #[Property]
-    public ?string $contractId;
-
-    #[Property]
-    public ?string $title;
-
-    #[Property]
-    public ?string $description;
-
-    #[Property]
-    public ?string $totalPrice;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $startedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $endedAt;
-
-    #[Property]
-    public ?int $initialMinutes;
-
-    #[Property]
-    public ?bool $isArchived;
-
-    #[Property]
-    public ?string $renewalFrequency;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Property]
-    public ?int $supervisorUserId;
-
-    /** @var Collection<int, Entry>|null */
-    #[Relationship(Entry::class, RelationType::Many)]
-    public ?Collection $entries = null;
-
-    #[Relationship(BudgetType::class, RelationType::One)]
-    public ?BudgetType $budgetType = null;
-
-    #[Relationship(Period::class, RelationType::One)]
-    public ?Period $currentPeriod = null;
-
-    #[Relationship(Period::class, RelationType::One)]
-    public ?Period $lastPeriod = null;
-
-    #[Relationship(Customer::class, RelationType::One)]
-    public ?Customer $customer = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $budgetTypeId = null,
+        public ?string $customerId = null,
+        public ?bool $showToCustomer = null,
+        public ?string $changeId = null,
+        public ?string $contractId = null,
+        public ?string $title = null,
+        public ?string $description = null,
+        public ?string $totalPrice = null,
+        public ?Carbon $startedAt = null,
+        public ?Carbon $endedAt = null,
+        public ?int $initialMinutes = null,
+        public ?bool $isArchived = null,
+        public ?string $renewalFrequency = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        /** @var Collection<int, Entry>|null */
+        #[JsonApiRelationship(Entry::class, RelationType::Many)]
+        public ?Collection $entries = null,
+        #[JsonApiRelationship(BudgetType::class, RelationType::One)]
+        public ?BudgetType $budgetType = null,
+        #[JsonApiRelationship(Customer::class, RelationType::One)]
+        public ?Customer $customer = null,
+        #[JsonApiRelationship(User::class, RelationType::One)]
+        public ?User $supervisor = null,
+    ) {}
 }

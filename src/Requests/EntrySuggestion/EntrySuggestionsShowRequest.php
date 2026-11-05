@@ -6,24 +6,22 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Timatic\Dto\EntrySuggestion;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**
  * entry-suggestions.show
  */
 class EntrySuggestionsShowRequest extends Request
 {
-    protected $model = EntrySuggestion::class;
-
     protected Method $method = Method::GET;
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Hydrator::hydrate(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
+        return EntrySuggestion::from(JsonApiTransformer::flatten(
+            EntrySuggestion::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        ));
     }
 
     public function resolveEndpoint(): string
@@ -32,9 +30,9 @@ class EntrySuggestionsShowRequest extends Request
     }
 
     /**
-     * @param  int  $entrySuggestionId  The entry suggestion ID
+     * @param  mixed  $entrySuggestionId  The entry suggestion ID
      */
     public function __construct(
-        protected int $entrySuggestionId,
+        protected mixed $entrySuggestionId,
     ) {}
 }

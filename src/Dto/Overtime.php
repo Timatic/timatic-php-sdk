@@ -2,56 +2,39 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Carbon\Carbon;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\OvertimeFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * Overtime
+ *
+ *
+ * @method static \Timatic\Factories\OvertimeFactory testFactory()
  */
-class Overtime extends Model
+class Overtime extends SpatieData
 {
-    #[Property]
-    public ?int $entryId;
+    /** @use HasTestFactory<OvertimeFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?string $overtimeTypeId;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $startedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $endedAt;
-
-    #[Property]
-    public ?string $percentages;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $approvedAt;
-
-    #[Property]
-    public ?int $approvedByUserId;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $exportedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Relationship(OvertimeType::class, RelationType::One)]
-    public ?OvertimeType $overtimeType = null;
-
-    #[Relationship(Entry::class, RelationType::One)]
-    public ?Entry $entry = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?int $entryId = null,
+        public ?string $overtimeTypeId = null,
+        public ?Carbon $startedAt = null,
+        public ?Carbon $endedAt = null,
+        public ?object $percentages = null,
+        public ?Carbon $approvedAt = null,
+        public ?int $approvedByUserId = null,
+        public ?Carbon $exportedAt = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        #[JsonApiRelationship(OvertimeType::class, RelationType::One)]
+        public ?OvertimeType $overtimeType = null,
+        #[JsonApiRelationship(Entry::class, RelationType::One)]
+        public ?Entry $entry = null,
+    ) {}
 }

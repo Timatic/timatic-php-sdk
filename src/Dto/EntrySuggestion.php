@@ -2,51 +2,39 @@
 
 namespace Timatic\Dto;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\EntrySuggestionFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * EntrySuggestion
+ *
+ *
+ * @method static \Timatic\Factories\EntrySuggestionFactory testFactory()
  */
-class EntrySuggestion extends Model
+class EntrySuggestion extends SpatieData
 {
-    #[Property]
-    public ?string $ticketId;
+    /** @use HasTestFactory<EntrySuggestionFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?string $ticketNumber;
-
-    #[Property]
-    public ?string $customerId;
-
-    #[Property]
-    public ?int $userId;
-
-    #[Property]
-    public ?string $date;
-
-    #[Property]
-    public ?string $ticketTitle;
-
-    #[Property]
-    public ?string $ticketType;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Property]
-    public ?int $budgetId;
-
-    /** @var Collection<int, Activity>|null */
-    #[Relationship(Activity::class, RelationType::Many)]
-    public ?Collection $activities = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $ticketId = null,
+        public ?string $ticketNumber = null,
+        public ?string $customerId = null,
+        public ?string $userId = null,
+        public ?string $date = null,
+        public ?string $ticketTitle = null,
+        public ?string $ticketType = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        public ?int $budgetId = null,
+        /** @var Collection<int, Activity>|null */
+        #[JsonApiRelationship(Activity::class, RelationType::Many)]
+        public ?Collection $activities = null,
+    ) {}
 }

@@ -2,66 +2,42 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Carbon\Carbon;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\EventFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * Event
+ *
+ *
+ * @method static \Timatic\Factories\EventFactory testFactory()
  */
-class Event extends Model
+class Event extends SpatieData
 {
-    #[Property]
-    public ?int $userId;
+    /** @use HasTestFactory<EventFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?int $budgetId;
-
-    #[Property]
-    public ?string $ticketId;
-
-    #[Property]
-    public ?string $sourceId;
-
-    #[Property]
-    public ?string $ticketNumber;
-
-    #[Property]
-    public ?string $ticketType;
-
-    #[Property]
-    public ?string $title;
-
-    #[Property]
-    public ?string $description;
-
-    #[Property]
-    public ?string $customerId;
-
-    #[Property]
-    public ?string $eventTypeId;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $startedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $endedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Property]
-    public ?bool $isInternal;
-
-    #[Relationship(Source::class, RelationType::One)]
-    public ?Source $source = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $userId = null,
+        public ?int $budgetId = null,
+        public ?string $ticketId = null,
+        public ?string $sourceId = null,
+        public ?string $ticketNumber = null,
+        public ?string $ticketType = null,
+        public ?string $title = null,
+        public ?string $description = null,
+        public ?string $customerId = null,
+        public ?string $eventTypeId = null,
+        public ?Carbon $startedAt = null,
+        public ?Carbon $endedAt = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        public ?bool $isInternal = null,
+        #[JsonApiRelationship(Source::class, RelationType::One)]
+        public ?Source $source = null,
+    ) {}
 }

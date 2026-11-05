@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\EntrySuggestion;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 use Timatic\Foundation\Requests\Concerns\HasFilters;
 use Timatic\Foundation\Requests\Concerns\HasIncludes;
 
@@ -19,9 +19,18 @@ class EntrySuggestionsCollectionRequest extends Request implements Paginatable
     use HasFilters;
     use HasIncludes;
 
-    protected $model = EntrySuggestion::class;
-
     protected Method $method = Method::GET;
+
+    public function createDtoFromResponse(Response $response): mixed
+    {
+        $flattened = JsonApiTransformer::flattenCollection(
+            EntrySuggestion::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        );
+
+        return collect($flattened)->map(fn (array $flat) => EntrySuggestion::from($flat));
+    }
 
     /**
      * Include the activities relationship in the response
@@ -29,15 +38,6 @@ class EntrySuggestionsCollectionRequest extends Request implements Paginatable
     public function includeActivities(): static
     {
         return $this->addInclude('activities');
-    }
-
-    public function createDtoFromResponse(Response $response): mixed
-    {
-        return Hydrator::hydrateCollection(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
     }
 
     public function resolveEndpoint(): string

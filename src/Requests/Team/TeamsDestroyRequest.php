@@ -18,9 +18,9 @@ class TeamsDestroyRequest extends Request
     }
 
     /**
-     * @param  int  $teamId  The team ID
+     * @param  mixed  $teamId  The team ID
      */
     public function __construct(
-        protected int $teamId,
+        protected mixed $teamId,
     ) {}
 }

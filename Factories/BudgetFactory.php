@@ -6,13 +6,16 @@ use Carbon\Carbon;
 use Timatic\Dto\Budget;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<Budget>
+ */
 class BudgetFactory extends Factory
 {
     protected function definition(): array
     {
         return [
             'budgetTypeId' => $this->faker->uuid(),
-            'customerId' => $this->faker->numberBetween(1, 1000),
+            'customerId' => $this->faker->uuid(),
             'showToCustomer' => $this->faker->boolean(),
             'changeId' => $this->faker->uuid(),
             'contractId' => $this->faker->uuid(),
@@ -23,10 +26,9 @@ class BudgetFactory extends Factory
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'initialMinutes' => $this->faker->numberBetween(15, 480),
             'isArchived' => $this->faker->boolean(),
-            'renewalFrequency' => $this->faker->word(),
+            'renewalFrequency' => null,
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'supervisorUserId' => $this->faker->word(),
         ];
     }
 

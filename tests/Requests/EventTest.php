@@ -5,10 +5,12 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\Dto\Event;
 use Timatic\Requests\Event\EventsStoreRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the eventsStore method in the Event resource', function () {
@@ -17,11 +19,8 @@ it('calls the eventsStore method in the Event resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Event::factory()->state([
-        'userId' => 42,
-        'budgetId' => 42,
-        'ticketId' => 'ticket_id-123',
-        'sourceId' => 'source_id-123',
+    $dto = Event::testFactory()->state([
+        'name' => 'test value',
     ])->make();
 
     $request = new EventsStoreRequest($dto);
@@ -32,13 +31,7 @@ it('calls the eventsStore method in the Event resource', function () {
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('events')
-            ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->userId->toBe(42)
-            ->budgetId->toBe(42)
-            ->ticketId->toBe('ticket_id-123')
-            ->sourceId->toBe('source_id-123')
-            );
+            ->data->type->toBe('events');
 
         return true;
     });

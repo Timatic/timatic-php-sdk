@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Timatic\Dto\Overtime;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<Overtime>
+ */
 class OvertimeFactory extends Factory
 {
     protected function definition(): array
@@ -15,9 +18,9 @@ class OvertimeFactory extends Factory
             'overtimeTypeId' => $this->faker->uuid(),
             'startedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'percentages' => $this->faker->word(),
+            'percentages' => (object) [],
             'approvedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'approvedByUserId' => $this->faker->word(),
+            'approvedByUserId' => null,
             'exportedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),

@@ -18,9 +18,9 @@ class UsersDestroyRequest extends Request
     }
 
     /**
-     * @param  int  $userId  The user ID
+     * @param  mixed  $userId  The user ID
      */
     public function __construct(
-        protected int $userId,
+        protected mixed $userId,
     ) {}
 }

@@ -5,6 +5,9 @@ namespace Timatic\Factories;
 use Timatic\Dto\BudgetType;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<BudgetType>
+ */
 class BudgetTypeFactory extends Factory
 {
     protected function definition(): array

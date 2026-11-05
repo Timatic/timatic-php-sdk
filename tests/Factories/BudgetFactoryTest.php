@@ -1,9 +1,10 @@
 <?php
 
 use Timatic\Dto\Budget;
+use Timatic\Foundation\JsonApi\JsonApiSerializer;
 
 test('it can create a budget using factory', function () {
-    $budget = Budget::factory()
+    $budget = Budget::testFactory()
         ->state([
             'title' => 'Project Budget',
         ])
@@ -13,18 +14,18 @@ test('it can create a budget using factory', function () {
         ->toBeInstanceOf(Budget::class)
         ->title->toBe('Project Budget')
         ->totalPrice->toBeString()
-        ->customerId->toBeInt();
+        ->customerId->toBeString();
 });
 
 test('it can create multiple budgets using factory', function () {
-    $budgets = Budget::factory()->count(3)->make();
+    $budgets = Budget::testFactory()->count(3)->make();
 
     expect($budgets)->toHaveCount(3);
     $budgets->each(fn ($budget) => expect($budget)->toBeInstanceOf(Budget::class));
 });
 
 test('it can override attributes using state', function () {
-    $budget = Budget::factory()->state([
+    $budget = Budget::testFactory()->state([
         'title' => 'Custom Title',
         'totalPrice' => '1234.56',
     ])->make();
@@ -35,7 +36,7 @@ test('it can override attributes using state', function () {
 });
 
 test('it can chain state calls', function () {
-    $budget = Budget::factory()
+    $budget = Budget::testFactory()
         ->state(['title' => 'First'])
         ->state(['totalPrice' => '100.00'])
         ->make();
@@ -46,13 +47,13 @@ test('it can chain state calls', function () {
 });
 
 test('it converts to json api format correctly', function () {
-    $budget = Budget::factory()->state([
+    $budget = Budget::testFactory()->state([
         'id' => 'test-123',
         'title' => 'Test Budget',
         'totalPrice' => '999.99',
     ])->make();
 
-    $jsonApi = $budget->toJsonApi();
+    $jsonApi = JsonApiSerializer::toJsonApi($budget);
 
     expect($jsonApi)
         ->toHaveKeys(['type', 'id', 'attributes'])
@@ -63,7 +64,7 @@ test('it converts to json api format correctly', function () {
 });
 
 test('it can generate multiple budgets with unique UUID IDs', function () {
-    $budgets = Budget::factory()->withId()->count(3)->make();
+    $budgets = Budget::testFactory()->withId()->count(3)->make();
 
     expect($budgets)->toHaveCount(3);
 

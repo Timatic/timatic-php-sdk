@@ -2,17 +2,25 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Model;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\SourceFactory;
+use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
  * Source
+ *
+ *
+ * @method static \Timatic\Factories\SourceFactory testFactory()
  */
-class Source extends Model
+class Source extends SpatieData
 {
-    #[Property]
-    public ?string $key;
+    /** @use HasTestFactory<SourceFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?string $title;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $key = null,
+        public ?string $title = null,
+        public ?string $iconUrl = null,
+    ) {}
 }

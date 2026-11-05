@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\User;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 use Timatic\Foundation\Requests\Concerns\HasFilters;
 use Timatic\Foundation\Requests\Concerns\HasIncludes;
 
@@ -19,16 +19,17 @@ class UsersCollectionRequest extends Request implements Paginatable
     use HasFilters;
     use HasIncludes;
 
-    protected $model = User::class;
-
     protected Method $method = Method::GET;
 
-    /**
-     * Include the roles relationship in the response
-     */
-    public function includeRoles(): static
+    public function createDtoFromResponse(Response $response): mixed
     {
-        return $this->addInclude('roles');
+        $flattened = JsonApiTransformer::flattenCollection(
+            User::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        );
+
+        return collect($flattened)->map(fn (array $flat) => User::from($flat));
     }
 
     /**
@@ -45,15 +46,6 @@ class UsersCollectionRequest extends Request implements Paginatable
     public function includeTeam(): static
     {
         return $this->addInclude('team');
-    }
-
-    public function createDtoFromResponse(Response $response): mixed
-    {
-        return Hydrator::hydrateCollection(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
     }
 
     public function resolveEndpoint(): string

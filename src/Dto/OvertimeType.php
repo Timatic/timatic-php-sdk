@@ -2,14 +2,23 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Model;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\OvertimeTypeFactory;
+use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
  * OvertimeType
+ *
+ *
+ * @method static \Timatic\Factories\OvertimeTypeFactory testFactory()
  */
-class OvertimeType extends Model
+class OvertimeType extends SpatieData
 {
-    #[Property]
-    public ?string $title;
+    /** @use HasTestFactory<OvertimeTypeFactory> */
+    use HasTestFactory;
+
+    public function __construct(
+        public ?string $id = null,
+        public ?string $title = null,
+    ) {}
 }

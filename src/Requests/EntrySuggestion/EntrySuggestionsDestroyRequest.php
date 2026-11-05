@@ -18,9 +18,9 @@ class EntrySuggestionsDestroyRequest extends Request
     }
 
     /**
-     * @param  int  $entrySuggestionId  The entry suggestion ID
+     * @param  mixed  $entrySuggestionId  The entry suggestion ID
      */
     public function __construct(
-        protected int $entrySuggestionId,
+        protected mixed $entrySuggestionId,
     ) {}
 }

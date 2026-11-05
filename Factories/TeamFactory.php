@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Timatic\Dto\Team;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<Team>
+ */
 class TeamFactory extends Factory
 {
     protected function definition(): array

@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Timatic\Dto\Entry;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<Entry>
+ */
 class EntryFactory extends Factory
 {
     protected function definition(): array
@@ -15,17 +18,17 @@ class EntryFactory extends Factory
             'ticketNumber' => $this->faker->word(),
             'ticketTitle' => $this->faker->sentence(),
             'ticketType' => $this->faker->word(),
-            'customerId' => $this->faker->word(),
+            'customerId' => $this->faker->uuid(),
             'customerName' => $this->faker->company(),
-            'hourlyRate' => $this->faker->randomFloat(2, 0, 1000),
+            'hourlyRate' => null,
             'hadEmergencyShift' => $this->faker->boolean(),
-            'budgetId' => $this->faker->word(),
+            'budgetId' => null,
             'isPaidPerHour' => $this->faker->word(),
             'minutesSpent' => $this->faker->numberBetween(15, 480),
-            'userId' => $this->faker->word(),
+            'userId' => $this->faker->uuid(),
             'userEmail' => $this->faker->safeEmail(),
             'userFullName' => $this->faker->name(),
-            'createdByUserId' => $this->faker->word(),
+            'createdByUserId' => null,
             'createdByUserEmail' => $this->faker->safeEmail(),
             'createdByUserFullName' => $this->faker->company(),
             'entryType' => $this->faker->word(),
@@ -34,7 +37,7 @@ class EntryFactory extends Factory
             'startedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'invoicedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'isInvoiced' => $this->faker->word(),
+            'isInvoiced' => $this->faker->boolean(),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'isBasedOnSuggestion' => $this->faker->boolean(),

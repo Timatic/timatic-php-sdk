@@ -2,121 +2,66 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Attributes\Relationship;
-use Timatic\Foundation\Hydration\Model;
-use Timatic\Foundation\Hydration\RelationType;
+use Carbon\Carbon;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\EntryFactory;
+use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
+use Timatic\Foundation\JsonApi\HasTestFactory;
+use Timatic\Foundation\JsonApi\RelationType;
 
 /**
  * Entry
+ *
+ *
+ * @method static \Timatic\Factories\EntryFactory testFactory()
  */
-class Entry extends Model
+class Entry extends SpatieData
 {
-    #[Property]
-    public ?string $ticketId;
+    /** @use HasTestFactory<EntryFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?string $ticketNumber;
-
-    #[Property]
-    public ?string $ticketTitle;
-
-    #[Property]
-    public ?string $ticketType;
-
-    #[Property]
-    public ?int $customerId;
-
-    #[Property]
-    public ?string $customerName;
-
-    #[Property]
-    public ?float $hourlyRate;
-
-    #[Property]
-    public ?bool $hadEmergencyShift;
-
-    #[Property]
-    public ?int $budgetId;
-
-    #[Property]
-    public ?string $isPaidPerHour;
-
-    #[Property]
-    public ?int $minutesSpent;
-
-    #[Property]
-    public ?int $userId;
-
-    #[Property]
-    public ?string $userEmail;
-
-    #[Property]
-    public ?string $userFullName;
-
-    #[Property]
-    public ?int $createdByUserId;
-
-    #[Property]
-    public ?string $createdByUserEmail;
-
-    #[Property]
-    public ?string $createdByUserFullName;
-
-    #[Property]
-    public ?string $entryType;
-
-    #[Property]
-    public ?string $description;
-
-    #[Property]
-    public ?bool $isInternal;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $startedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $endedAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $invoicedAt;
-
-    #[Property]
-    public ?string $isInvoiced;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
-
-    #[Property]
-    public ?bool $isBasedOnSuggestion;
-
-    #[Relationship(Overtime::class, RelationType::One)]
-    public ?Overtime $personalOvertime = null;
-
-    #[Relationship(Overtime::class, RelationType::One)]
-    public ?Overtime $customerOvertime = null;
-
-    #[Relationship(Correction::class, RelationType::One)]
-    public ?Correction $correctionEntryCorrection = null;
-
-    #[Relationship(Correction::class, RelationType::One)]
-    public ?Correction $correctedEntryCorrection = null;
-
-    #[Relationship(Correction::class, RelationType::One)]
-    public ?Correction $newEntryCorrection = null;
-
-    #[Relationship(Customer::class, RelationType::One)]
-    public ?Customer $customer = null;
-
-    #[Relationship(Budget::class, RelationType::One)]
-    public ?Budget $budget = null;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $ticketId = null,
+        public ?string $ticketNumber = null,
+        public ?string $ticketTitle = null,
+        public ?string $ticketType = null,
+        public ?string $customerId = null,
+        public ?string $customerName = null,
+        public int|float|null $hourlyRate = null,
+        public ?bool $hadEmergencyShift = null,
+        public ?int $budgetId = null,
+        public ?string $isPaidPerHour = null,
+        public ?int $minutesSpent = null,
+        public ?string $userId = null,
+        public ?string $userEmail = null,
+        public ?string $userFullName = null,
+        public ?int $createdByUserId = null,
+        public ?string $createdByUserEmail = null,
+        public ?string $createdByUserFullName = null,
+        public ?string $entryType = null,
+        public ?string $description = null,
+        public ?bool $isInternal = null,
+        public ?Carbon $startedAt = null,
+        public ?Carbon $endedAt = null,
+        public ?Carbon $invoicedAt = null,
+        public ?bool $isInvoiced = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+        public ?bool $isBasedOnSuggestion = null,
+        #[JsonApiRelationship(Overtime::class, RelationType::One)]
+        public ?Overtime $personalOvertime = null,
+        #[JsonApiRelationship(Overtime::class, RelationType::One)]
+        public ?Overtime $customerOvertime = null,
+        #[JsonApiRelationship(Correction::class, RelationType::One)]
+        public ?Correction $correctionEntryCorrection = null,
+        #[JsonApiRelationship(Correction::class, RelationType::One)]
+        public ?Correction $correctedEntryCorrection = null,
+        #[JsonApiRelationship(Correction::class, RelationType::One)]
+        public ?Correction $newEntryCorrection = null,
+        #[JsonApiRelationship(Customer::class, RelationType::One)]
+        public ?Customer $customer = null,
+        #[JsonApiRelationship(Budget::class, RelationType::One)]
+        public ?Budget $budget = null,
+    ) {}
 }

@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Timatic\Dto\Correction;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<Correction>
+ */
 class CorrectionFactory extends Factory
 {
     protected function definition(): array

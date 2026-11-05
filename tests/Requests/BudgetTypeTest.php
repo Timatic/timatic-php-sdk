@@ -5,9 +5,10 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\BudgetType\BudgetTypesCollectionRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the budgetTypesCollection method in the BudgetType resource', function () {
@@ -18,7 +19,7 @@ it('calls the budgetTypesCollection method in the BudgetType resource', function
                     'type' => 'budgetTypes',
                     'id' => 'mock-id-1',
                     'attributes' => [
-                        'title' => 'Mock value',
+                        'title' => 'String value',
                         'isArchived' => true,
                         'hasChangeTicket' => true,
                         'renewalFrequencies' => [],
@@ -26,14 +27,14 @@ it('calls the budgetTypesCollection method in the BudgetType resource', function
                         'hasContractId' => true,
                         'hasTotalPrice' => true,
                         'ticketIsRequired' => true,
-                        'defaultTitle' => 'Mock value',
+                        'defaultTitle' => 'String value',
                     ],
                 ],
                 1 => [
                     'type' => 'budgetTypes',
                     'id' => 'mock-id-2',
                     'attributes' => [
-                        'title' => 'Mock value',
+                        'title' => 'String value',
                         'isArchived' => true,
                         'hasChangeTicket' => true,
                         'renewalFrequencies' => [],
@@ -41,7 +42,7 @@ it('calls the budgetTypesCollection method in the BudgetType resource', function
                         'hasContractId' => true,
                         'hasTotalPrice' => true,
                         'ticketIsRequired' => true,
-                        'defaultTitle' => 'Mock value',
+                        'defaultTitle' => 'String value',
                     ],
                 ],
             ],
@@ -50,7 +51,7 @@ it('calls the budgetTypesCollection method in the BudgetType resource', function
 
     $request = (new BudgetTypesCollectionRequest);
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (BudgetTypesCollectionRequest $request) {
         $query = $request->query()->all();
@@ -58,17 +59,15 @@ it('calls the budgetTypesCollection method in the BudgetType resource', function
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
-        ->title->toBe('Mock value')
+        ->title->toBe('String value')
         ->isArchived->toBe(true)
         ->hasChangeTicket->toBe(true)
         ->hasSupervisor->toBe(true)
         ->hasContractId->toBe(true)
         ->hasTotalPrice->toBe(true)
         ->ticketIsRequired->toBe(true)
-        ->defaultTitle->toBe('Mock value');
+        ->defaultTitle->toBe('String value');
 });

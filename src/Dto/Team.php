@@ -2,26 +2,27 @@
 
 namespace Timatic\Dto;
 
-use Timatic\Foundation\Hydration\Attributes\DateTime;
-use Timatic\Foundation\Hydration\Attributes\Property;
-use Timatic\Foundation\Hydration\Model;
+use Carbon\Carbon;
+use Spatie\LaravelData\Data as SpatieData;
+use Timatic\Factories\TeamFactory;
+use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
  * Team
+ *
+ *
+ * @method static \Timatic\Factories\TeamFactory testFactory()
  */
-class Team extends Model
+class Team extends SpatieData
 {
-    #[Property]
-    public ?string $externalId;
+    /** @use HasTestFactory<TeamFactory> */
+    use HasTestFactory;
 
-    #[Property]
-    public ?string $name;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $createdAt;
-
-    #[Property]
-    #[DateTime]
-    public ?\Carbon\Carbon $updatedAt;
+    public function __construct(
+        public ?string $id = null,
+        public ?string $externalId = null,
+        public ?string $name = null,
+        public ?Carbon $createdAt = null,
+        public ?Carbon $updatedAt = null,
+    ) {}
 }

@@ -5,14 +5,16 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\Dto\Customer;
 use Timatic\Requests\Customer\CustomersCollectionRequest;
 use Timatic\Requests\Customer\CustomersDestroyRequest;
 use Timatic\Requests\Customer\CustomersShowRequest;
 use Timatic\Requests\Customer\CustomersStoreRequest;
 use Timatic\Requests\Customer\CustomersUpdateRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the customersCollection method in the Customer resource', function () {
@@ -24,9 +26,9 @@ it('calls the customersCollection method in the Customer resource', function () 
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
-                        'name' => 'Mock value',
-                        'hourlyRate' => 'Mock value',
-                        'accountManagerUserId' => 42,
+                        'name' => 'String value',
+                        'hourlyRate' => 'String value',
+                        'isOwnOrganization' => true,
                     ],
                 ],
                 1 => [
@@ -34,9 +36,9 @@ it('calls the customersCollection method in the Customer resource', function () 
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'externalId' => 'mock-id-123',
-                        'name' => 'Mock value',
-                        'hourlyRate' => 'Mock value',
-                        'accountManagerUserId' => 42,
+                        'name' => 'String value',
+                        'hourlyRate' => 'String value',
+                        'isOwnOrganization' => true,
                     ],
                 ],
             ],
@@ -46,7 +48,7 @@ it('calls the customersCollection method in the Customer resource', function () 
     $request = (new CustomersCollectionRequest(pagesize: 123, pagenumber: 123))
         ->filter('externalId', 'external_id-123');
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (CustomersCollectionRequest $request) {
         $query = $request->query()->all();
@@ -55,15 +57,13 @@ it('calls the customersCollection method in the Customer resource', function () 
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
         ->externalId->toBe('mock-id-123')
-        ->name->toBe('Mock value')
-        ->hourlyRate->toBe('Mock value')
-        ->accountManagerUserId->toBe(42);
+        ->name->toBe('String value')
+        ->hourlyRate->toBe('String value')
+        ->isOwnOrganization->toBe(true);
 });
 
 it('calls the customersStore method in the Customer resource', function () {
@@ -72,11 +72,9 @@ it('calls the customersStore method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Customer::factory()->state([
-        'externalId' => 'external_id-123',
-        'name' => 'test name',
+    $dto = Customer::testFactory()->state([
         'hourlyRate' => 'test value',
-        'accountManagerUserId' => 42,
+        'isOwnOrganization' => true,
     ])->make();
 
     $request = new CustomersStoreRequest($dto);
@@ -89,10 +87,8 @@ it('calls the customersStore method in the Customer resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('external_id-123')
-            ->name->toBe('test name')
             ->hourlyRate->toBe('test value')
-            ->accountManagerUserId->toBe(42)
+            ->isOwnOrganization->toBe(true)
             );
 
         return true;
@@ -107,16 +103,16 @@ it('calls the customersShow method in the Customer resource', function () {
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'externalId' => 'mock-id-123',
-                    'name' => 'Mock value',
-                    'hourlyRate' => 'Mock value',
-                    'accountManagerUserId' => 42,
+                    'name' => 'String value',
+                    'hourlyRate' => 'String value',
+                    'isOwnOrganization' => true,
                 ],
             ],
         ], 200),
     ]);
 
     $request = new CustomersShowRequest(
-        customerId: 123
+        customerId: null
     );
     $response = $this->timaticConnector->send($request);
 
@@ -128,9 +124,9 @@ it('calls the customersShow method in the Customer resource', function () {
 
     expect($dto)
         ->externalId->toBe('mock-id-123')
-        ->name->toBe('Mock value')
-        ->hourlyRate->toBe('Mock value')
-        ->accountManagerUserId->toBe(42);
+        ->name->toBe('String value')
+        ->hourlyRate->toBe('String value')
+        ->isOwnOrganization->toBe(true);
 });
 
 it('calls the customersDestroy method in the Customer resource', function () {
@@ -139,7 +135,7 @@ it('calls the customersDestroy method in the Customer resource', function () {
     ]);
 
     $request = new CustomersDestroyRequest(
-        customerId: 123
+        customerId: null
     );
     $response = $this->timaticConnector->send($request);
 
@@ -154,14 +150,12 @@ it('calls the customersUpdate method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Customer::factory()->state([
-        'externalId' => 'external_id-123',
-        'name' => 'test name',
+    $dto = Customer::testFactory()->state([
         'hourlyRate' => 'test value',
-        'accountManagerUserId' => 42,
+        'isOwnOrganization' => true,
     ])->make();
 
-    $request = new CustomersUpdateRequest(customerId: 42, data: $dto);
+    $request = new CustomersUpdateRequest(customerId: 'test value', data: $dto);
     $this->timaticConnector->send($request);
 
     Saloon::assertSent(CustomersUpdateRequest::class);
@@ -171,10 +165,8 @@ it('calls the customersUpdate method in the Customer resource', function () {
             ->toHaveKey('data')
             ->data->type->toBe('customers')
             ->data->attributes->scoped(fn ($attributes) => $attributes
-            ->externalId->toBe('external_id-123')
-            ->name->toBe('test name')
             ->hourlyRate->toBe('test value')
-            ->accountManagerUserId->toBe(42)
+            ->isOwnOrganization->toBe(true)
             );
 
         return true;

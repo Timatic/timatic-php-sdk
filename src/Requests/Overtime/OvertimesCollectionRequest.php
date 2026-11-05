@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
 use Timatic\Dto\Overtime;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 use Timatic\Foundation\Requests\Concerns\HasFilters;
 use Timatic\Foundation\Requests\Concerns\HasIncludes;
 
@@ -19,9 +19,18 @@ class OvertimesCollectionRequest extends Request implements Paginatable
     use HasFilters;
     use HasIncludes;
 
-    protected $model = Overtime::class;
-
     protected Method $method = Method::GET;
+
+    public function createDtoFromResponse(Response $response): mixed
+    {
+        $flattened = JsonApiTransformer::flattenCollection(
+            Overtime::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        );
+
+        return collect($flattened)->map(fn (array $flat) => Overtime::from($flat));
+    }
 
     /**
      * Include the overtimeType relationship in the response
@@ -37,15 +46,6 @@ class OvertimesCollectionRequest extends Request implements Paginatable
     public function includeEntry(): static
     {
         return $this->addInclude('entry');
-    }
-
-    public function createDtoFromResponse(Response $response): mixed
-    {
-        return Hydrator::hydrateCollection(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
     }
 
     public function resolveEndpoint(): string

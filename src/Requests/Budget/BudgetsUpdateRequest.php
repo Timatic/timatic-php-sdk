@@ -7,9 +7,10 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
+use Spatie\LaravelData\Data;
 use Timatic\Dto\Budget;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
-use Timatic\Foundation\Hydration\Model;
+use Timatic\Foundation\JsonApi\JsonApiSerializer;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**
  * budgets.update
@@ -18,17 +19,15 @@ class BudgetsUpdateRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected $model = Budget::class;
-
     protected Method $method = Method::PATCH;
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Hydrator::hydrate(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
+        return Budget::from(JsonApiTransformer::flatten(
+            Budget::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        ));
     }
 
     public function resolveEndpoint(): string
@@ -38,15 +37,15 @@ class BudgetsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $budgetId  The budget ID
-     * @param  null|\Timatic\Foundation\Hydration\Model|array|null  $data  Request data
+     * @param  null|Data|array|null  $data  Request data
      */
     public function __construct(
         protected int $budgetId,
-        protected Model|array|null $data = null,
+        protected Data|array|null $data = null,
     ) {}
 
     protected function defaultBody(): array
     {
-        return $this->data ? ['data' => $this->data->toJsonApi()] : [];
+        return $this->data ? ['data' => JsonApiSerializer::toJsonApi($this->data)] : [];
     }
 }

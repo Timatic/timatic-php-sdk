@@ -6,24 +6,22 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Timatic\Dto\Budget;
-use Timatic\Foundation\Hydration\Facades\Hydrator;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**
  * budgets.show
  */
 class BudgetsShowRequest extends Request
 {
-    protected $model = Budget::class;
-
     protected Method $method = Method::GET;
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Hydrator::hydrate(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
+        return Budget::from(JsonApiTransformer::flatten(
+            Budget::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        ));
     }
 
     public function resolveEndpoint(): string

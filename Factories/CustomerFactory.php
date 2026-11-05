@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Timatic\Dto\Customer;
 use Timatic\Foundation\Factories\Factory;
 
+/**
+ * @extends Factory<Customer>
+ */
 class CustomerFactory extends Factory
 {
     protected function definition(): array
@@ -14,7 +17,7 @@ class CustomerFactory extends Factory
             'externalId' => $this->faker->uuid(),
             'name' => $this->faker->name(),
             'hourlyRate' => number_format($this->faker->randomFloat(2, 50, 150), 2, '.', ''),
-            'accountManagerUserId' => $this->faker->word(),
+            'isOwnOrganization' => $this->faker->boolean(),
             'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
         ];

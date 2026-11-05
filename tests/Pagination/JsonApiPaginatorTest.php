@@ -3,7 +3,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Activity;
+use Timatic\Dto\Budget;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\TimaticConnector;
 
 beforeEach(function () {
@@ -11,32 +12,23 @@ beforeEach(function () {
 });
 
 it('returns DTOs instead of raw JSON:API fields when paginating', function () {
-    // Create a simple request for testing pagination
-    $request = new class extends Request
-    {
-        protected ?string $method = 'GET';
-
-        public function resolveEndpoint(): string
-        {
-            return '/activitys';
-        }
-    };
+    $request = new BudgetsCollectionRequest;
 
     Saloon::fake([
         MockResponse::make([
             'data' => [
                 [
-                    'type' => 'activitys',
+                    'type' => 'budgets',
                     'id' => 'item-1',
                     'attributes' => [
-                        'sourceId' => 'First Item',
+                        'title' => 'First Item',
                     ],
                 ],
                 [
-                    'type' => 'activitys',
+                    'type' => 'budgets',
                     'id' => 'item-2',
                     'attributes' => [
-                        'sourceId' => 'Second Item',
+                        'title' => 'Second Item',
                     ],
                 ],
             ],
@@ -52,49 +44,41 @@ it('returns DTOs instead of raw JSON:API fields when paginating', function () {
     expect($items)->toHaveCount(2);
 
     expect($items->first())
-        ->toBeInstanceOf(Activity::class)
-        ->sourceId->toBe('First Item');
+        ->toBeInstanceOf(Budget::class)
+        ->title->toBe('First Item');
 
     expect($items[1])
-        ->toBeInstanceOf(Activity::class)
-        ->sourceId->toBe('Second Item');
+        ->toBeInstanceOf(Budget::class)
+        ->title->toBe('Second Item');
 });
 
 it('correctly follows pagination using links.next URL', function () {
-    $request = new class extends Request
-    {
-        protected ?string $method = 'GET';
-
-        public function resolveEndpoint(): string
-        {
-            return '/activitys';
-        }
-    };
+    $request = new BudgetsCollectionRequest;
 
     Saloon::fake([
         // First page
         MockResponse::make([
             'data' => [
                 [
-                    'type' => 'activitys',
+                    'type' => 'budgets',
                     'id' => 'item-1',
                     'attributes' => [
-                        'sourceId' => 'PAGE-1-ITEM-1',
+                        'title' => 'PAGE-1-ITEM-1',
                     ],
                 ],
             ],
             'links' => [
-                'next' => 'https://api.example.com/activitys?page[number]=2',
+                'next' => 'https://api.example.com/budgets?page[number]=2',
             ],
         ], 200),
         // Second page (last)
         MockResponse::make([
             'data' => [
                 [
-                    'type' => 'activitys',
+                    'type' => 'budgets',
                     'id' => 'item-2',
                     'attributes' => [
-                        'sourceId' => 'PAGE-2-ITEM-1',
+                        'title' => 'PAGE-2-ITEM-1',
                     ],
                 ],
             ],
@@ -108,20 +92,12 @@ it('correctly follows pagination using links.next URL', function () {
     $allItems = $paginator->dtoCollection();
 
     expect($allItems)->toHaveCount(2);
-    expect($allItems[0]->sourceId)->toBe('PAGE-1-ITEM-1');
-    expect($allItems[1]->sourceId)->toBe('PAGE-2-ITEM-1');
+    expect($allItems[0]->title)->toBe('PAGE-1-ITEM-1');
+    expect($allItems[1]->title)->toBe('PAGE-2-ITEM-1');
 });
 
 it('applies pagination query parameters correctly', function () {
-    $request = new class extends Request
-    {
-        protected ?string $method = 'GET';
-
-        public function resolveEndpoint(): string
-        {
-            return '/activitys';
-        }
-    };
+    $request = new BudgetsCollectionRequest;
 
     Saloon::fake([
         MockResponse::make([
