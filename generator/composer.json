@@ -1,0 +1,35 @@
+{
+    "name": "timatic/php-sdk-generator",
+    "description": "Internal companion app that regenerates timatic/php-sdk from the Timatic OpenAPI spec",
+    "type": "project",
+    "private": true,
+    "require": {
+        "php": "^8.2",
+        "laravel-zero/framework": "^12.0",
+        "timatic/jsonapi-sdk-generator": "dev-main",
+        "timatic/saloon-sdk-generator": "dev-main#efb7c38"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Timatic/json-api-php-sdk-generator"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/Timatic/saloon-sdk-generator"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

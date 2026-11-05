@@ -20,18 +20,12 @@
         "pestphp/pest": "^2.0|^3.0",
         "phpunit/phpunit": "^10.0|^11.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/tomasvanrijsse/saloon-sdk-generator"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Timatic\\": "src/",
-            "Timatic\\Factories\\": "Factories/",
+            "Timatic\\Factories\\": "Factories/"
         }
     },
     "autoload-dev": {
@@ -60,7 +54,8 @@
         "coverage": "pest --coverage --coverage-clover coverage.xml",
         "format": "pint",
         "regenerate": [
-            "php generator/generate.php",
+            "rm -rf src/Dto/* src/Requests/* Factories/* tests/Requests/*",
+            "php generator/generator generate:sdk openapi.json --output=. --force --exclude-put-requests",
             "@composer dump-autoload",
             "@format"
         ],
