@@ -1,4 +1,4 @@
-Make sure the package is compatible with Laravel 11, 12 and 13
+Make sure the package is compatible with Laravel 12 and 13
 
 ## Timatic PHP SDK - Generated Files
 

@@ -31,7 +31,7 @@ A Laravel package for the Timatic API, built with [Saloon](https://docs.saloon.d
 ## Requirements
 
 - PHP 8.2 or higher
-- Laravel 11.x or higher
+- Laravel 12.39 or higher
 
 ## Installation
 

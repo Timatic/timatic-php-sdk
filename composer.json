@@ -5,6 +5,7 @@
     "type": "library",
     "require": {
         "php": "^8.2",
+        "illuminate/support": "^12.39 || ^13.0",
         "nesbot/carbon": "^2.0 || ^3.0",
         "saloonphp/laravel-plugin": "^4.0",
         "saloonphp/pagination-plugin": "^2.0",
@@ -17,7 +18,7 @@
         "larastan/larastan": "^3.0",
         "laravel/boost": "^2.0",
         "laravel/pint": "^1.0",
-        "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
+        "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^3.0 || ^4.0",
         "phpunit/phpunit": "^11.0 || ^12.0"
     },
