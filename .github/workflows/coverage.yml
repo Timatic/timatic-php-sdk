@@ -31,8 +31,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer remove "crescat-io/saloon-sdk-generator" "larastan/larastan" "laravel/boost" "laravel/pint" --dev --no-interaction
-          composer require "laravel/framework:12.*" "saloonphp/laravel-plugin" --no-interaction --no-update
+          composer remove "larastan/larastan" "laravel/boost" "laravel/pint" --dev --no-interaction
+          composer require "laravel/framework:12.*" --no-interaction --no-update
           composer update --prefer-dist --no-interaction
 
       - name: Run tests with coverage
