@@ -14,14 +14,15 @@ A Laravel package for the Timatic API, built with [Saloon](https://docs.saloon.d
 - [Configuration](#configuration)
 - [Usage](#usage)
   - [Using Dependency Injection](#using-dependency-injection)
+  - [Read and write DTOs](#read-and-write-dtos)
   - [Testing](#testing)
   - [Pagination](#pagination)
-  - [Custom Response Methods](#custom-response-methods)
+  - [Filtering and Includes](#filtering-and-includes)
+  - [Response Methods](#response-methods)
 - [HTTP Methods](#http-methods)
 - [Available Resources](#available-resources)
 - [JSON:API Support](#jsonapi-support)
-  - [Model Features](#model-features)
-  - [Working with Relationships](#working-with-relationships)
+  - [Relationships](#relationships)
 - [Regenerating the SDK](#regenerating-the-sdk)
 - [Development](#development)
 - [License](#license)
@@ -59,14 +60,14 @@ TIMATIC_API_TOKEN=your-api-token-here
 
 ### Using Dependency Injection
 
-The SDK connector is automatically registered in Laravel's service container, making it easy to inject into your controllers, commands, and other classes:
+The connector is registered in Laravel's service container, so you can inject it into controllers, commands and other classes:
 
 ```php
-use Timatic\Requests\Budget\GetBudgetsCollectionRequest;
-use Timatic\Requests\Budget\GetBudgetRequest;
-use Timatic\Requests\Budget\PostBudgetsRequest;
-use Timatic\Requests\BudgetType\GetBudgetTypesCollectionRequest;
-
+use Timatic\Dto\NewBudget;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
+use Timatic\Requests\Budget\BudgetsShowRequest;
+use Timatic\Requests\Budget\BudgetsStoreRequest;
+use Timatic\Requests\BudgetType\BudgetTypesCollectionRequest;
 use Timatic\TimaticConnector;
 
 class BudgetController extends Controller
@@ -77,17 +78,18 @@ class BudgetController extends Controller
 
     public function index()
     {
-        // fetch one or more items, limited by the default page size from the api
+        // One page of items, limited by the API's default page size
         $budgetTypes = $this->timatic
-            ->send(new GetBudgetTypesCollectionRequest())
+            ->send(new BudgetTypesCollectionRequest)
             ->dto();
-            
-        $defaultBudget = $this->timatic->send(
-            new \Timatic\Requests\Budget\GetBudgetRequest(id: '1337')
-        )->dtoOrFail();
-    
-        // fetch all DTO's
-        $budgets = $this->timatic->paginate(new GetBudgetsCollectionRequest())
+
+        $defaultBudget = $this->timatic
+            ->send(new BudgetsShowRequest(budgetId: 1337))
+            ->dtoOrFail();
+
+        // All items across all pages
+        $budgets = $this->timatic
+            ->paginate(new BudgetsCollectionRequest)
             ->dtoCollection();
 
         return view('budgets.index', compact('budgets', 'budgetTypes', 'defaultBudget'));
@@ -95,13 +97,14 @@ class BudgetController extends Controller
 
     public function store(Request $request)
     {
-        $budget = new \Timatic\Dto\Budget([
-            'title' => $request->input('title'),
-            'totalPrice' => $request->input('total_price'),
-        ]);
+        $budget = new NewBudget(
+            title: $request->input('title'),
+            totalPrice: $request->input('total_price'),
+            customerId: $request->integer('customer_id'),
+        );
 
         $created = $this->timatic
-            ->send(new PostBudgetsRequest($budget))
+            ->send(new BudgetsStoreRequest($budget))
             ->dtoOrFail();
 
         return redirect()->route('budgets.show', $created->id);
@@ -112,17 +115,15 @@ class BudgetController extends Controller
 **In Console Commands:**
 
 ```php
-use \Timatic\Requests\Budget\GetBudgetsCollectionRequest;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\TimaticConnector;
 
 class SyncBudgetsCommand extends Command
 {
     public function handle(TimaticConnector $timatic): int
     {
-        $budgets = $timatic->paginate(
-            new GetBudgetsCollectionRequest()
-        )->dtoCollection()
-        
+        $budgets = $timatic->paginate(new BudgetsCollectionRequest)->dtoCollection();
+
         foreach ($budgets as $budget) {
             // Process budgets
         }
@@ -132,111 +133,92 @@ class SyncBudgetsCommand extends Command
 }
 ```
 
+### Read and write DTOs
+
+Responses are hydrated into a read DTO per resource, such as `Budget`, `Entry` or `User`. Store and update requests take a separate write DTO, generated from the request body schema of that endpoint:
+
+| Request | Body DTO |
+|---|---|
+| `BudgetsStoreRequest` | `NewBudget` |
+| `BudgetsUpdateRequest` | `UpdateBudget` |
+| `EntriesStoreRequest` | `NewEntry` |
+| `EntriesUpdateRequest` | `UpdateEntry` |
+
+Write DTOs only contain the fields the API accepts, typed as the API expects them. For example, `NewEntry` has `hasOvertime` and an integer `customerId`, while the `Entry` read DTO has `minutesSpent` and a string `customerId`.
+
 ### Testing
 
-When testing code that uses the Timatic SDK, you can mock the connector and its responses using factories. The SDK includes factory classes for all DTOs that make it easy to generate test data.
+Every DTO has a factory, so you can build test data and fake API responses with Saloon's `MockClient`.
 
-Here's an example of testing the `BudgetController` from the example above:
+Here's an example of testing the `BudgetController` from above:
 
 ```php
-use Timatic\TimaticConnector;
-use Timatic\Dto\Budget;
-use Timatic\Dto\BudgetType;
-use Timatic\Requests\Budget\GetBudgetsRequest;
-use Timatic\Requests\Budget\PostBudgetsRequest;
-use Timatic\Requests\BudgetType\GetBudgetTypesRequest;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
+use Saloon\Http\Request;
+use Timatic\Dto\Budget;
+use Timatic\Dto\BudgetType;
+use Timatic\Foundation\JsonApi\JsonApiSerializer;
+use Timatic\Requests\Budget\BudgetsCollectionRequest;
+use Timatic\Requests\Budget\BudgetsShowRequest;
+use Timatic\Requests\Budget\BudgetsStoreRequest;
+use Timatic\Requests\BudgetType\BudgetTypesCollectionRequest;
 
 test('it displays budgets and budget types', function () {
-    // Generate test data using factories
     $budget = Budget::testFactory()->state(['id' => '1'])->make();
     $budgetType = BudgetType::testFactory()->state(['id' => '1'])->make();
 
-    // Create mock responses using factory-generated data
-    $mockClient = MockClient::global([
-        GetBudgetsRequest::class => MockResponse::make([
+    MockClient::global([
+        BudgetsCollectionRequest::class => MockResponse::make([
             'data' => [JsonApiSerializer::toJsonApi($budget)],
-        ], 200),
-        GetBudgetTypesRequest::class => MockResponse::make([
+        ]),
+        BudgetsShowRequest::class => MockResponse::make([
+            'data' => JsonApiSerializer::toJsonApi($budget),
+        ]),
+        BudgetTypesCollectionRequest::class => MockResponse::make([
             'data' => [JsonApiSerializer::toJsonApi($budgetType)],
-        ], 200),
+        ]),
     ]);
 
-    // Make request
-    $response = $this->get(route('budgets.index'));
-
-    // Assert
-    $response->assertOk();
-    $response->assertViewHas('budgets');
-    $response->assertViewHas('budgetTypes');
+    $this->get(route('budgets.index'))
+        ->assertOk()
+        ->assertViewHas('budgets')
+        ->assertViewHas('budgetTypes');
 });
 
 test('it creates a new budget', function () {
-    // Generate test data with specific attributes
-    $budget = Budget::testFactory()->state([
-        'id' => '2',
-        'title' => 'New Budget',
-        'totalPrice' => '5000.00',
-    ])->make();
+    $createdBudget = Budget::testFactory()->state(['id' => '2'])->make();
 
     $mockClient = MockClient::global([
-        PostBudgetsRequest::class => MockResponse::make([
-            'data' => JsonApiSerializer::toJsonApi($budget),
-        ], 201),
-    ]);
-
-    $response = $this->post(route('budgets.store'), [
-        'title' => 'New Budget',
-        'total_price' => 5000.00,
-    ]);
-
-    $response->assertRedirect(route('budgets.show', '2'));
-});
-
-test('it sends a POST request to create a budget using the SDK', function () {
-    $budgetToCreate = Budget::testFactory()->state([
-        'title' => 'New Budget',
-        'totalPrice' => '5000.00',
-        'customerId' => 'customer-123',
-    ])->make();
-
-    $createdBudget = Budget::testFactory()->state([
-        'id' => 'created-456',
-        'title' => 'New Budget',
-        'totalPrice' => '5000.00',
-        'customerId' => 'customer-123',
-    ])->make();
-
-    $mockClient = MockClient::global([
-        PostBudgetsRequest::class => MockResponse::make([
+        BudgetsStoreRequest::class => MockResponse::make([
             'data' => JsonApiSerializer::toJsonApi($createdBudget),
         ], 201),
     ]);
 
-    artisan('sync:budgets')->assertOk();
+    $this->post(route('budgets.store'), [
+        'title' => 'New Budget',
+        'total_price' => 5000,
+        'customer_id' => 123,
+    ])->assertRedirect(route('budgets.show', '2'));
 
-    // Assert the request body was sent correctly
-    $mockClient->assertSent(function (PostBudgetsRequest $request) {
-        $body = $request->body()->all();
+    $mockClient->assertSent(function (Request $request) {
+        $attributes = $request->body()->all()['data']['attributes'];
 
-        return $body['data']['attributes']['title'] === 'New Budget'
-            && $body['data']['attributes']['totalPrice'] === '5000.00'
-            && $body['data']['attributes']['customerId'] === 'customer-123';
+        return $attributes['title'] === 'New Budget'
+            && $attributes['totalPrice'] === 5000
+            && $attributes['customerId'] === 123;
     });
 });
 ```
 
 #### Factory Methods
 
-Every DTO in the SDK has a corresponding factory class with the following methods:
-
 ```php
-// Create a single model with random data, without an ID
+// A single DTO with random data, without an ID
 $budget = Budget::testFactory()->make();
 
-// Create multiple models with unique UUID IDs
-$budgets = Budget::testFactory()->withId()->count(3)->make(); // Returns Collection
+// Multiple DTOs with unique UUID IDs
+$budgets = Budget::testFactory()->withId()->count(3)->make(); // Collection
 
 // Override specific attributes
 $budget = Budget::testFactory()->state([
@@ -244,217 +226,128 @@ $budget = Budget::testFactory()->state([
     'totalPrice' => '10000.00',
 ])->make();
 
-// Chain state calls for complex scenarios
-$budget = Budget::testFactory()
-    ->state(['customerId' => $customerId])
-    ->state(['budgetTypeId' => $budgetTypeId])
-    ->make();
+// Write DTOs have factories too
+$entry = NewEntry::testFactory()->state(['hasOvertime' => false])->make();
 ```
 
-For more information on mocking Saloon requests, see the [Saloon Mocking Documentation](https://docs.saloon.dev/testing/faking-responses).
+For more on mocking, see the [Saloon testing documentation](https://docs.saloon.dev/testing/faking-responses).
 
 ### Pagination
 
-The SDK supports automatic pagination for all collection endpoints using Saloon's pagination plugin:
+Every collection request supports pagination through Saloon's pagination plugin:
 
 ```php
-use Timatic\TimaticConnector;
-use Timatic\Requests\Budget\GetBudgets;
+$paginator = $timatic->paginate(new BudgetsCollectionRequest);
 
-class BudgetController extends Controller
-{
-    public function index(TimaticConnector $timatic)
-    {
-        // Create a paginator
-        $paginator = $timatic->paginate(new GetBudgets());
+// Optional; defaults to the API's page size
+$paginator->setPerPageLimit(50);
 
-        // Optionally set items per page (default is API's default)
-        $paginator->setPerPageLimit(50);
-
-        // Iterate through all pages automatically
-        foreach ($paginator->items() as $budget) {
-            // Process each budget across all pages
-            // The paginator handles pagination automatically
-        }
-
-        // Or collect all items at once
-        $allBudgets = $paginator->dtoCollection();
-    }
+// Iterate over all pages lazily
+foreach ($paginator->items() as $budget) {
+    // ...
 }
+
+// Or collect all DTOs at once
+$allBudgets = $paginator->dtoCollection();
 ```
 
-The paginator:
-- Automatically handles JSON:API pagination (`page[number]` and `page[size]`)
-- Detects the last page via `links.next`
-- Works with all GET collection requests (GetBudgets, GetCustomers, GetUsers, etc.)
+The paginator uses JSON:API pagination (`page[number]` and `page[size]`) and stops when `links.next` is empty.
 
-### Custom Response Methods
+### Filtering and Includes
 
-All responses are instances of `TimaticResponse` which extends Saloon's Response with JSON:API convenience methods:
+Collection requests that support it have `filter()` and typed `include*()` methods:
 
 ```php
-$response = $timatic->send(new GetBudgetsCollectionRequest());
+use Timatic\Foundation\Filtering\Operator;
 
-// Get the first item from a collection
+$request = (new EntriesCollectionRequest)
+    ->filter('userId', '42')
+    ->filter('startedAt', '2026-01-01', Operator::GreaterThanOrEquals)
+    ->includeBudget();
+
+$entries = $timatic->paginate($request)->dtoCollection();
+```
+
+### Response Methods
+
+Responses are `JsonApiResponse` instances, which add JSON:API helpers to Saloon's `Response`:
+
+```php
+$response = $timatic->send(new BudgetsCollectionRequest);
+
 $firstBudget = $response->firstItem();
 
-// Check for errors
 if ($response->hasErrors()) {
     $errors = $response->errors();
-    // Handle errors...
 }
 
-// Access JSON:API meta information
 $meta = $response->meta();
-$total = $meta['total'] ?? 0;
-
-// Access pagination links
 $links = $response->links();
-$nextPage = $links['next'] ?? null;
-
-// Access included resources
 $included = $response->included();
-foreach ($included as $resource) {
-    // Process related resources
-}
 ```
 
 ## HTTP Methods
 
-This SDK follows REST best practices and **does not support PUT requests**. Instead:
+The SDK has no PUT requests. It uses:
 
-- **POST** - Create new resources
-- **PATCH** - Partially update existing resources
-- **GET** - Retrieve resources
-- **DELETE** - Remove resources
+- **POST** to create resources
+- **PATCH** to partially update resources
+- **GET** to retrieve resources
+- **DELETE** to remove resources
 
-PUT is intentionally excluded because resources are never completely replaced by Timatic.
+PUT is left out because Timatic never replaces a resource completely.
 
 ## Available Resources
 
-The SDK provides access to the following resources:
-
-- **Budgets** - Manage budgets and budget entries
-- **Customers** - Customer management
-- **Users** - User management
-- **Teams** - Team management
-- **Entries** - Time entry management
-- **Incidents** - Incident tracking
-- **Changes** - Change tracking
-- **Overtimes** - Overtime management
-- **Events** - Event logging
-- And more...
+Budgets, budget types, corrections, customers, entries, entry suggestions, events, export formats, overtimes, Jira project mappings, suggestion integrations, teams, tickets, tracked domains and users. See `src/Requests` for every request.
 
 ## JSON:API Support
 
-This SDK uses a custom **JSON:API DTO Generator** that automatically flattens JSON:API attributes into proper Model properties. Instead of having generic `$attributes`, `$type`, and `$relationships` objects, each model has specific typed properties.
+DTOs are [Spatie Data](https://spatie.be/docs/laravel-data) objects. The JSON:API envelope is flattened, so attributes are typed properties:
 
-### Example
-
-Instead of:
 ```php
-$budget->attributes->title; // ❌ Generic structure
-```
-
-You get:
-```php
-$budget->title; // ✅ Proper typed property
+$budget->title;        // instead of $budget->attributes->title
 $budget->budgetTypeId;
-$budget->startedAt; // Carbon instance for datetime fields
+$budget->startedAt;    // Carbon instance
 ```
 
-### Model Features
+### Relationships
 
-- **Extends `Model` base class** with JSON:API support
-- **Property attributes** via `#[Property]` for serialization
-- **DateTime handling** with Carbon instances
-- **Type safety** with PHP 8.1+ type hints
-- **HasAttributes trait** for easy attribute manipulation
-- **Relationship support** with automatic hydration and serialization
-
-### Working with Relationships
-
-The SDK automatically handles JSON:API relationships, providing seamless access to related models with full type safety.
-
-#### Accessing Relationships
-
-When you fetch a model with included relationships, they're automatically hydrated into typed properties:
+Relationships are typed properties marked with `#[JsonApiRelationship]`. Included resources are hydrated into them:
 
 ```php
-use Timatic\Requests\User\GetUserRequest;
+$users = $timatic
+    ->send((new UsersCollectionRequest)->includeTeam())
+    ->dto();
 
-// Fetch a user with their team included
-$request = new GetUserRequest(id: '123');
-$request->query()->add('include', 'team');
-
-$user = $timatic->send($request)->dtoOrFail();
-
-// Access the relationship - it's already a Team object!
-$team = $user->team; // Team instance
-echo $team->name; // "Engineering"
+$users->first()->team; // Team instance
 ```
 
-#### Serializing Relationships
-
-When creating or updating resources with relationships, the SDK automatically serializes them to JSON:API format:
+When you send a DTO, `JsonApiSerializer` turns its relationships into resource identifiers:
 
 ```php
-use Timatic\Dto\User;
-use Timatic\Dto\Team;
-use Timatic\Requests\User\PatchUserRequest;
+use Timatic\Dto\UpdateUser;
 
-// Fetch existing models
-$user = $timatic->send(new GetUserRequest(id: '123'))->dtoOrFail();
-$team = $timatic->send(new GetTeamRequest(id: '456'))->dtoOrFail();
+$team = $timatic->send(new TeamsShowRequest(teamId: '456'))->dtoOrFail();
 
-// Update the relationship
-$user->team = $team;
+$timatic->send(new UsersUpdateRequest(
+    userId: '123',
+    data: new UpdateUser(team: $team),
+));
 
-// Send the update - relationships are automatically serialized
-$updated = $timatic->send(new PatchUserRequest(id: $user->id, data: $user))->dtoOrFail();
-```
-
-The `toJsonApi()` method automatically converts relationships to the correct JSON:API format:
-
-```php
-JsonApiSerializer::toJsonApi($user);
-// Returns:
+// Sends:
 // [
-//     'type' => 'users',
-//     'id' => '123',
-//     'attributes' => [
-//         'email' => 'john@example.com',
-//         'givenName' => 'John',
-//         // ...
+//     'data' => [
+//         'type' => 'users',
+//         'attributes' => [],
+//         'relationships' => [
+//             'team' => ['data' => ['type' => 'teams', 'id' => '456']],
+//         ],
 //     ],
-//     'relationships' => [
-//         'team' => [
-//             'data' => ['type' => 'teams', 'id' => '456']
-//         ]
-//     ]
 // ]
 ```
 
-
-#### Included Resources
-
-To fetch relationships, use the `include` query parameter:
-
-```php
-// Include a single relationship
-$request = new GetUserRequest(id: '123');
-$request->query()->add('include', 'team');
-
-// Include multiple relationships
-$request->query()->add('include', 'team,permissions');
-
-// Include nested relationships
-$request->query()->add('include', 'team.users');
-
-$user = $timatic->send($request)->dtoOrFail();
-```
-
-The SDK automatically hydrates all included resources into their respective relationship properties.
+The JSON:API `type` comes from the `#[JsonApiType]` attribute on each DTO.
 
 ## Regenerating the SDK
 
@@ -473,7 +366,7 @@ Export the spec from a local `timatic-backend` checkout to `openapi.json` (gitig
 composer regenerate
 ```
 
-`composer regenerate` rewrites `src/Dto`, `src/Requests`, `Factories` and `tests/Requests`. To also rewrite `src/Foundation`, the connector, service provider and config, run the generator with `--foundation --connector-name=TimaticConnector --base-url=https://api.tenant.timatic.app` and revert the `composer.json` changes it makes.
+`composer regenerate` rewrites `src/Dto`, `src/Requests`, `Factories` and `tests/Requests`. To also rewrite `src/Foundation`, the connector, service provider and config, run the generator with `--foundation --connector-name=TimaticConnector --base-url=https://api.tenant.timatic.app` and revert the `composer.json` changes it makes (it normalizes the file and pins `ergebnis/composer-normalize`).
 
 ## Development
 
@@ -494,4 +387,4 @@ This package is licensed under the Elastic License 2.0 (ELv2).
 ## Credits
 
 - Built with [Saloon](https://docs.saloon.dev/)
-- Generated using [Saloon SDK Generator](https://docs.saloon.dev/installable-plugins/sdk-generator)
+- Generated using [timatic/jsonapi-sdk-generator](https://github.com/Timatic/json-api-php-sdk-generator), built on [Saloon SDK Generator](https://docs.saloon.dev/installable-plugins/sdk-generator)
