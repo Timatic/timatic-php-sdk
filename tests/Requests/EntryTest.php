@@ -186,7 +186,9 @@ it('calls the entriesCollection method in the Entry resource', function () {
 
 it('calls the entriesStore method in the Entry resource', function () {
     $mockClient = Saloon::fake([
-        EntriesStoreRequest::class => MockResponse::make([], 200),
+        EntriesStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'entries', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -198,7 +200,7 @@ it('calls the entriesStore method in the Entry resource', function () {
     ])->make();
 
     $request = new EntriesStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(EntriesStoreRequest::class);
 
@@ -215,6 +217,8 @@ it('calls the entriesStore method in the Entry resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Entry::class);
 });
 
 it('calls the entriesShow method in the Entry resource', function () {
@@ -310,7 +314,9 @@ it('calls the entriesDestroy method in the Entry resource', function () {
 
 it('calls the entriesUpdate method in the Entry resource', function () {
     $mockClient = Saloon::fake([
-        EntriesUpdateRequest::class => MockResponse::make([], 200),
+        EntriesUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'entries', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -322,7 +328,7 @@ it('calls the entriesUpdate method in the Entry resource', function () {
     ])->make();
 
     $request = new EntriesUpdateRequest(entryId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(EntriesUpdateRequest::class);
 
@@ -339,11 +345,15 @@ it('calls the entriesUpdate method in the Entry resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Entry::class);
 });
 
 it('calls the entryMarkAsInvoiced method in the Entry resource', function () {
     $mockClient = Saloon::fake([
-        EntryMarkAsInvoicedRequest::class => MockResponse::make([], 200),
+        EntryMarkAsInvoicedRequest::class => MockResponse::make([
+            'data' => ['type' => 'entries', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -355,7 +365,7 @@ it('calls the entryMarkAsInvoiced method in the Entry resource', function () {
     ])->make();
 
     $request = new EntryMarkAsInvoicedRequest(entryId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(EntryMarkAsInvoicedRequest::class);
 
@@ -372,4 +382,6 @@ it('calls the entryMarkAsInvoiced method in the Entry resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Entry::class);
 });

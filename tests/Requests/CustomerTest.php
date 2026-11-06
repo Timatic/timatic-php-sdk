@@ -5,6 +5,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\DataTransferObjects\Customer;
 use Timatic\DataTransferObjects\NewCustomer;
 use Timatic\DataTransferObjects\UpdateCustomer;
 use Timatic\Requests\Customer\CustomersCollectionRequest;
@@ -69,7 +70,9 @@ it('calls the customersCollection method in the Customer resource', function () 
 
 it('calls the customersStore method in the Customer resource', function () {
     $mockClient = Saloon::fake([
-        CustomersStoreRequest::class => MockResponse::make([], 200),
+        CustomersStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'customers', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -80,7 +83,7 @@ it('calls the customersStore method in the Customer resource', function () {
     ])->make();
 
     $request = new CustomersStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(CustomersStoreRequest::class);
 
@@ -96,6 +99,8 @@ it('calls the customersStore method in the Customer resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Customer::class);
 });
 
 it('calls the customersShow method in the Customer resource', function () {
@@ -149,7 +154,9 @@ it('calls the customersDestroy method in the Customer resource', function () {
 
 it('calls the customersUpdate method in the Customer resource', function () {
     $mockClient = Saloon::fake([
-        CustomersUpdateRequest::class => MockResponse::make([], 200),
+        CustomersUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'customers', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -160,7 +167,7 @@ it('calls the customersUpdate method in the Customer resource', function () {
     ])->make();
 
     $request = new CustomersUpdateRequest(customerId: 'test value', data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(CustomersUpdateRequest::class);
 
@@ -176,4 +183,6 @@ it('calls the customersUpdate method in the Customer resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Customer::class);
 });

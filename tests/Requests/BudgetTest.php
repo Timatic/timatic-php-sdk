@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\DataTransferObjects\Budget;
 use Timatic\DataTransferObjects\BudgetType;
 use Timatic\DataTransferObjects\Customer;
 use Timatic\DataTransferObjects\NewBudget;
@@ -171,7 +172,9 @@ it('calls the budgetsCollection method in the Budget resource', function () {
 
 it('calls the budgetsStore method in the Budget resource', function () {
     $mockClient = Saloon::fake([
-        BudgetsStoreRequest::class => MockResponse::make([], 200),
+        BudgetsStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'budgets', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -183,7 +186,7 @@ it('calls the budgetsStore method in the Budget resource', function () {
     ])->make();
 
     $request = new BudgetsStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(BudgetsStoreRequest::class);
 
@@ -200,6 +203,8 @@ it('calls the budgetsStore method in the Budget resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Budget::class);
 });
 
 it('calls the budgetsShow method in the Budget resource', function () {
@@ -271,7 +276,9 @@ it('calls the budgetsDestroy method in the Budget resource', function () {
 
 it('calls the budgetsUpdate method in the Budget resource', function () {
     $mockClient = Saloon::fake([
-        BudgetsUpdateRequest::class => MockResponse::make([], 200),
+        BudgetsUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'budgets', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -283,7 +290,7 @@ it('calls the budgetsUpdate method in the Budget resource', function () {
     ])->make();
 
     $request = new BudgetsUpdateRequest(budgetId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(BudgetsUpdateRequest::class);
 
@@ -300,4 +307,6 @@ it('calls the budgetsUpdate method in the Budget resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Budget::class);
 });

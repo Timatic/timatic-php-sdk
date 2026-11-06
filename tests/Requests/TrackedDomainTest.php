@@ -8,6 +8,7 @@ use Saloon\Laravel\Facades\Saloon;
 use Timatic\DataTransferObjects\Budget;
 use Timatic\DataTransferObjects\Customer;
 use Timatic\DataTransferObjects\NewTrackedDomain;
+use Timatic\DataTransferObjects\TrackedDomain;
 use Timatic\Requests\TrackedDomain\TrackedDomainsCollectionRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsDestroyRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsStoreRequest;
@@ -126,7 +127,9 @@ it('calls the trackedDomainsCollection method in the TrackedDomain resource', fu
 
 it('calls the trackedDomainsStore method in the TrackedDomain resource', function () {
     $mockClient = Saloon::fake([
-        TrackedDomainsStoreRequest::class => MockResponse::make([], 200),
+        TrackedDomainsStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'trackedDomains', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -138,7 +141,7 @@ it('calls the trackedDomainsStore method in the TrackedDomain resource', functio
     ])->make();
 
     $request = new TrackedDomainsStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(TrackedDomainsStoreRequest::class);
 
@@ -155,6 +158,8 @@ it('calls the trackedDomainsStore method in the TrackedDomain resource', functio
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(TrackedDomain::class);
 });
 
 it('calls the trackedDomainsDestroy method in the TrackedDomain resource', function () {

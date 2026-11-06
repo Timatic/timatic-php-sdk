@@ -6,6 +6,7 @@ use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\DataTransferObjects\NewTeam;
+use Timatic\DataTransferObjects\Team;
 use Timatic\DataTransferObjects\UpdateTeam;
 use Timatic\Requests\Team\TeamsCollectionRequest;
 use Timatic\Requests\Team\TeamsDestroyRequest;
@@ -61,7 +62,9 @@ it('calls the teamsCollection method in the Team resource', function () {
 
 it('calls the teamsStore method in the Team resource', function () {
     $mockClient = Saloon::fake([
-        TeamsStoreRequest::class => MockResponse::make([], 200),
+        TeamsStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'teams', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -71,7 +74,7 @@ it('calls the teamsStore method in the Team resource', function () {
     ])->make();
 
     $request = new TeamsStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(TeamsStoreRequest::class);
 
@@ -86,6 +89,8 @@ it('calls the teamsStore method in the Team resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Team::class);
 });
 
 it('calls the teamsShow method in the Team resource', function () {
@@ -135,7 +140,9 @@ it('calls the teamsDestroy method in the Team resource', function () {
 
 it('calls the teamsUpdate method in the Team resource', function () {
     $mockClient = Saloon::fake([
-        TeamsUpdateRequest::class => MockResponse::make([], 200),
+        TeamsUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'teams', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -145,7 +152,7 @@ it('calls the teamsUpdate method in the Team resource', function () {
     ])->make();
 
     $request = new TeamsUpdateRequest(teamId: 'test value', data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(TeamsUpdateRequest::class);
 
@@ -160,4 +167,6 @@ it('calls the teamsUpdate method in the Team resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Team::class);
 });

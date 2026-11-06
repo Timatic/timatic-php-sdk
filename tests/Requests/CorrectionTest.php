@@ -5,6 +5,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\DataTransferObjects\Correction;
 use Timatic\DataTransferObjects\NewCorrection;
 use Timatic\DataTransferObjects\UpdateCorrection;
 use Timatic\Requests\Correction\CorrectionsStoreRequest;
@@ -17,7 +18,9 @@ beforeEach(function () {
 
 it('calls the correctionsStore method in the Correction resource', function () {
     $mockClient = Saloon::fake([
-        CorrectionsStoreRequest::class => MockResponse::make([], 200),
+        CorrectionsStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'corrections', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -27,7 +30,7 @@ it('calls the correctionsStore method in the Correction resource', function () {
     ])->make();
 
     $request = new CorrectionsStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(CorrectionsStoreRequest::class);
 
@@ -42,11 +45,15 @@ it('calls the correctionsStore method in the Correction resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Correction::class);
 });
 
 it('calls the correctionsUpdate method in the Correction resource', function () {
     $mockClient = Saloon::fake([
-        CorrectionsUpdateRequest::class => MockResponse::make([], 200),
+        CorrectionsUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'corrections', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -55,7 +62,7 @@ it('calls the correctionsUpdate method in the Correction resource', function () 
     ])->make();
 
     $request = new CorrectionsUpdateRequest(correctionId: 'test value', data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(CorrectionsUpdateRequest::class);
 
@@ -69,4 +76,6 @@ it('calls the correctionsUpdate method in the Correction resource', function () 
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Correction::class);
 });

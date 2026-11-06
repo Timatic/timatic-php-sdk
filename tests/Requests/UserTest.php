@@ -8,6 +8,7 @@ use Saloon\Laravel\Facades\Saloon;
 use Timatic\DataTransferObjects\NewUser;
 use Timatic\DataTransferObjects\Team;
 use Timatic\DataTransferObjects\UpdateUser;
+use Timatic\DataTransferObjects\User;
 use Timatic\Requests\User\UsersCollectionRequest;
 use Timatic\Requests\User\UsersDestroyRequest;
 use Timatic\Requests\User\UsersShowRequest;
@@ -125,7 +126,9 @@ it('calls the usersCollection method in the User resource', function () {
 
 it('calls the usersStore method in the User resource', function () {
     $mockClient = Saloon::fake([
-        UsersStoreRequest::class => MockResponse::make([], 200),
+        UsersStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'users', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -135,7 +138,7 @@ it('calls the usersStore method in the User resource', function () {
     ])->make();
 
     $request = new UsersStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(UsersStoreRequest::class);
 
@@ -150,6 +153,8 @@ it('calls the usersStore method in the User resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(User::class);
 });
 
 it('calls the usersShow method in the User resource', function () {
@@ -207,7 +212,9 @@ it('calls the usersDestroy method in the User resource', function () {
 
 it('calls the usersUpdate method in the User resource', function () {
     $mockClient = Saloon::fake([
-        UsersUpdateRequest::class => MockResponse::make([], 200),
+        UsersUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'users', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -217,7 +224,7 @@ it('calls the usersUpdate method in the User resource', function () {
     ])->make();
 
     $request = new UsersUpdateRequest(userId: 'test value', data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(UsersUpdateRequest::class);
 
@@ -232,4 +239,6 @@ it('calls the usersUpdate method in the User resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(User::class);
 });

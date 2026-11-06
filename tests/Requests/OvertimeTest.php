@@ -129,7 +129,9 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
 
 it('calls the overtimeApprove method in the Overtime resource', function () {
     $mockClient = Saloon::fake([
-        OvertimeApproveRequest::class => MockResponse::make([], 200),
+        OvertimeApproveRequest::class => MockResponse::make([
+            'data' => ['type' => 'overtimes', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -138,7 +140,7 @@ it('calls the overtimeApprove method in the Overtime resource', function () {
     ])->make();
 
     $request = new OvertimeApproveRequest(overtimeId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(OvertimeApproveRequest::class);
 
@@ -152,11 +154,15 @@ it('calls the overtimeApprove method in the Overtime resource', function () {
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Overtime::class);
 });
 
 it('calls the overtimeMarkAsExported method in the Overtime resource', function () {
     $mockClient = Saloon::fake([
-        OvertimeMarkAsExportedRequest::class => MockResponse::make([], 200),
+        OvertimeMarkAsExportedRequest::class => MockResponse::make([
+            'data' => ['type' => 'overtimes', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
@@ -165,7 +171,7 @@ it('calls the overtimeMarkAsExported method in the Overtime resource', function 
     ])->make();
 
     $request = new OvertimeMarkAsExportedRequest(overtimeId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(OvertimeMarkAsExportedRequest::class);
 
@@ -179,4 +185,6 @@ it('calls the overtimeMarkAsExported method in the Overtime resource', function 
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Overtime::class);
 });
