@@ -4,10 +4,10 @@
     "type": "project",
     "private": true,
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "laravel-zero/framework": "^12.0",
         "timatic/jsonapi-sdk-generator": "dev-main",
-        "timatic/saloon-sdk-generator": "dev-main#efb7c38"
+        "timatic/saloon-sdk-generator": "dev-main"
     },
     "repositories": [
         {
