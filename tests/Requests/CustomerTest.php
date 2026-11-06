@@ -5,8 +5,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\NewCustomer;
-use Timatic\Dto\UpdateCustomer;
+use Timatic\DataTransferObjects\NewCustomer;
+use Timatic\DataTransferObjects\UpdateCustomer;
 use Timatic\Requests\Customer\CustomersCollectionRequest;
 use Timatic\Requests\Customer\CustomersDestroyRequest;
 use Timatic\Requests\Customer\CustomersShowRequest;

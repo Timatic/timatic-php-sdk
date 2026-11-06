@@ -3,7 +3,7 @@
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
-use Timatic\Dto\UpdateEntry;
+use Timatic\DataTransferObjects\UpdateEntry;
 use Timatic\Foundation\Factories\Factory;
 
 /**

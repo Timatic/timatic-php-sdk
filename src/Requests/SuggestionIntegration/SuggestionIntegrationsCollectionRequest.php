@@ -6,7 +6,7 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\SuggestionIntegration;
+use Timatic\DataTransferObjects\SuggestionIntegration;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**

@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Spatie\LaravelData\Data;
-use Timatic\Dto\Overtime;
+use Timatic\DataTransferObjects\Overtime;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 

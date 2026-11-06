@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\Dto\Entry;
-use Timatic\Dto\UpdateEntry;
+use Timatic\DataTransferObjects\Entry;
+use Timatic\DataTransferObjects\UpdateEntry;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 

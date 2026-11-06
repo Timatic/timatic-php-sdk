@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\UpdateCustomer;
+use Timatic\DataTransferObjects\UpdateCustomer;
 use Timatic\Foundation\Factories\Factory;
 
 /**

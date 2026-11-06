@@ -6,7 +6,7 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\Budget;
+use Timatic\DataTransferObjects\Budget;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 use Timatic\Foundation\Requests\Concerns\HasFilters;
 use Timatic\Foundation\Requests\Concerns\HasIncludes;

@@ -3,7 +3,7 @@
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
-use Timatic\Dto\TrackedDomain;
+use Timatic\DataTransferObjects\TrackedDomain;
 use Timatic\Foundation\Factories\Factory;
 
 /**

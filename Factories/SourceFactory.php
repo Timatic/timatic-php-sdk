@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\Source;
+use Timatic\DataTransferObjects\Source;
 use Timatic\Foundation\Factories\Factory;
 
 /**

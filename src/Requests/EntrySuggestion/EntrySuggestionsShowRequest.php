@@ -5,7 +5,7 @@ namespace Timatic\Requests\EntrySuggestion;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Timatic\Dto\EntrySuggestion;
+use Timatic\DataTransferObjects\EntrySuggestion;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**

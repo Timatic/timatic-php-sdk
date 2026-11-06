@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\Dto\NewTrackedDomain;
-use Timatic\Dto\TrackedDomain;
+use Timatic\DataTransferObjects\NewTrackedDomain;
+use Timatic\DataTransferObjects\TrackedDomain;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 

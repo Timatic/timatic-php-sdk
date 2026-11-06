@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Collection;
-use Timatic\Dto\Permission;
-use Timatic\Dto\Team;
-use Timatic\Dto\User;
+use Timatic\DataTransferObjects\Permission;
+use Timatic\DataTransferObjects\Team;
+use Timatic\DataTransferObjects\User;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 

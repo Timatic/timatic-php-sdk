@@ -52,7 +52,7 @@
         "coverage": "pest --coverage --coverage-clover coverage.xml",
         "format": "pint",
         "regenerate": [
-            "rm -rf src/Dto/* src/Requests/* Factories/* tests/Requests/*",
+            "rm -rf src/DataTransferObjects/* src/Requests/* Factories/* tests/Requests/*",
             "php generator/generator generate:sdk openapi.json --output=. --force --exclude-put-requests",
             "@composer dump-autoload",
             "@format"

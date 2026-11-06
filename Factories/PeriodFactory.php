@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\Period;
+use Timatic\DataTransferObjects\Period;
 use Timatic\Foundation\Factories\Factory;
 
 /**

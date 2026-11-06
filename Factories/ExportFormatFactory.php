@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\ExportFormat;
+use Timatic\DataTransferObjects\ExportFormat;
 use Timatic\Foundation\Factories\Factory;
 
 /**

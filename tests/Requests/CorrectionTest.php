@@ -5,8 +5,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\NewCorrection;
-use Timatic\Dto\UpdateCorrection;
+use Timatic\DataTransferObjects\NewCorrection;
+use Timatic\DataTransferObjects\UpdateCorrection;
 use Timatic\Requests\Correction\CorrectionsStoreRequest;
 use Timatic\Requests\Correction\CorrectionsUpdateRequest;
 use Timatic\TimaticConnector;

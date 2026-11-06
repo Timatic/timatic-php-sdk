@@ -5,8 +5,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\NewTeam;
-use Timatic\Dto\UpdateTeam;
+use Timatic\DataTransferObjects\NewTeam;
+use Timatic\DataTransferObjects\UpdateTeam;
 use Timatic\Requests\Team\TeamsCollectionRequest;
 use Timatic\Requests\Team\TeamsDestroyRequest;
 use Timatic\Requests\Team\TeamsShowRequest;

@@ -5,7 +5,7 @@ namespace Timatic\Requests\Team;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
-use Timatic\Dto\Team;
+use Timatic\DataTransferObjects\Team;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**

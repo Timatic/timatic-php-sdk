@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\SuggestionIntegration;
+use Timatic\DataTransferObjects\SuggestionIntegration;
 use Timatic\Foundation\Factories\Factory;
 
 /**

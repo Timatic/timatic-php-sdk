@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\OvertimeType;
+use Timatic\DataTransferObjects\OvertimeType;
 use Timatic\Foundation\Factories\Factory;
 
 /**

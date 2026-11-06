@@ -17,13 +17,13 @@ PUT is intentionally excluded as PATCH provides better semantics for partial upd
 ### Which Files Are Generated
 
 `composer regenerate` deletes and recreates these directories on every run:
-- `src/Dto/`
+- `src/DataTransferObjects/`
 - `src/Requests/`
 - `Factories/`
 - `tests/Requests/`
 
 These are only rewritten by a manual `--foundation` run (see README), so treat them as generated too:
-- `src/Foundation/` (copied from the generator package)
+- `src/Foundation/` and `tests/Foundation/` (copied from the generator package)
 - `src/TimaticConnector.php`, `src/Providers/`, `config/`, `tests/TestCase.php`
 
 Everything else can be edited, e.g. `tests/Feature/`, `tests/Factories/`, `tests/Pagination/`, `tests/Pest.php`, `README.md`.
@@ -53,7 +53,7 @@ Change the generators in the `timatic/jsonapi-sdk-generator` package (github Tim
 | Directory | Generator (in JsonApiSdkGenerator) | Description |
 |-----------|-----------|-------------|
 | `src/TimaticConnector.php` | `Generators/JsonApiConnectorGenerator.php` | Connector with JSON:API headers, token auth and pagination. |
-| `src/Dto/` | `Generators/JsonApiDtoGenerator.php` | Spatie Data DTOs. Read DTOs come from the resource schemas, with JSON:API attributes flattened into typed properties and relationships marked with `#[JsonApiRelationship]`. Write DTOs (`New{Entity}`, `Update{Entity}`) come from the request body schema of each store/update endpoint. Every DTO gets `#[JsonApiType]`. |
+| `src/DataTransferObjects/` | `Generators/JsonApiDtoGenerator.php` | Spatie Data DTOs. Read DTOs come from the resource schemas, with JSON:API attributes flattened into typed properties and relationships marked with `#[JsonApiRelationship]`. Write DTOs (`New{Entity}`, `Update{Entity}`) come from the request body schema of each store/update endpoint. Every DTO gets `#[JsonApiType]`. |
 | `src/Requests/` | `Generators/JsonApiRequestGenerator.php` | Saloon requests. Store/update requests take their write DTO; collection requests get `Paginatable`, `HasFilters` and `include*()` methods. |
 | `tests/Requests/` | `Generators/JsonApiPestTestGenerator.php` | Pest tests for all endpoints. |
 | `Factories/` | `Generators/JsonApiFactoryGenerator.php` | Faker factories for all DTOs. |

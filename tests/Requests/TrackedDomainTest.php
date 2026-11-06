@@ -5,9 +5,9 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Budget;
-use Timatic\Dto\Customer;
-use Timatic\Dto\NewTrackedDomain;
+use Timatic\DataTransferObjects\Budget;
+use Timatic\DataTransferObjects\Customer;
+use Timatic\DataTransferObjects\NewTrackedDomain;
 use Timatic\Requests\TrackedDomain\TrackedDomainsCollectionRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsDestroyRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsStoreRequest;

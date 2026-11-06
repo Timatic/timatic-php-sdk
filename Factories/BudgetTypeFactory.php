@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\BudgetType;
+use Timatic\DataTransferObjects\BudgetType;
 use Timatic\Foundation\Factories\Factory;
 
 /**

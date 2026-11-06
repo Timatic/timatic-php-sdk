@@ -63,7 +63,7 @@ TIMATIC_API_TOKEN=your-api-token-here
 The connector is registered in Laravel's service container, so you can inject it into controllers, commands and other classes:
 
 ```php
-use Timatic\Dto\NewBudget;
+use Timatic\DataTransferObjects\NewBudget;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsShowRequest;
 use Timatic\Requests\Budget\BudgetsStoreRequest;
@@ -156,8 +156,8 @@ Here's an example of testing the `BudgetController` from above:
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
-use Timatic\Dto\Budget;
-use Timatic\Dto\BudgetType;
+use Timatic\DataTransferObjects\Budget;
+use Timatic\DataTransferObjects\BudgetType;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsShowRequest;
@@ -326,7 +326,7 @@ $users->first()->team; // Team instance
 When you send a DTO, `JsonApiSerializer` turns its relationships into resource identifiers:
 
 ```php
-use Timatic\Dto\UpdateUser;
+use Timatic\DataTransferObjects\UpdateUser;
 
 $team = $timatic->send(new TeamsShowRequest(teamId: '456'))->dtoOrFail();
 
@@ -366,7 +366,7 @@ Export the spec from a local `timatic-backend` checkout to `openapi.json` (gitig
 composer regenerate
 ```
 
-`composer regenerate` rewrites `src/Dto`, `src/Requests`, `Factories` and `tests/Requests`. To also rewrite `src/Foundation`, the connector, service provider and config, run the generator with `--foundation --connector-name=TimaticConnector --base-url=https://api.tenant.timatic.app` and revert the `composer.json` changes it makes (it normalizes the file and pins `ergebnis/composer-normalize`).
+`composer regenerate` rewrites `src/DataTransferObjects`, `src/Requests`, `Factories` and `tests/Requests`. To also rewrite `src/Foundation`, the connector, service provider and config, run the generator with `--foundation --connector-name=TimaticConnector --base-url=https://api.tenant.timatic.app` and revert the `composer.json` changes it makes (it normalizes the file and pins `ergebnis/composer-normalize`).
 
 ## Development
 

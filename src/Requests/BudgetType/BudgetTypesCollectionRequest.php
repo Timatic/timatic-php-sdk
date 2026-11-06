@@ -6,7 +6,7 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\BudgetType;
+use Timatic\DataTransferObjects\BudgetType;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**

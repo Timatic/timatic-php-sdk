@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\Ticket;
+use Timatic\DataTransferObjects\Ticket;
 use Timatic\Foundation\Factories\Factory;
 
 /**

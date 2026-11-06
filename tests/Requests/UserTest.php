@@ -5,9 +5,9 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\NewUser;
-use Timatic\Dto\Team;
-use Timatic\Dto\UpdateUser;
+use Timatic\DataTransferObjects\NewUser;
+use Timatic\DataTransferObjects\Team;
+use Timatic\DataTransferObjects\UpdateUser;
 use Timatic\Requests\User\UsersCollectionRequest;
 use Timatic\Requests\User\UsersDestroyRequest;
 use Timatic\Requests\User\UsersShowRequest;

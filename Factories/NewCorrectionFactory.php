@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\NewCorrection;
+use Timatic\DataTransferObjects\NewCorrection;
 use Timatic\Foundation\Factories\Factory;
 
 /**

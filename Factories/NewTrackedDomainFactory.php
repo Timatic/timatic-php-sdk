@@ -2,7 +2,7 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\NewTrackedDomain;
+use Timatic\DataTransferObjects\NewTrackedDomain;
 use Timatic\Foundation\Factories\Factory;
 
 /**

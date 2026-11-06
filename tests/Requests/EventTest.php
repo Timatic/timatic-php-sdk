@@ -5,7 +5,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\NewEvent;
+use Timatic\DataTransferObjects\NewEvent;
 use Timatic\Requests\Event\EventsStoreRequest;
 use Timatic\TimaticConnector;
 

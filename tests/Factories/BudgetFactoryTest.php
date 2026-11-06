@@ -1,6 +1,6 @@
 <?php
 
-use Timatic\Dto\Budget;
+use Timatic\DataTransferObjects\Budget;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 
 test('it can create a budget using factory', function () {

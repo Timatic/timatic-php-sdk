@@ -3,7 +3,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Budget;
+use Timatic\DataTransferObjects\Budget;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\TimaticConnector;
 
