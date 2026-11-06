@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Budget;
-use Timatic\Dto\BudgetUpdateRequest;
+use Timatic\Dto\UpdateBudget;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -37,11 +37,11 @@ class BudgetsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  int  $budgetId  The budget ID
-     * @param  null|BudgetUpdateRequest  $data  Request data
+     * @param  null|UpdateBudget  $data  Request data
      */
     public function __construct(
         protected int $budgetId,
-        protected ?BudgetUpdateRequest $data = null,
+        protected ?UpdateBudget $data = null,
     ) {}
 
     protected function defaultBody(): array

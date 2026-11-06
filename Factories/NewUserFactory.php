@@ -2,24 +2,26 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\TeamRequest;
+use Timatic\Dto\NewUser;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<TeamRequest>
+ * @extends Factory<NewUser>
  */
-class TeamRequestFactory extends Factory
+class NewUserFactory extends Factory
 {
     protected function definition(): array
     {
         return [
             'externalId' => $this->faker->uuid(),
-            'name' => $this->faker->name(),
+            'email' => $this->faker->safeEmail(),
+            'givenName' => $this->faker->company(),
+            'familyName' => $this->faker->company(),
         ];
     }
 
     protected function modelClass(): string
     {
-        return TeamRequest::class;
+        return NewUser::class;
     }
 }

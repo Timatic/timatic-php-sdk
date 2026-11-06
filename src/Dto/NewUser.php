@@ -3,7 +3,7 @@
 namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\UserRequestFactory;
+use Timatic\Factories\NewUserFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiRelationship;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
@@ -13,12 +13,12 @@ use Timatic\Foundation\JsonApi\RelationType;
  * UserRequest
  *
  *
- * @method static \Timatic\Factories\UserRequestFactory testFactory()
+ * @method static \Timatic\Factories\NewUserFactory testFactory()
  */
 #[JsonApiType('users')]
-class UserRequest extends SpatieData
+class NewUser extends SpatieData
 {
-    /** @use HasTestFactory<UserRequestFactory> */
+    /** @use HasTestFactory<NewUserFactory> */
     use HasTestFactory;
 
     public function __construct(

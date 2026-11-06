@@ -3,7 +3,7 @@
 namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\TrackedDomainCreateRequestFactory;
+use Timatic\Factories\NewTrackedDomainFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
@@ -11,12 +11,12 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  * TrackedDomainCreateRequest
  *
  *
- * @method static \Timatic\Factories\TrackedDomainCreateRequestFactory testFactory()
+ * @method static \Timatic\Factories\NewTrackedDomainFactory testFactory()
  */
 #[JsonApiType('tracked-domains')]
-class TrackedDomainCreateRequest extends SpatieData
+class NewTrackedDomain extends SpatieData
 {
-    /** @use HasTestFactory<TrackedDomainCreateRequestFactory> */
+    /** @use HasTestFactory<NewTrackedDomainFactory> */
     use HasTestFactory;
 
     public function __construct(

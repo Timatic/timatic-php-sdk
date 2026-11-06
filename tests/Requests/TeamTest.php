@@ -5,7 +5,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\TeamRequest;
+use Timatic\Dto\NewTeam;
+use Timatic\Dto\UpdateTeam;
 use Timatic\Requests\Team\TeamsCollectionRequest;
 use Timatic\Requests\Team\TeamsDestroyRequest;
 use Timatic\Requests\Team\TeamsShowRequest;
@@ -64,7 +65,7 @@ it('calls the teamsStore method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = TeamRequest::testFactory()->state([
+    $dto = NewTeam::testFactory()->state([
         'externalId' => 'external_id-123',
         'name' => 'test name',
     ])->make();
@@ -138,7 +139,7 @@ it('calls the teamsUpdate method in the Team resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = TeamRequest::testFactory()->state([
+    $dto = UpdateTeam::testFactory()->state([
         'externalId' => 'external_id-123',
         'name' => 'test name',
     ])->make();

@@ -5,8 +5,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\CorrectionCreateRequest;
-use Timatic\Dto\CorrectionUpdateRequest;
+use Timatic\Dto\NewCorrection;
+use Timatic\Dto\UpdateCorrection;
 use Timatic\Requests\Correction\CorrectionsStoreRequest;
 use Timatic\Requests\Correction\CorrectionsUpdateRequest;
 use Timatic\TimaticConnector;
@@ -21,7 +21,7 @@ it('calls the correctionsStore method in the Correction resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = CorrectionCreateRequest::testFactory()->state([
+    $dto = NewCorrection::testFactory()->state([
         'correctedEntryId' => 42,
         'newEntryId' => 42,
     ])->make();
@@ -50,7 +50,7 @@ it('calls the correctionsUpdate method in the Correction resource', function () 
     ]);
 
     // Create DTO with sample data
-    $dto = CorrectionUpdateRequest::testFactory()->state([
+    $dto = UpdateCorrection::testFactory()->state([
         'newEntryId' => 42,
     ])->make();
 

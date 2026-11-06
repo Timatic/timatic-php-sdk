@@ -5,8 +5,9 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\Dto\NewUser;
 use Timatic\Dto\Team;
-use Timatic\Dto\UserRequest;
+use Timatic\Dto\UpdateUser;
 use Timatic\Requests\User\UsersCollectionRequest;
 use Timatic\Requests\User\UsersDestroyRequest;
 use Timatic\Requests\User\UsersShowRequest;
@@ -128,7 +129,7 @@ it('calls the usersStore method in the User resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = UserRequest::testFactory()->state([
+    $dto = NewUser::testFactory()->state([
         'externalId' => 'external_id-123',
         'email' => 'test@example.com',
     ])->make();
@@ -210,7 +211,7 @@ it('calls the usersUpdate method in the User resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = UserRequest::testFactory()->state([
+    $dto = UpdateUser::testFactory()->state([
         'externalId' => 'external_id-123',
         'email' => 'test@example.com',
     ])->make();

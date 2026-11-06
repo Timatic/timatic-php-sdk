@@ -3,7 +3,7 @@
 namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\TeamRequestFactory;
+use Timatic\Factories\NewTeamFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
@@ -11,12 +11,12 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  * TeamRequest
  *
  *
- * @method static \Timatic\Factories\TeamRequestFactory testFactory()
+ * @method static \Timatic\Factories\NewTeamFactory testFactory()
  */
 #[JsonApiType('teams')]
-class TeamRequest extends SpatieData
+class NewTeam extends SpatieData
 {
-    /** @use HasTestFactory<TeamRequestFactory> */
+    /** @use HasTestFactory<NewTeamFactory> */
     use HasTestFactory;
 
     public function __construct(

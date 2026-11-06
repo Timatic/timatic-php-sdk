@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\BudgetCreateRequest;
 use Timatic\Dto\BudgetType;
-use Timatic\Dto\BudgetUpdateRequest;
 use Timatic\Dto\Customer;
+use Timatic\Dto\NewBudget;
+use Timatic\Dto\UpdateBudget;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsDestroyRequest;
 use Timatic\Requests\Budget\BudgetsShowRequest;
@@ -175,7 +175,7 @@ it('calls the budgetsStore method in the Budget resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = BudgetCreateRequest::testFactory()->state([
+    $dto = NewBudget::testFactory()->state([
         'title' => 'test title',
         'changeId' => 'change_id-123',
         'contractId' => 'contract_id-123',
@@ -275,7 +275,7 @@ it('calls the budgetsUpdate method in the Budget resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = BudgetUpdateRequest::testFactory()->state([
+    $dto = UpdateBudget::testFactory()->state([
         'title' => 'test title',
         'changeId' => 'change_id-123',
         'contractId' => 'contract_id-123',

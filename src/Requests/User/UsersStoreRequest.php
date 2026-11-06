@@ -7,8 +7,8 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
+use Timatic\Dto\NewUser;
 use Timatic\Dto\User;
-use Timatic\Dto\UserRequest;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -36,10 +36,10 @@ class UsersStoreRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|UserRequest  $data  Request data
+     * @param  null|NewUser  $data  Request data
      */
     public function __construct(
-        protected ?UserRequest $data = null,
+        protected ?NewUser $data = null,
     ) {}
 
     protected function defaultBody(): array

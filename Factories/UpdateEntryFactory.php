@@ -3,13 +3,13 @@
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
-use Timatic\Dto\EntryUpdateRequest;
+use Timatic\Dto\UpdateEntry;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<EntryUpdateRequest>
+ * @extends Factory<UpdateEntry>
  */
-class EntryUpdateRequestFactory extends Factory
+class UpdateEntryFactory extends Factory
 {
     protected function definition(): array
     {
@@ -38,6 +38,6 @@ class EntryUpdateRequestFactory extends Factory
 
     protected function modelClass(): string
     {
-        return EntryUpdateRequest::class;
+        return UpdateEntry::class;
     }
 }

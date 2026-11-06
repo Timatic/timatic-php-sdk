@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Event;
-use Timatic\Dto\EventRequest;
+use Timatic\Dto\NewEvent;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -36,10 +36,10 @@ class EventsStoreRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|EventRequest  $data  Request data
+     * @param  null|NewEvent  $data  Request data
      */
     public function __construct(
-        protected ?EventRequest $data = null,
+        protected ?NewEvent $data = null,
     ) {}
 
     protected function defaultBody(): array

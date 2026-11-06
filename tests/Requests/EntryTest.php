@@ -9,8 +9,8 @@ use Saloon\Laravel\Facades\Saloon;
 use Timatic\Dto\Budget;
 use Timatic\Dto\Customer;
 use Timatic\Dto\Entry;
-use Timatic\Dto\EntryCreateRequest;
-use Timatic\Dto\EntryUpdateRequest;
+use Timatic\Dto\NewEntry;
+use Timatic\Dto\UpdateEntry;
 use Timatic\Requests\Entry\EntriesCollectionRequest;
 use Timatic\Requests\Entry\EntriesDestroyRequest;
 use Timatic\Requests\Entry\EntriesShowRequest;
@@ -190,7 +190,7 @@ it('calls the entriesStore method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = EntryCreateRequest::testFactory()->state([
+    $dto = NewEntry::testFactory()->state([
         'isPaidPerHour' => true,
         'entrySuggestionId' => 42,
         'ticketId' => 'ticket_id-123',
@@ -314,7 +314,7 @@ it('calls the entriesUpdate method in the Entry resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = EntryUpdateRequest::testFactory()->state([
+    $dto = UpdateEntry::testFactory()->state([
         'isPaidPerHour' => true,
         'entrySuggestionId' => 42,
         'ticketId' => 'ticket_id-123',

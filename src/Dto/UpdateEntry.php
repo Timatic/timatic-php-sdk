@@ -4,20 +4,20 @@ namespace Timatic\Dto;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\EntryCreateRequestFactory;
+use Timatic\Factories\UpdateEntryFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
- * EntryCreateRequest
+ * EntryUpdateRequest
  *
  *
- * @method static \Timatic\Factories\EntryCreateRequestFactory testFactory()
+ * @method static \Timatic\Factories\UpdateEntryFactory testFactory()
  */
 #[JsonApiType('entries')]
-class EntryCreateRequest extends SpatieData
+class UpdateEntry extends SpatieData
 {
-    /** @use HasTestFactory<EntryCreateRequestFactory> */
+    /** @use HasTestFactory<UpdateEntryFactory> */
     use HasTestFactory;
 
     public function __construct(
@@ -31,9 +31,6 @@ class EntryCreateRequest extends SpatieData
         public ?string $customerName = null,
         public ?string $entryType = null,
         public ?int $budgetId = null,
-        public ?int $userId = null,
-        public ?string $userFullName = null,
-        public ?string $userEmail = null,
         public ?string $description = null,
         public ?bool $hasOvertime = null,
         public ?bool $hasCustomerOvertime = null,

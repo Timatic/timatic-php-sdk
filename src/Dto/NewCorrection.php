@@ -3,23 +3,24 @@
 namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\CorrectionUpdateRequestFactory;
+use Timatic\Factories\NewCorrectionFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
- * CorrectionUpdateRequest
+ * CorrectionCreateRequest
  *
  *
- * @method static \Timatic\Factories\CorrectionUpdateRequestFactory testFactory()
+ * @method static \Timatic\Factories\NewCorrectionFactory testFactory()
  */
 #[JsonApiType('corrections')]
-class CorrectionUpdateRequest extends SpatieData
+class NewCorrection extends SpatieData
 {
-    /** @use HasTestFactory<CorrectionUpdateRequestFactory> */
+    /** @use HasTestFactory<NewCorrectionFactory> */
     use HasTestFactory;
 
     public function __construct(
+        public ?int $correctedEntryId = null,
         public ?int $newEntryId = null,
     ) {}
 }

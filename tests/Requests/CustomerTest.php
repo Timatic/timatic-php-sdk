@@ -5,7 +5,8 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\CustomerRequest;
+use Timatic\Dto\NewCustomer;
+use Timatic\Dto\UpdateCustomer;
 use Timatic\Requests\Customer\CustomersCollectionRequest;
 use Timatic\Requests\Customer\CustomersDestroyRequest;
 use Timatic\Requests\Customer\CustomersShowRequest;
@@ -72,7 +73,7 @@ it('calls the customersStore method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = CustomerRequest::testFactory()->state([
+    $dto = NewCustomer::testFactory()->state([
         'externalId' => 'external_id-123',
         'name' => 'test name',
         'isOwnOrganization' => true,
@@ -152,7 +153,7 @@ it('calls the customersUpdate method in the Customer resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = CustomerRequest::testFactory()->state([
+    $dto = UpdateCustomer::testFactory()->state([
         'externalId' => 'external_id-123',
         'name' => 'test name',
         'isOwnOrganization' => true,

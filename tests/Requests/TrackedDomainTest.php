@@ -7,7 +7,7 @@ use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
 use Timatic\Dto\Budget;
 use Timatic\Dto\Customer;
-use Timatic\Dto\TrackedDomainCreateRequest;
+use Timatic\Dto\NewTrackedDomain;
 use Timatic\Requests\TrackedDomain\TrackedDomainsCollectionRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsDestroyRequest;
 use Timatic\Requests\TrackedDomain\TrackedDomainsStoreRequest;
@@ -130,7 +130,7 @@ it('calls the trackedDomainsStore method in the TrackedDomain resource', functio
     ]);
 
     // Create DTO with sample data
-    $dto = TrackedDomainCreateRequest::testFactory()->state([
+    $dto = NewTrackedDomain::testFactory()->state([
         'domain' => 'test value',
         'customerId' => 42,
         'isInternal' => true,

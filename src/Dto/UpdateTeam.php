@@ -3,25 +3,24 @@
 namespace Timatic\Dto;
 
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\CustomerRequestFactory;
+use Timatic\Factories\UpdateTeamFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
- * CustomerRequest
+ * TeamRequest
  *
  *
- * @method static \Timatic\Factories\CustomerRequestFactory testFactory()
+ * @method static \Timatic\Factories\UpdateTeamFactory testFactory()
  */
-#[JsonApiType('customers')]
-class CustomerRequest extends SpatieData
+#[JsonApiType('teams')]
+class UpdateTeam extends SpatieData
 {
-    /** @use HasTestFactory<CustomerRequestFactory> */
+    /** @use HasTestFactory<UpdateTeamFactory> */
     use HasTestFactory;
 
     public function __construct(
         public ?string $externalId = null,
         public ?string $name = null,
-        public ?bool $isOwnOrganization = null,
     ) {}
 }

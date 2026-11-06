@@ -3,13 +3,13 @@
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
-use Timatic\Dto\EventRequest;
+use Timatic\Dto\NewEvent;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<EventRequest>
+ * @extends Factory<NewEvent>
  */
-class EventRequestFactory extends Factory
+class NewEventFactory extends Factory
 {
     protected function definition(): array
     {
@@ -34,6 +34,6 @@ class EventRequestFactory extends Factory
 
     protected function modelClass(): string
     {
-        return EventRequest::class;
+        return NewEvent::class;
     }
 }

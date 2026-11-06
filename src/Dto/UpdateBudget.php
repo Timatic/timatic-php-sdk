@@ -4,20 +4,20 @@ namespace Timatic\Dto;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\BudgetCreateRequestFactory;
+use Timatic\Factories\UpdateBudgetFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
 /**
- * BudgetCreateRequest
+ * BudgetUpdateRequest
  *
  *
- * @method static \Timatic\Factories\BudgetCreateRequestFactory testFactory()
+ * @method static \Timatic\Factories\UpdateBudgetFactory testFactory()
  */
 #[JsonApiType('budgets')]
-class BudgetCreateRequest extends SpatieData
+class UpdateBudget extends SpatieData
 {
-    /** @use HasTestFactory<BudgetCreateRequestFactory> */
+    /** @use HasTestFactory<UpdateBudgetFactory> */
     use HasTestFactory;
 
     public function __construct(
@@ -27,12 +27,10 @@ class BudgetCreateRequest extends SpatieData
         public ?string $contractId = null,
         public ?string $description = null,
         public int|float|null $totalPrice = null,
-        public ?Carbon $startedAt = null,
         public ?Carbon $endedAt = null,
-        public ?int $customerId = null,
-        public ?bool $showToCustomer = null,
-        public ?string $budgetTypeId = null,
         public ?int $supervisorUserId = null,
-        public ?string $renewalFrequency = null,
+        public ?bool $isArchived = null,
+        public ?bool $showToCustomer = null,
+        public ?Carbon $effectiveFrom = null,
     ) {}
 }

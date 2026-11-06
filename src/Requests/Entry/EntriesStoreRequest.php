@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Entry;
-use Timatic\Dto\EntryCreateRequest;
+use Timatic\Dto\NewEntry;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -36,10 +36,10 @@ class EntriesStoreRequest extends Request implements HasBody
     }
 
     /**
-     * @param  null|EntryCreateRequest  $data  Request data
+     * @param  null|NewEntry  $data  Request data
      */
     public function __construct(
-        protected ?EntryCreateRequest $data = null,
+        protected ?NewEntry $data = null,
     ) {}
 
     protected function defaultBody(): array

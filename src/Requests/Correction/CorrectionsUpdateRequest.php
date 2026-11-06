@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Correction;
-use Timatic\Dto\CorrectionUpdateRequest;
+use Timatic\Dto\UpdateCorrection;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -37,11 +37,11 @@ class CorrectionsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  mixed  $correctionId  The correction ID
-     * @param  null|CorrectionUpdateRequest  $data  Request data
+     * @param  null|UpdateCorrection  $data  Request data
      */
     public function __construct(
         protected mixed $correctionId,
-        protected ?CorrectionUpdateRequest $data = null,
+        protected ?UpdateCorrection $data = null,
     ) {}
 
     protected function defaultBody(): array

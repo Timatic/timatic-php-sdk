@@ -5,7 +5,7 @@ use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Timatic\Dto\Budget;
-use Timatic\Dto\BudgetCreateRequest;
+use Timatic\Dto\NewBudget;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\Requests\Budget\BudgetsStoreRequest;
@@ -58,7 +58,7 @@ test('it can mock a collection response using factories', function () {
 
 test('it can mock a POST request to create a budget using factory', function () {
     // Create a budget to send
-    $budgetToCreate = BudgetCreateRequest::testFactory()->state([
+    $budgetToCreate = NewBudget::testFactory()->state([
         'title' => 'New Budget',
         'totalPrice' => 5000,
         'customerId' => 123,

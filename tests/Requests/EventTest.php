@@ -5,7 +5,7 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\EventRequest;
+use Timatic\Dto\NewEvent;
 use Timatic\Requests\Event\EventsStoreRequest;
 use Timatic\TimaticConnector;
 
@@ -19,7 +19,7 @@ it('calls the eventsStore method in the Event resource', function () {
     ]);
 
     // Create DTO with sample data
-    $dto = EventRequest::testFactory()->state([
+    $dto = NewEvent::testFactory()->state([
         'sourceId' => 'source_id-123',
         'userId' => 42,
         'userExternalId' => 'user_external_id-123',

@@ -3,13 +3,13 @@
 namespace Timatic\Factories;
 
 use Carbon\Carbon;
-use Timatic\Dto\BudgetCreateRequest;
+use Timatic\Dto\UpdateBudget;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<BudgetCreateRequest>
+ * @extends Factory<UpdateBudget>
  */
-class BudgetCreateRequestFactory extends Factory
+class UpdateBudgetFactory extends Factory
 {
     protected function definition(): array
     {
@@ -20,18 +20,16 @@ class BudgetCreateRequestFactory extends Factory
             'contractId' => $this->faker->uuid(),
             'description' => $this->faker->sentence(),
             'totalPrice' => null,
-            'startedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
             'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
-            'customerId' => $this->faker->numberBetween(1, 1000),
-            'showToCustomer' => $this->faker->boolean(),
-            'budgetTypeId' => $this->faker->uuid(),
             'supervisorUserId' => $this->faker->numberBetween(1, 1000),
-            'renewalFrequency' => $this->faker->word(),
+            'isArchived' => $this->faker->boolean(),
+            'showToCustomer' => $this->faker->boolean(),
+            'effectiveFrom' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
         ];
     }
 
     protected function modelClass(): string
     {
-        return BudgetCreateRequest::class;
+        return UpdateBudget::class;
     }
 }

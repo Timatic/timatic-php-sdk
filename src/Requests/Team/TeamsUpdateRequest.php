@@ -8,7 +8,7 @@ use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
 use Timatic\Dto\Team;
-use Timatic\Dto\TeamRequest;
+use Timatic\Dto\UpdateTeam;
 use Timatic\Foundation\JsonApi\JsonApiSerializer;
 use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
@@ -37,11 +37,11 @@ class TeamsUpdateRequest extends Request implements HasBody
 
     /**
      * @param  mixed  $teamId  The team ID
-     * @param  null|TeamRequest  $data  Request data
+     * @param  null|UpdateTeam  $data  Request data
      */
     public function __construct(
         protected mixed $teamId,
-        protected ?TeamRequest $data = null,
+        protected ?UpdateTeam $data = null,
     ) {}
 
     protected function defaultBody(): array

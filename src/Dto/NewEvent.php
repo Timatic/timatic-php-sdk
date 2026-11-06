@@ -4,7 +4,7 @@ namespace Timatic\Dto;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data as SpatieData;
-use Timatic\Factories\EventRequestFactory;
+use Timatic\Factories\NewEventFactory;
 use Timatic\Foundation\JsonApi\Attributes\JsonApiType;
 use Timatic\Foundation\JsonApi\HasTestFactory;
 
@@ -12,12 +12,12 @@ use Timatic\Foundation\JsonApi\HasTestFactory;
  * EventRequest
  *
  *
- * @method static \Timatic\Factories\EventRequestFactory testFactory()
+ * @method static \Timatic\Factories\NewEventFactory testFactory()
  */
 #[JsonApiType('events')]
-class EventRequest extends SpatieData
+class NewEvent extends SpatieData
 {
-    /** @use HasTestFactory<EventRequestFactory> */
+    /** @use HasTestFactory<NewEventFactory> */
     use HasTestFactory;
 
     public function __construct(

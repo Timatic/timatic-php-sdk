@@ -2,13 +2,13 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\UserRequest;
+use Timatic\Dto\UpdateUser;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<UserRequest>
+ * @extends Factory<UpdateUser>
  */
-class UserRequestFactory extends Factory
+class UpdateUserFactory extends Factory
 {
     protected function definition(): array
     {
@@ -22,6 +22,6 @@ class UserRequestFactory extends Factory
 
     protected function modelClass(): string
     {
-        return UserRequest::class;
+        return UpdateUser::class;
     }
 }

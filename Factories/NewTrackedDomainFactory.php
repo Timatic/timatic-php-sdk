@@ -2,13 +2,13 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\TrackedDomainCreateRequest;
+use Timatic\Dto\NewTrackedDomain;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<TrackedDomainCreateRequest>
+ * @extends Factory<NewTrackedDomain>
  */
-class TrackedDomainCreateRequestFactory extends Factory
+class NewTrackedDomainFactory extends Factory
 {
     protected function definition(): array
     {
@@ -25,6 +25,6 @@ class TrackedDomainCreateRequestFactory extends Factory
 
     protected function modelClass(): string
     {
-        return TrackedDomainCreateRequest::class;
+        return NewTrackedDomain::class;
     }
 }

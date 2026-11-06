@@ -2,24 +2,23 @@
 
 namespace Timatic\Factories;
 
-use Timatic\Dto\CorrectionCreateRequest;
+use Timatic\Dto\UpdateCorrection;
 use Timatic\Foundation\Factories\Factory;
 
 /**
- * @extends Factory<CorrectionCreateRequest>
+ * @extends Factory<UpdateCorrection>
  */
-class CorrectionCreateRequestFactory extends Factory
+class UpdateCorrectionFactory extends Factory
 {
     protected function definition(): array
     {
         return [
-            'correctedEntryId' => $this->faker->numberBetween(1, 1000),
             'newEntryId' => $this->faker->numberBetween(1, 1000),
         ];
     }
 
     protected function modelClass(): string
     {
-        return CorrectionCreateRequest::class;
+        return UpdateCorrection::class;
     }
 }
