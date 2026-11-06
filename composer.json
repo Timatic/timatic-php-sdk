@@ -42,9 +42,6 @@
     },
     "extra": {
         "laravel": {
-            "aliases": {
-                "Timatic": "Timatic\\Facades\\Timatic"
-            },
             "providers": [
                 "Timatic\\Providers\\TimaticServiceProvider"
             ]
