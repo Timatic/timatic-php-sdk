@@ -2,10 +2,10 @@
 
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Laravel\Facades\Saloon;
-use Timatic\Dto\Budget;
-use Timatic\Dto\BudgetType;
-use Timatic\Dto\Customer;
-use Timatic\Dto\Entry;
+use Timatic\DataTransferObjects\Budget;
+use Timatic\DataTransferObjects\BudgetType;
+use Timatic\DataTransferObjects\Customer;
+use Timatic\DataTransferObjects\Entry;
 use Timatic\Requests\Budget\BudgetsCollectionRequest;
 use Timatic\TimaticConnector;
 

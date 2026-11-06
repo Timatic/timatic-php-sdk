@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Customer;
 
 use Saloon\Enums\Method;
@@ -20,9 +18,9 @@ class CustomersDestroyRequest extends Request
     }
 
     /**
-     * @param  int  $customerId  The customer ID
+     * @param  mixed  $customerId  The customer ID
      */
     public function __construct(
-        protected int $customerId,
+        protected mixed $customerId,
     ) {}
 }

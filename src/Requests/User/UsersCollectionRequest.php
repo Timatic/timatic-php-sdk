@@ -1,17 +1,15 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\User;
 
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\PaginationPlugin\Contracts\Paginatable;
-use Timatic\Dto\User;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Requests\Concerns\HasFilters;
-use Timatic\Requests\Concerns\HasIncludes;
+use Timatic\DataTransferObjects\User;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
+use Timatic\Foundation\Requests\Concerns\HasFilters;
+use Timatic\Foundation\Requests\Concerns\HasIncludes;
 
 /**
  * users.index
@@ -21,9 +19,18 @@ class UsersCollectionRequest extends Request implements Paginatable
     use HasFilters;
     use HasIncludes;
 
-    protected $model = User::class;
-
     protected Method $method = Method::GET;
+
+    public function createDtoFromResponse(Response $response): mixed
+    {
+        $flattened = JsonApiTransformer::flattenCollection(
+            User::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        );
+
+        return collect($flattened)->map(fn (array $flat) => User::from($flat));
+    }
 
     /**
      * Include the permissions relationship in the response
@@ -39,15 +46,6 @@ class UsersCollectionRequest extends Request implements Paginatable
     public function includeTeam(): static
     {
         return $this->addInclude('team');
-    }
-
-    public function createDtoFromResponse(Response $response): mixed
-    {
-        return Hydrator::hydrateCollection(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
     }
 
     public function resolveEndpoint(): string

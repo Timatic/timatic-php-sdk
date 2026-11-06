@@ -5,32 +5,77 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\DataTransferObjects\Correction;
+use Timatic\DataTransferObjects\NewCorrection;
+use Timatic\DataTransferObjects\UpdateCorrection;
 use Timatic\Requests\Correction\CorrectionsStoreRequest;
+use Timatic\Requests\Correction\CorrectionsUpdateRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the correctionsStore method in the Correction resource', function () {
     $mockClient = Saloon::fake([
-        CorrectionsStoreRequest::class => MockResponse::make([], 200),
+        CorrectionsStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'corrections', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Correction::factory()->state([
-        'name' => 'test value',
+    $dto = NewCorrection::testFactory()->state([
+        'correctedEntryId' => 42,
+        'newEntryId' => 42,
     ])->make();
 
     $request = new CorrectionsStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(CorrectionsStoreRequest::class);
 
     $mockClient->assertSent(function (Request $request) {
         expect($request->body()->all())
             ->toHaveKey('data')
-            ->data->type->toBe('corrections');
+            ->data->type->toBe('corrections')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->correctedEntryId->toBe(42)
+            ->newEntryId->toBe(42)
+            );
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Correction::class);
+});
+
+it('calls the correctionsUpdate method in the Correction resource', function () {
+    $mockClient = Saloon::fake([
+        CorrectionsUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'corrections', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
+    ]);
+
+    // Create DTO with sample data
+    $dto = UpdateCorrection::testFactory()->state([
+        'newEntryId' => 42,
+    ])->make();
+
+    $request = new CorrectionsUpdateRequest(correctionId: 'test value', data: $dto);
+    $response = $this->timaticConnector->send($request);
+
+    Saloon::assertSent(CorrectionsUpdateRequest::class);
+
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('corrections')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->newEntryId->toBe(42)
+            );
+
+        return true;
+    });
+
+    expect($response->dto())->toBeInstanceOf(Correction::class);
 });

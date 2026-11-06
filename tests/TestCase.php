@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Timatic\Tests;
 
 use Dotenv\Dotenv;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Saloon\Laravel\SaloonServiceProvider;
+use Spatie\LaravelData\LaravelDataServiceProvider;
 use Timatic\Providers\TimaticServiceProvider;
 
 class TestCase extends Orchestra
@@ -12,6 +15,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
+            LaravelDataServiceProvider::class,
             SaloonServiceProvider::class,
             TimaticServiceProvider::class,
         ];
@@ -19,13 +23,11 @@ class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app): void
     {
-        // Load .env into the environment if it exists
         if (file_exists(dirname(__DIR__).'/.env')) {
             (Dotenv::createImmutable(dirname(__DIR__), '.env'))->load();
         }
 
-        // Set config values for testing
-        $app['config']->set('timatic.base_url', env('TIMATIC_BASE_URL', 'https://api.app.timatic.test'));
+        $app['config']->set('timatic.base_url', env('TIMATIC_BASE_URL', 'https://api.tenant.timatic.app'));
         $app['config']->set('timatic.api_token', env('TIMATIC_API_TOKEN'));
     }
 }

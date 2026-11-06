@@ -1,7 +1,5 @@
 <?php
 
-// auto-generated
-
 namespace Timatic\Requests\Entry;
 
 use Saloon\Contracts\Body\HasBody;
@@ -9,9 +7,10 @@ use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 use Saloon\Traits\Body\HasJsonBody;
-use Timatic\Dto\Entry;
-use Timatic\Hydration\Facades\Hydrator;
-use Timatic\Hydration\Model;
+use Spatie\LaravelData\Data;
+use Timatic\DataTransferObjects\Entry;
+use Timatic\Foundation\JsonApi\JsonApiSerializer;
+use Timatic\Foundation\JsonApi\JsonApiTransformer;
 
 /**
  * entry.mark-as-invoiced
@@ -20,17 +19,15 @@ class EntryMarkAsInvoicedRequest extends Request implements HasBody
 {
     use HasJsonBody;
 
-    protected $model = Entry::class;
-
     protected Method $method = Method::POST;
 
     public function createDtoFromResponse(Response $response): mixed
     {
-        return Hydrator::hydrate(
-            $this->model,
-            $response->json('data'),
-            $response->json('included')
-        );
+        return Entry::from(JsonApiTransformer::flatten(
+            Entry::class,
+            $response->json('data') ?? [],
+            $response->json('included') ?? []
+        ));
     }
 
     public function resolveEndpoint(): string
@@ -40,15 +37,15 @@ class EntryMarkAsInvoicedRequest extends Request implements HasBody
 
     /**
      * @param  int  $entryId  The entry ID
-     * @param  null|\Timatic\Hydration\Model|array|null  $data  Request data
+     * @param  null|Data  $data  Request data
      */
     public function __construct(
         protected int $entryId,
-        protected Model|array|null $data = null,
+        protected ?Data $data = null,
     ) {}
 
     protected function defaultBody(): array
     {
-        return $this->data ? ['data' => $this->data->toJsonApi()] : [];
+        return $this->data ? ['data' => JsonApiSerializer::toJsonApi($this->data)] : [];
     }
 }

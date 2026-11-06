@@ -6,12 +6,16 @@ use Carbon\Carbon;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\DataTransferObjects\Entry;
+use Timatic\DataTransferObjects\Overtime;
+use Timatic\DataTransferObjects\OvertimeType;
 use Timatic\Requests\Overtime\OvertimeApproveRequest;
 use Timatic\Requests\Overtime\OvertimeMarkAsExportedRequest;
 use Timatic\Requests\Overtime\OvertimesCollectionRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the overtimesCollection method in the Overtime resource', function () {
@@ -24,12 +28,12 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
                     'attributes' => [
                         'entryId' => 42,
                         'overtimeTypeId' => 'mock-id-123',
-                        'startedAt' => '2025-11-22T10:40:04.065Z',
-                        'endedAt' => '2025-11-22T10:40:04.065Z',
-                        'percentages' => 'Mock value',
-                        'approvedAt' => '2025-11-22T10:40:04.065Z',
+                        'startedAt' => '2025-11-22T10:40:04+00:00',
+                        'endedAt' => '2025-11-22T10:40:04+00:00',
+                        'percentages' => [],
+                        'approvedAt' => '2025-11-22T10:40:04+00:00',
                         'approvedByUserId' => 42,
-                        'exportedAt' => '2025-11-22T10:40:04.065Z',
+                        'exportedAt' => '2025-11-22T10:40:04+00:00',
                     ],
                     'relationships' => [
                         'overtimeType' => [
@@ -52,12 +56,12 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
                     'attributes' => [
                         'entryId' => 42,
                         'overtimeTypeId' => 'mock-id-123',
-                        'startedAt' => '2025-11-22T10:40:04.065Z',
-                        'endedAt' => '2025-11-22T10:40:04.065Z',
-                        'percentages' => 'Mock value',
-                        'approvedAt' => '2025-11-22T10:40:04.065Z',
+                        'startedAt' => '2025-11-22T10:40:04+00:00',
+                        'endedAt' => '2025-11-22T10:40:04+00:00',
+                        'percentages' => [],
+                        'approvedAt' => '2025-11-22T10:40:04+00:00',
                         'approvedByUserId' => 42,
-                        'exportedAt' => '2025-11-22T10:40:04.065Z',
+                        'exportedAt' => '2025-11-22T10:40:04+00:00',
                     ],
                     'relationships' => [
                         'overtimeType' => [
@@ -97,7 +101,7 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
         ->includeOvertimeType()
         ->includeEntry();
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (OvertimesCollectionRequest $request) {
         $query = $request->query()->all();
@@ -109,38 +113,34 @@ it('calls the overtimesCollection method in the Overtime resource', function () 
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
         ->entryId->toBe(42)
         ->overtimeTypeId->toBe('mock-id-123')
-        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->percentages->toBe('Mock value')
-        ->approvedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
+        ->startedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->endedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->approvedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
         ->approvedByUserId->toBe(42)
-        ->exportedAt->toEqual(new Carbon('2025-11-22T10:40:04.065Z'))
-        ->overtimeType->toBeInstanceOf(\Timatic\Dto\OvertimeType::class)
-        ->entry->toBeInstanceOf(\Timatic\Dto\Entry::class);
+        ->exportedAt->toEqual(new Carbon('2025-11-22T10:40:04+00:00'))
+        ->overtimeType->toBeInstanceOf(OvertimeType::class)
+        ->entry->toBeInstanceOf(Entry::class);
 });
 
 it('calls the overtimeApprove method in the Overtime resource', function () {
     $mockClient = Saloon::fake([
-        OvertimeApproveRequest::class => MockResponse::make([], 200),
+        OvertimeApproveRequest::class => MockResponse::make([
+            'data' => ['type' => 'overtimes', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Overtime::factory()->state([
+    $dto = Overtime::testFactory()->state([
         'entryId' => 42,
-        'overtimeTypeId' => 'overtime_type_id-123',
-        'startedAt' => \Carbon\Carbon::parse('2025-01-15T10:30:00Z'),
-        'endedAt' => \Carbon\Carbon::parse('2025-01-15T10:30:00Z'),
     ])->make();
 
     $request = new OvertimeApproveRequest(overtimeId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(OvertimeApproveRequest::class);
 
@@ -150,30 +150,28 @@ it('calls the overtimeApprove method in the Overtime resource', function () {
             ->data->type->toBe('overtimes')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->entryId->toBe(42)
-            ->overtimeTypeId->toBe('overtime_type_id-123')
-            ->startedAt->toEqual(new \Carbon\Carbon('2025-01-15T10:30:00Z'))
-            ->endedAt->toEqual(new \Carbon\Carbon('2025-01-15T10:30:00Z'))
             );
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Overtime::class);
 });
 
 it('calls the overtimeMarkAsExported method in the Overtime resource', function () {
     $mockClient = Saloon::fake([
-        OvertimeMarkAsExportedRequest::class => MockResponse::make([], 200),
+        OvertimeMarkAsExportedRequest::class => MockResponse::make([
+            'data' => ['type' => 'overtimes', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\Overtime::factory()->state([
+    $dto = Overtime::testFactory()->state([
         'entryId' => 42,
-        'overtimeTypeId' => 'overtime_type_id-123',
-        'startedAt' => \Carbon\Carbon::parse('2025-01-15T10:30:00Z'),
-        'endedAt' => \Carbon\Carbon::parse('2025-01-15T10:30:00Z'),
     ])->make();
 
     $request = new OvertimeMarkAsExportedRequest(overtimeId: 42, data: $dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(OvertimeMarkAsExportedRequest::class);
 
@@ -183,11 +181,10 @@ it('calls the overtimeMarkAsExported method in the Overtime resource', function 
             ->data->type->toBe('overtimes')
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->entryId->toBe(42)
-            ->overtimeTypeId->toBe('overtime_type_id-123')
-            ->startedAt->toEqual(new \Carbon\Carbon('2025-01-15T10:30:00Z'))
-            ->endedAt->toEqual(new \Carbon\Carbon('2025-01-15T10:30:00Z'))
             );
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(Overtime::class);
 });

@@ -1,0 +1,39 @@
+<?php
+
+namespace Timatic\Factories;
+
+use Carbon\Carbon;
+use Timatic\DataTransferObjects\Budget;
+use Timatic\Foundation\Factories\Factory;
+
+/**
+ * @extends Factory<Budget>
+ */
+class BudgetFactory extends Factory
+{
+    protected function definition(): array
+    {
+        return [
+            'budgetTypeId' => $this->faker->uuid(),
+            'customerId' => $this->faker->uuid(),
+            'showToCustomer' => $this->faker->boolean(),
+            'changeId' => $this->faker->uuid(),
+            'contractId' => $this->faker->uuid(),
+            'title' => $this->faker->sentence(),
+            'description' => $this->faker->sentence(),
+            'totalPrice' => $this->faker->word(),
+            'startedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
+            'endedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
+            'initialMinutes' => $this->faker->numberBetween(15, 480),
+            'isArchived' => $this->faker->boolean(),
+            'renewalFrequency' => null,
+            'createdAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
+            'updatedAt' => Carbon::now()->subDays($this->faker->numberBetween(0, 365)),
+        ];
+    }
+
+    protected function modelClass(): string
+    {
+        return Budget::class;
+    }
+}

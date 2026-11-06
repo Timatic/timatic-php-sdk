@@ -7,9 +7,10 @@ use Saloon\Laravel\Facades\Saloon;
 use Timatic\Requests\EntrySuggestion\EntrySuggestionsCollectionRequest;
 use Timatic\Requests\EntrySuggestion\EntrySuggestionsDestroyRequest;
 use Timatic\Requests\EntrySuggestion\EntrySuggestionsShowRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the entrySuggestionsCollection method in the EntrySuggestion resource', function () {
@@ -21,12 +22,12 @@ it('calls the entrySuggestionsCollection method in the EntrySuggestion resource'
                     'id' => 'mock-id-1',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
-                        'ticketNumber' => 'Mock value',
+                        'ticketNumber' => 'String value',
                         'customerId' => 'mock-id-123',
-                        'userId' => 42,
-                        'date' => 'Mock value',
-                        'ticketTitle' => 'Mock value',
-                        'ticketType' => 'Mock value',
+                        'userId' => 'mock-id-123',
+                        'date' => 'String value',
+                        'ticketTitle' => 'String value',
+                        'ticketType' => 'String value',
                         'budgetId' => 42,
                     ],
                     'relationships' => [
@@ -45,12 +46,12 @@ it('calls the entrySuggestionsCollection method in the EntrySuggestion resource'
                     'id' => 'mock-id-2',
                     'attributes' => [
                         'ticketId' => 'mock-id-123',
-                        'ticketNumber' => 'Mock value',
+                        'ticketNumber' => 'String value',
                         'customerId' => 'mock-id-123',
-                        'userId' => 42,
-                        'date' => 'Mock value',
-                        'ticketTitle' => 'Mock value',
-                        'ticketType' => 'Mock value',
+                        'userId' => 'mock-id-123',
+                        'date' => 'String value',
+                        'ticketTitle' => 'String value',
+                        'ticketType' => 'String value',
                         'budgetId' => 42,
                     ],
                     'relationships' => [
@@ -79,7 +80,7 @@ it('calls the entrySuggestionsCollection method in the EntrySuggestion resource'
         ->filter('date', 'test value')
         ->includeActivities();
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (EntrySuggestionsCollectionRequest $request) {
         $query = $request->query()->all();
@@ -89,18 +90,16 @@ it('calls the entrySuggestionsCollection method in the EntrySuggestion resource'
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
         ->ticketId->toBe('mock-id-123')
-        ->ticketNumber->toBe('Mock value')
+        ->ticketNumber->toBe('String value')
         ->customerId->toBe('mock-id-123')
-        ->userId->toBe(42)
-        ->date->toBe('Mock value')
-        ->ticketTitle->toBe('Mock value')
-        ->ticketType->toBe('Mock value')
+        ->userId->toBe('mock-id-123')
+        ->date->toBe('String value')
+        ->ticketTitle->toBe('String value')
+        ->ticketType->toBe('String value')
         ->budgetId->toBe(42)
         ->activities->not->toBeNull();
 });
@@ -113,12 +112,12 @@ it('calls the entrySuggestionsShow method in the EntrySuggestion resource', func
                 'id' => 'mock-id-123',
                 'attributes' => [
                     'ticketId' => 'mock-id-123',
-                    'ticketNumber' => 'Mock value',
+                    'ticketNumber' => 'String value',
                     'customerId' => 'mock-id-123',
-                    'userId' => 42,
-                    'date' => 'Mock value',
-                    'ticketTitle' => 'Mock value',
-                    'ticketType' => 'Mock value',
+                    'userId' => 'mock-id-123',
+                    'date' => 'String value',
+                    'ticketTitle' => 'String value',
+                    'ticketType' => 'String value',
                     'budgetId' => 42,
                 ],
             ],
@@ -126,7 +125,7 @@ it('calls the entrySuggestionsShow method in the EntrySuggestion resource', func
     ]);
 
     $request = new EntrySuggestionsShowRequest(
-        entrySuggestionId: 123
+        entrySuggestionId: null
     );
     $response = $this->timaticConnector->send($request);
 
@@ -138,12 +137,12 @@ it('calls the entrySuggestionsShow method in the EntrySuggestion resource', func
 
     expect($dto)
         ->ticketId->toBe('mock-id-123')
-        ->ticketNumber->toBe('Mock value')
+        ->ticketNumber->toBe('String value')
         ->customerId->toBe('mock-id-123')
-        ->userId->toBe(42)
-        ->date->toBe('Mock value')
-        ->ticketTitle->toBe('Mock value')
-        ->ticketType->toBe('Mock value')
+        ->userId->toBe('mock-id-123')
+        ->date->toBe('String value')
+        ->ticketTitle->toBe('String value')
+        ->ticketType->toBe('String value')
         ->budgetId->toBe(42);
 });
 
@@ -153,7 +152,7 @@ it('calls the entrySuggestionsDestroy method in the EntrySuggestion resource', f
     ]);
 
     $request = new EntrySuggestionsDestroyRequest(
-        entrySuggestionId: 123
+        entrySuggestionId: null
     );
     $response = $this->timaticConnector->send($request);
 

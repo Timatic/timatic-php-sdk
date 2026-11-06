@@ -5,13 +5,19 @@
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
 use Saloon\Laravel\Facades\Saloon;
+use Timatic\DataTransferObjects\NewUser;
+use Timatic\DataTransferObjects\Team;
+use Timatic\DataTransferObjects\UpdateUser;
+use Timatic\DataTransferObjects\User;
 use Timatic\Requests\User\UsersCollectionRequest;
 use Timatic\Requests\User\UsersDestroyRequest;
 use Timatic\Requests\User\UsersShowRequest;
 use Timatic\Requests\User\UsersStoreRequest;
+use Timatic\Requests\User\UsersUpdateRequest;
+use Timatic\TimaticConnector;
 
 beforeEach(function () {
-    $this->timaticConnector = new Timatic\TimaticConnector;
+    $this->timaticConnector = new TimaticConnector;
 });
 
 it('calls the usersCollection method in the User resource', function () {
@@ -24,8 +30,8 @@ it('calls the usersCollection method in the User resource', function () {
                     'attributes' => [
                         'externalId' => 'mock-id-123',
                         'email' => 'test@example.com',
-                        'givenName' => 'Mock value',
-                        'familyName' => 'Mock value',
+                        'givenName' => 'String value',
+                        'familyName' => 'String value',
                         'isImpersonated' => true,
                         'impersonatedById' => 42,
                     ],
@@ -52,8 +58,8 @@ it('calls the usersCollection method in the User resource', function () {
                     'attributes' => [
                         'externalId' => 'mock-id-123',
                         'email' => 'test@example.com',
-                        'givenName' => 'Mock value',
-                        'familyName' => 'Mock value',
+                        'givenName' => 'String value',
+                        'familyName' => 'String value',
                         'isImpersonated' => true,
                         'impersonatedById' => 42,
                     ],
@@ -95,7 +101,7 @@ it('calls the usersCollection method in the User resource', function () {
         ->includePermissions()
         ->includeTeam();
 
-    $response = $this->timaticConnector->send($request);
+    $dtoCollection = $this->timaticConnector->paginate($request)->dtoCollection();
 
     Saloon::assertSent(function (UsersCollectionRequest $request) {
         $query = $request->query()->all();
@@ -105,36 +111,34 @@ it('calls the usersCollection method in the User resource', function () {
         return true;
     });
 
-    expect($response->status())->toBe(200);
-
-    $dtoCollection = $response->dto();
+    expect($dtoCollection)->toHaveCount(2);
 
     expect($dtoCollection->first())
         ->externalId->toBe('mock-id-123')
         ->email->toBe('test@example.com')
-        ->givenName->toBe('Mock value')
-        ->familyName->toBe('Mock value')
+        ->givenName->toBe('String value')
+        ->familyName->toBe('String value')
         ->isImpersonated->toBe(true)
         ->impersonatedById->toBe(42)
         ->permissions->not->toBeNull()
-        ->team->toBeInstanceOf(\Timatic\Dto\Team::class);
+        ->team->toBeInstanceOf(Team::class);
 });
 
 it('calls the usersStore method in the User resource', function () {
     $mockClient = Saloon::fake([
-        UsersStoreRequest::class => MockResponse::make([], 200),
+        UsersStoreRequest::class => MockResponse::make([
+            'data' => ['type' => 'users', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
     ]);
 
     // Create DTO with sample data
-    $dto = \Timatic\Dto\User::factory()->state([
+    $dto = NewUser::testFactory()->state([
         'externalId' => 'external_id-123',
         'email' => 'test@example.com',
-        'givenName' => 'test value',
-        'familyName' => 'test value',
     ])->make();
 
     $request = new UsersStoreRequest($dto);
-    $this->timaticConnector->send($request);
+    $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(UsersStoreRequest::class);
 
@@ -145,12 +149,12 @@ it('calls the usersStore method in the User resource', function () {
             ->data->attributes->scoped(fn ($attributes) => $attributes
             ->externalId->toBe('external_id-123')
             ->email->toBe('test@example.com')
-            ->givenName->toBe('test value')
-            ->familyName->toBe('test value')
             );
 
         return true;
     });
+
+    expect($response->dto())->toBeInstanceOf(User::class);
 });
 
 it('calls the usersShow method in the User resource', function () {
@@ -162,8 +166,8 @@ it('calls the usersShow method in the User resource', function () {
                 'attributes' => [
                     'externalId' => 'mock-id-123',
                     'email' => 'test@example.com',
-                    'givenName' => 'Mock value',
-                    'familyName' => 'Mock value',
+                    'givenName' => 'String value',
+                    'familyName' => 'String value',
                     'isImpersonated' => true,
                     'impersonatedById' => 42,
                 ],
@@ -172,7 +176,7 @@ it('calls the usersShow method in the User resource', function () {
     ]);
 
     $request = new UsersShowRequest(
-        userId: 123
+        userId: null
     );
     $response = $this->timaticConnector->send($request);
 
@@ -185,8 +189,8 @@ it('calls the usersShow method in the User resource', function () {
     expect($dto)
         ->externalId->toBe('mock-id-123')
         ->email->toBe('test@example.com')
-        ->givenName->toBe('Mock value')
-        ->familyName->toBe('Mock value')
+        ->givenName->toBe('String value')
+        ->familyName->toBe('String value')
         ->isImpersonated->toBe(true)
         ->impersonatedById->toBe(42);
 });
@@ -197,11 +201,44 @@ it('calls the usersDestroy method in the User resource', function () {
     ]);
 
     $request = new UsersDestroyRequest(
-        userId: 123
+        userId: null
     );
     $response = $this->timaticConnector->send($request);
 
     Saloon::assertSent(UsersDestroyRequest::class);
 
     expect($response->status())->toBe(200);
+});
+
+it('calls the usersUpdate method in the User resource', function () {
+    $mockClient = Saloon::fake([
+        UsersUpdateRequest::class => MockResponse::make([
+            'data' => ['type' => 'users', 'id' => 'mock-id', 'attributes' => []],
+        ], 200),
+    ]);
+
+    // Create DTO with sample data
+    $dto = UpdateUser::testFactory()->state([
+        'externalId' => 'external_id-123',
+        'email' => 'test@example.com',
+    ])->make();
+
+    $request = new UsersUpdateRequest(userId: 'test value', data: $dto);
+    $response = $this->timaticConnector->send($request);
+
+    Saloon::assertSent(UsersUpdateRequest::class);
+
+    $mockClient->assertSent(function (Request $request) {
+        expect($request->body()->all())
+            ->toHaveKey('data')
+            ->data->type->toBe('users')
+            ->data->attributes->scoped(fn ($attributes) => $attributes
+            ->externalId->toBe('external_id-123')
+            ->email->toBe('test@example.com')
+            );
+
+        return true;
+    });
+
+    expect($response->dto())->toBeInstanceOf(User::class);
 });
