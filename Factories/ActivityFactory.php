@@ -15,7 +15,6 @@ class ActivityFactory extends Factory
     {
         return [
             'sourceId' => $this->faker->uuid(),
-            'eventTypeId' => $this->faker->uuid(),
             'customerId' => $this->faker->uuid(),
             'ticketId' => $this->faker->uuid(),
             'entrySuggestionId' => null,
