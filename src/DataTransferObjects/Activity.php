@@ -26,7 +26,6 @@ class Activity extends SpatieData
     public function __construct(
         public ?string $id = null,
         public ?string $sourceId = null,
-        public ?string $eventTypeId = null,
         public ?string $customerId = null,
         public ?string $ticketId = null,
         public ?int $entrySuggestionId = null,
